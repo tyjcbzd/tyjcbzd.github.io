@@ -21,3 +21,4 @@ I completed my Master's degree in April 2024, specialising in "Systems Analysis,
 # Recent news
 * June, 2024 - One paper published in 'Доклады БГУИР'.
 * March, 2024 - Two papers were accepted by “ITTA2024” and “Доклады БГУИР”
+* December, 2023 - The article "LANet: Lightweight Attention Network for Medical Image Segmentation" was submitted in Springer proceedings of the ITTA-2024 conference.

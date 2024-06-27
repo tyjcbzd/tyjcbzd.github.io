@@ -19,4 +19,5 @@ I completed my Master's degree in April 2024, specialising in "Systems Analysis,
 
 
 # Recent news
-06.2024 One paper published in 'Doklag BSUIR'.
+June, 2024 - One paper published in 'Доклады БГУИР'.
+March, 2024 - Two papers were accepted by “ITTA2024” and “Доклады БГУИР”

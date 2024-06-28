@@ -10,7 +10,7 @@
 locale                   : "cn-CHINA"
 title                    : "Home Page"
 title_separator          : "-"
-name                     : &name "Tang Yi / Felix"
+name                     : &name "Tang Yi / Felix Jackson." 
 description              : &description "A phD student"
 url                      : https://tyjcbzd.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"

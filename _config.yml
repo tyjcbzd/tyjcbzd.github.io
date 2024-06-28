@@ -8,7 +8,7 @@
 
 # Basic Site Settings
 locale                   : "cn-CHINA"
-title                    : "Tang Yi"
+title                    : "Home Page"
 title_separator          : "-"
 name                     : &name "Tang Yi / Felix"
 description              : &description "A phD student"
@@ -22,9 +22,9 @@ repository               : "academicpages/academicpages.github.io"
 author:
   # Biographic information
   avatar           : "ty_avatar.png"
-  name             : "A phD student"
+  name             : "Tang Yi/ Felix Jackson"
   pronouns         : # example: "she/her"  
-  bio              : # "Email: tangyijcb@163.com"
+  bio              : "A phD student"
   location         : "Belarus"
   employer         : "BSUIR"
   uri              : # URL

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="话题通信操作流程：  创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如base_interfaces_demo中创建一个msg文件夹，然后创建Student.msg文件，在里面写入接口的定义  编辑配置文件，具体来说，需要在packages.xml和CMakerList.txt中补充   在packages.xml中，依赖包需要补充 1234567&lt;!-- 自定义接口 --&amp;gt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS2之话题通信">
+<meta property="og:url" content="http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="Tang Yi&#39;s Blog">
+<meta property="og:description" content="话题通信操作流程：  创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如base_interfaces_demo中创建一个msg文件夹，然后创建Student.msg文件，在里面写入接口的定义  编辑配置文件，具体来说，需要在packages.xml和CMakerList.txt中补充   在packages.xml中，依赖包需要补充 1234567&lt;!-- 自定义接口 --&amp;gt">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-17T14:12:00.000Z">
+<meta property="article:modified_time" content="2025-02-17T14:18:20.018Z">
+<meta property="article:author" content="tyfelix">
+<meta property="article:tag" content="ROS2">
+<meta property="article:tag" content="机器人">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/chicken.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ROS2之话题通信</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&text=ROS2之话题通信"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&is_video=false&description=ROS2之话题通信"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROS2之话题通信&body=Check out this article: http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&name=ROS2之话题通信&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&t=ROS2之话题通信"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">话题通信操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text"></span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ROS2之话题通信
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">tyfelix</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-02-17T14:12:00.000Z" class="dt-published" itemprop="datePublished">2025-02-17</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/ROS2/" rel="tag">ROS2</a>, <a class="p-category" href="/tags/%E6%9C%BA%E5%99%A8%E4%BA%BA/" rel="tag">机器人</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h3 id="话题通信操作"><a href="#话题通信操作" class="headerlink" title="话题通信操作"></a>话题通信操作</h3><p>流程：</p>
+<ul>
+<li><p>创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如<code>base_interfaces_demo</code>中创建一个<code>msg</code>文件夹，然后创建<code>Student.msg</code>文件，在里面写入接口的定义</p>
+</li>
+<li><p>编辑配置文件，具体来说，需要在<code>packages.xml</code>和<code>CMakerList.txt</code>中补充</p>
+</li>
+</ul>
+<p>在<code>packages.xml</code>中，依赖包需要补充</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 自定义接口 --&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 编译依赖 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">build_depend</span>&gt;</span>rosidl_default_generators<span class="tag">&lt;/<span class="name">build_depend</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 执行依赖 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">exec_depend</span>&gt;</span>rosidl_default_runtime<span class="tag">&lt;/<span class="name">exec_depend</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 声明当前包所属的功能包组 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">member_of_group</span>&gt;</span>rosidl_interface_packages<span class="tag">&lt;/<span class="name">member_of_group</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后在<code>CMakeList.txt</code>中写入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">find_package(rosidl_default_generators REQUIRED)</span><br><span class="line"></span><br><span class="line">rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;</span><br><span class="line">  &quot;msg/Student.msg&quot;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编译： 进入<code>(dpl39) tyfelix@tyfelix-B760M:~/zxz_ROS/ws01_plumbing$ </code>工作空间，编译<code>colcon build --packages-select base interface_demo</code></li>
+<li>测试：编译完成之后，<code>. install/setup.bash</code> 然后<code>ros2 interface show base_interface_demo/msg/Student</code> 。输出内容为<code>Student.msg</code>的内容，那么说明编译成功。可以进行之后的操作。</li>
+</ul>
+<p>下面展示了一个服务通信的例子(主要注意 1.话题名称需要保持一致性；2.接口的引入； 3. 函数不一样)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">----发布方----</span><br><span class="line"><span class="keyword">from</span> std_msgs.msg <span class="keyword">import</span> String</span><br><span class="line"><span class="keyword">import</span> rclpy</span><br><span class="line"><span class="keyword">from</span> rclpy.node <span class="keyword">import</span> Node</span><br><span class="line"><span class="keyword">from</span> base_interfaces_demo.msg <span class="keyword">import</span> Student</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Talker</span>(<span class="title class_ inherited__">Node</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, node_name</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(node_name=node_name)</span><br><span class="line">        <span class="comment"># 创建定时器</span></span><br><span class="line">        <span class="variable language_">self</span>.count = <span class="number">0</span></span><br><span class="line">        <span class="variable language_">self</span>.get_logger().info(<span class="string">&quot;发布方创建了（python）&quot;</span>)</span><br><span class="line">        <span class="comment"># 创建发布者</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        参数：消息类型；话题名称；QoS队列长度</span></span><br><span class="line"><span class="string">        返回这个发布者对象</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="variable language_">self</span>.publisher = <span class="variable language_">self</span>.create_publisher(Student,<span class="string">&#x27;chatter1&#x27;</span>,<span class="number">10</span>)</span><br><span class="line">        <span class="comment"># 创建定时器</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        参数： 时间间隔；回调函数（函数作为参数传入）</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="variable language_">self</span>.timer = <span class="variable language_">self</span>.create_timer(<span class="number">1.0</span>,<span class="variable language_">self</span>.on_timer) </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">on_timer</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 组织并发布消息</span></span><br><span class="line">        stu = Student()</span><br><span class="line">        stu.name = <span class="string">&quot;Felix Jackson&quot;</span></span><br><span class="line">        stu.age = <span class="number">20</span></span><br><span class="line">        stu.height = <span class="number">175.0</span></span><br><span class="line">        <span class="variable language_">self</span>.publisher.publish(stu)</span><br><span class="line">        <span class="variable language_">self</span>.count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># self.get_logger().info(f&quot;发布的数据为:&#123;message.data&#125;&quot;)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="comment"># 初始化</span></span><br><span class="line">    rclpy.init()</span><br><span class="line">    <span class="comment"># 创建node</span></span><br><span class="line">    node = Talker(<span class="string">&quot;talker_node_py3&quot;</span>)  </span><br><span class="line">    <span class="comment"># 运行</span></span><br><span class="line">    rclpy.spin(node)</span><br><span class="line">    <span class="comment"># 释放资源</span></span><br><span class="line">    rclpy.shutdown()</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line">----订阅方----</span><br><span class="line"><span class="keyword">from</span> std_msgs.msg <span class="keyword">import</span> String</span><br><span class="line"><span class="keyword">import</span> rclpy</span><br><span class="line"><span class="keyword">from</span> rclpy.node <span class="keyword">import</span> Node</span><br><span class="line"><span class="keyword">from</span> base_interfaces_demo.msg <span class="keyword">import</span> Student</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Listener</span>(<span class="title class_ inherited__">Node</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, node_name</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(node_name=node_name)</span><br><span class="line">        <span class="comment"># 创建定时器</span></span><br><span class="line">        <span class="comment"># self.count = 0</span></span><br><span class="line">        <span class="variable language_">self</span>.get_logger().info(<span class="string">&quot;订阅方创建了（python）&quot;</span>)</span><br><span class="line">        <span class="comment"># 创建订阅者</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        参数：消息类型；话题名称（比如和发布者一致）；回调函数；QoS队列长度</span></span><br><span class="line"><span class="string">        返回这个发布者对象</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="variable language_">self</span>.subcriber = <span class="variable language_">self</span>.create_subscription(Student,<span class="string">&#x27;chatter1&#x27;</span>, <span class="variable language_">self</span>.do_cb, <span class="number">10</span>)</span><br><span class="line">        <span class="comment"># # 创建定时器</span></span><br><span class="line">        <span class="comment"># &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># 参数： 时间间隔；回调函数（函数作为参数传入）</span></span><br><span class="line">        <span class="comment"># &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># self.timer = self.create_timer(1.0,self.on_timer)</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">do_cb</span>(<span class="params">self, stu</span>):</span><br><span class="line">        <span class="comment"># 解析并输出数据</span></span><br><span class="line">        <span class="variable language_">self</span>.get_logger().info(<span class="string">f&quot;订阅的数据是：name:<span class="subst">&#123;stu.name&#125;</span>; age:<span class="subst">&#123;stu.age&#125;</span>; height:<span class="subst">&#123;stu.height&#125;</span>&quot;</span>)</span><br><span class="line">        </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="comment"># 初始化</span></span><br><span class="line">    rclpy.init()</span><br><span class="line">    <span class="comment"># 创建node</span></span><br><span class="line">    node = Listener(<span class="string">&quot;listener_node_py4&quot;</span>)</span><br><span class="line">    <span class="comment"># 运行</span></span><br><span class="line">    rclpy.spin(node)</span><br><span class="line">    <span class="comment"># 释放资源</span></span><br><span class="line">    rclpy.shutdown()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Blogs</a></li>
+        
+          <li><a href="/categories/">catgories</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">话题通信操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text"></span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&text=ROS2之话题通信"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&is_video=false&description=ROS2之话题通信"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROS2之话题通信&body=Check out this article: http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&name=ROS2之话题通信&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&t=ROS2之话题通信"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    tyfelix
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

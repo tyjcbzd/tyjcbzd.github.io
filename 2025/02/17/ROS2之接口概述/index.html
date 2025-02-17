@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="接口在通信过程中，需要传输数据，就必然涉及到数据载体，也即要以特定格式传输数据。在 ROS2 中，数据载体称之为接口(interfaces)  但是在使用接口之前，需要先弄清楚为什么需要接口？因为虽然ROS2里面存在std_msgs但是也仅仅包括的是下面的基础类别：  1234567 int8, int16, int32, int64 (或者无符号类型: uint*) float32, flo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS2之接口概述">
+<meta property="og:url" content="http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="Tang Yi&#39;s Blog">
+<meta property="og:description" content="接口在通信过程中，需要传输数据，就必然涉及到数据载体，也即要以特定格式传输数据。在 ROS2 中，数据载体称之为接口(interfaces)  但是在使用接口之前，需要先弄清楚为什么需要接口？因为虽然ROS2里面存在std_msgs但是也仅仅包括的是下面的基础类别：  1234567 int8, int16, int32, int64 (或者无符号类型: uint*) float32, flo">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-17T14:12:58.000Z">
+<meta property="article:modified_time" content="2025-02-17T14:17:11.295Z">
+<meta property="article:author" content="tyfelix">
+<meta property="article:tag" content="ROS2">
+<meta property="article:tag" content="机器人">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/chicken.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ROS2之接口概述</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&text=ROS2之接口概述"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&is_video=false&description=ROS2之接口概述"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROS2之接口概述&body=Check out this article: http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&name=ROS2之接口概述&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&t=ROS2之接口概述"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.</span> <span class="toc-text">接口</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ROS2之接口概述
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">tyfelix</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-02-17T14:12:58.000Z" class="dt-published" itemprop="datePublished">2025-02-17</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/ROS2/" rel="tag">ROS2</a>, <a class="p-category" href="/tags/%E6%9C%BA%E5%99%A8%E4%BA%BA/" rel="tag">机器人</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>在通信过程中，需要传输数据，就必然涉及到数据载体，也即要以特定格式传输数据。在 ROS2 中，数据载体称之为接口(interfaces)</p>
+<ul>
+<li>但是在使用接口之前，需要先弄清楚为什么需要接口？因为虽然ROS2里面存在<code>std_msgs</code>但是也仅仅包括的是下面的基础类别：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> int8, int16, int32, int64 (或者无符号类型: uint*)</span><br><span class="line"> float32, float64</span><br><span class="line"> string</span><br><span class="line"> time, duration</span><br><span class="line"> 其他 msg 文件</span><br><span class="line"> 变长数组和定长数组</span><br><span class="line">ROS 中还有一种特殊类型：Header，标头包含时间戳和 ROS2 中常用的坐标帧信息。许多接口文件的第一行包含 Header 标头。</span><br></pre></td></tr></table></figure>
+
+<p>在实际使用的时候，根据任务的不同需求，我们自己来创建和定义自己的数据载体。</p>
+<p>通信时使用的数据载体一般需要使用接口文件定义。常用的接口文件有三种：<code>msg 文件</code>、<code>srv 文件</code>与 <code>action文件</code>(分别对应三种通信方式：话题通信、服务通信和动作通信)。每种文件都可以按照一定格式定义特定数据类型.(简单来说就是使用基本类型以及其他类型（比如输入可能是Image类型，输出是这个Image中人脸的位置）来创建对应的接口文件)的“变量”。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">1.msg 文件：msg 文件是用于定义话题通信中数据载体的接口文件，一个典型的.msg 文件示例如下。</span><br><span class="line">int64 num1</span><br><span class="line">int64 num2</span><br><span class="line"></span><br><span class="line">2.srv 文件</span><br><span class="line">srv 文件是用于定义服务通信中数据载体的接口文件，一个典型的.srv 文件示例如下。</span><br><span class="line">int64 num1</span><br><span class="line">int64 num2</span><br><span class="line">---</span><br><span class="line">int64 sum </span><br><span class="line"></span><br><span class="line">文件中声明的数据被---分割为两部分，上半部分用于声明请求数据，下半部分用于声明响应数据。</span><br><span class="line"></span><br><span class="line">3.action 文件</span><br><span class="line">action 文件使用用于定义动作通信中数据载体的接口文件，一个典型的.action 文件示例如下。</span><br><span class="line">int64 num</span><br><span class="line">---</span><br><span class="line">int64 sum</span><br><span class="line">---</span><br><span class="line">float64 progress </span><br><span class="line">文件中声明的数据被---分割为三部分，上半部分用于声明请求数据，中间部分用于声明响应数据，下半部分用于声明连续反馈数据。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>PS： 在创建接口文件的时候，一般建议创建专门的接口功能包定义接口文件，然后在其他功能包中去依赖这个自定义接口的功能包(需要注意的是，目前为止无法在 Python 功能包中定义接口文件)</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Blogs</a></li>
+        
+          <li><a href="/categories/">catgories</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.</span> <span class="toc-text">接口</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&text=ROS2之接口概述"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&is_video=false&description=ROS2之接口概述"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROS2之接口概述&body=Check out this article: http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&title=ROS2之接口概述"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&name=ROS2之接口概述&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/&t=ROS2之接口概述"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    tyfelix
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

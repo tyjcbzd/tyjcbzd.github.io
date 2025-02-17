@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="ROS2里面的通信方式分为四种：话题通信，服务通信，动作通信以及参数服务。其中动作通信和参数服务是基于话题通信和服务通信的。1. 话题通信（Topic Communication）特点： 单向数据传输：发布方发布数据，订阅方订阅数据。 多对多模型：一个发布者可以同时有多个订阅者，或者一个订阅者可以从多个发布者接收数据。 典型用例：适用于信息更新频繁、实时性要求较高的场景，如传感器数据传输。  例子">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS2学习之通信概述">
+<meta property="og:url" content="http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="Tang Yi&#39;s Blog">
+<meta property="og:description" content="ROS2里面的通信方式分为四种：话题通信，服务通信，动作通信以及参数服务。其中动作通信和参数服务是基于话题通信和服务通信的。1. 话题通信（Topic Communication）特点： 单向数据传输：发布方发布数据，订阅方订阅数据。 多对多模型：一个发布者可以同时有多个订阅者，或者一个订阅者可以从多个发布者接收数据。 典型用例：适用于信息更新频繁、实时性要求较高的场景，如传感器数据传输。  例子">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-17T13:59:57.000Z">
+<meta property="article:modified_time" content="2025-02-17T14:19:02.550Z">
+<meta property="article:author" content="tyfelix">
+<meta property="article:tag" content="ROS2">
+<meta property="article:tag" content="机器人">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/chicken.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>ROS2学习之通信概述</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&text=ROS2学习之通信概述"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&is_video=false&description=ROS2学习之通信概述"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROS2学习之通信概述&body=Check out this article: http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&name=ROS2学习之通信概述&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&t=ROS2学习之通信概述"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ROS2%E9%87%8C%E9%9D%A2%E7%9A%84%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F%E5%88%86%E4%B8%BA%E5%9B%9B%E7%A7%8D%EF%BC%9A%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%EF%BC%8C%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%EF%BC%8C%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%E4%BB%A5%E5%8F%8A%E5%8F%82%E6%95%B0%E6%9C%8D%E5%8A%A1%E3%80%82%E5%85%B6%E4%B8%AD%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%E5%92%8C%E5%8F%82%E6%95%B0%E6%9C%8D%E5%8A%A1%E6%98%AF%E5%9F%BA%E4%BA%8E%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E5%92%8C%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">ROS2里面的通信方式分为四种：话题通信，服务通信，动作通信以及参数服务。其中动作通信和参数服务是基于话题通信和服务通信的。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%EF%BC%88Topic-Communication%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1. 话题通信（Topic Communication）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="toc-number">1.1.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E4%BC%A0%E6%84%9F%E5%99%A8%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="toc-number">1.1.2.</span> <span class="toc-text">例子：机器人传感器数据传输</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%EF%BC%88Service-Communication%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">2. 服务通信（Service Communication）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%9C%BA%E6%A2%B0%E8%87%82%E7%9A%84%E6%8A%93%E5%8F%96"><span class="toc-number">1.2.2.</span> <span class="toc-text">例子：机器人机械臂的抓取</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%EF%BC%88Action-Communication%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">3. 动作通信（Action Communication）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-2"><span class="toc-number">1.3.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%AF%BC%E8%88%AA"><span class="toc-number">1.3.2.</span> <span class="toc-text">例子：机器人导航</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%8F%82%E6%95%B0%E6%9C%8D%E5%8A%A1%EF%BC%88Parameter-Server%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">4. 参数服务（Parameter Server）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-3"><span class="toc-number">1.4.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%AF%BC%E8%88%AA%E4%B8%AD%E6%9B%B4%E6%96%B0%E8%BF%90%E8%A1%8C%E9%80%9F%E5%BA%A6"><span class="toc-number">1.4.2.</span> <span class="toc-text">例子：机器人导航中更新运行速度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.5.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        ROS2学习之通信概述
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">tyfelix</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-02-17T13:59:57.000Z" class="dt-published" itemprop="datePublished">2025-02-17</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/ROS2/" rel="tag">ROS2</a>, <a class="p-category" href="/tags/%E6%9C%BA%E5%99%A8%E4%BA%BA/" rel="tag">机器人</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="ROS2里面的通信方式分为四种：话题通信，服务通信，动作通信以及参数服务。其中动作通信和参数服务是基于话题通信和服务通信的。"><a href="#ROS2里面的通信方式分为四种：话题通信，服务通信，动作通信以及参数服务。其中动作通信和参数服务是基于话题通信和服务通信的。" class="headerlink" title="ROS2里面的通信方式分为四种：话题通信，服务通信，动作通信以及参数服务。其中动作通信和参数服务是基于话题通信和服务通信的。"></a>ROS2里面的通信方式分为四种：话题通信，服务通信，动作通信以及参数服务。其中动作通信和参数服务是基于话题通信和服务通信的。</h2><h3 id="1-话题通信（Topic-Communication）"><a href="#1-话题通信（Topic-Communication）" class="headerlink" title="1. 话题通信（Topic Communication）"></a><strong>1. 话题通信（Topic Communication）</strong></h3><h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a><strong>特点</strong>：</h4><ul>
+<li><strong>单向数据传输</strong>：发布方发布数据，订阅方订阅数据。</li>
+<li><strong>多对多模型</strong>：一个发布者可以同时有多个订阅者，或者一个订阅者可以从多个发布者接收数据。</li>
+<li><strong>典型用例</strong>：适用于信息更新频繁、实时性要求较高的场景，如传感器数据传输。</li>
+</ul>
+<h4 id="例子：机器人传感器数据传输"><a href="#例子：机器人传感器数据传输" class="headerlink" title="例子：机器人传感器数据传输"></a><strong>例子</strong>：机器人传感器数据传输</h4><blockquote>
+<p><strong>场景</strong>：一个移动机器人需要实时获取其环境信息（例如激光雷达扫描数据），以进行地图构建或避障。</p>
+</blockquote>
+<ul>
+<li>发布者：激光雷达节点将扫描数据发布到某个话题 <code>laser_scan</code>。</li>
+<li>订阅者：导航模块订阅 <code>laser_scan</code>，用于对数据进行实时处理并进行路径规划。</li>
+</ul>
+<p><strong>流程图</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">激光雷达节点（发布者）</span><br><span class="line">    ↓</span><br><span class="line">   话题：/laser_scan</span><br><span class="line">    ↓</span><br><span class="line">导航模块（订阅者）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-服务通信（Service-Communication）"><a href="#2-服务通信（Service-Communication）" class="headerlink" title="2. 服务通信（Service Communication）"></a><strong>2. 服务通信（Service Communication）</strong></h3><h4 id="特点：-1"><a href="#特点：-1" class="headerlink" title="特点："></a><strong>特点</strong>：</h4><ul>
+<li><strong>请求-响应模式</strong>：客户端发送请求数据，服务端响应结果。</li>
+<li><strong>阻塞式通信</strong>：客户端在请求响应完成之前无法继续执行其他任务。</li>
+<li><strong>典型用例</strong>：适用于短时间完成的任务或简单的请求，例如查询系统状态、执行简单指令的操作。</li>
+</ul>
+<h4 id="例子：机器人机械臂的抓取"><a href="#例子：机器人机械臂的抓取" class="headerlink" title="例子：机器人机械臂的抓取"></a><strong>例子</strong>：机器人机械臂的抓取</h4><blockquote>
+<p><strong>场景</strong>：机械臂需要移动到特定位置抓取物体，当用户发送抓取请求时，抓取操作立即执行并返回是否成功。</p>
+</blockquote>
+<ul>
+<li>客户端：用户界面会发送一个抓取目标位置的请求。</li>
+<li>服务端：抓取模块执行抓取操作，并返回抓取是否成功的结果，例如 <code>&#123; success: true, message: &quot;Object grabbed successfully.&quot; &#125;</code>。</li>
+</ul>
+<p><strong>流程图</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">用户界面（客户端）</span><br><span class="line">    → 请求：目标位置</span><br><span class="line">        ↓</span><br><span class="line">    服务端：抓取模块</span><br><span class="line">        ↑</span><br><span class="line">  响应：抓取成功/失败</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-动作通信（Action-Communication）"><a href="#3-动作通信（Action-Communication）" class="headerlink" title="3. 动作通信（Action Communication）"></a><strong>3. 动作通信（Action Communication）</strong></h3><h4 id="特点：-2"><a href="#特点：-2" class="headerlink" title="特点："></a><strong>特点</strong>：</h4><ul>
+<li><strong>异步通信</strong>：任务执行过程支持定期反馈，同时返回最终执行结果。</li>
+<li><strong>连续反馈</strong>：客户端能够实时获知执行进度，支持中断任务。</li>
+<li><strong>典型用例</strong>：适用于耗时任务的执行，例如机器人导航到目标点、机械臂搬运任务等。</li>
+</ul>
+<h4 id="例子：机器人导航"><a href="#例子：机器人导航" class="headerlink" title="例子：机器人导航"></a><strong>例子</strong>：机器人导航</h4><blockquote>
+<p>关于 action 通信，以导航场景为例子：机器人导航到某个目标点,此过程需要一个节点 A 发布目标信息，然后一个节点 B 接收到请求并控制移动，最终响应目标达成状态信息。这看起来好像是服务通信实现，因为需求中要 A 发送目标，B 执行并返回结果，这是一个典型的基于请求响应的应答模式，不过，如果只是使用基本的服务通信实现，存在一个问题：导航是一个过程，是耗时操作，<strong>如果使用服务通信，那么只有在导航结束时，才会产生响应结果，而在导航过程中，节点 A 是不会获取到任何反馈的，从而可能出现程序”假死”的现象，（程序假死 是指程序在运行过程中看似卡住、不响应用户输入或无法继续执行，但实际上程序并未真正崩溃或停止，而是因为某些原因导致其进入了一种“停滞”状态。这种状态下，程序可能仍在后台运行未完成的任务，或者等待某些条件满足以继续执行，但对外部表现为“无响应”。）</strong> 过程的不可控意味着不良的用户体验，以及逻辑处理的缺陷(比如:导航中止的需求无法实现)。更合理的方案应该是:<strong>导航过程中，可以连续反馈当前机器人状态信息，当导航终止时，再返回最终的执行结果</strong>。</p>
+</blockquote>
+<hr>
+<h3 id="4-参数服务（Parameter-Server）"><a href="#4-参数服务（Parameter-Server）" class="headerlink" title="4. 参数服务（Parameter Server）"></a><strong>4. 参数服务（Parameter Server）</strong></h3><h4 id="特点：-3"><a href="#特点：-3" class="headerlink" title="特点："></a><strong>特点</strong>：</h4><ul>
+<li><strong>共享通信模型</strong>：服务端维护共享参数数据，客户端可以查询和修改这些参数。</li>
+<li><strong>中心化管理</strong>：所有的参数信息可以集中存储和管理，便于节点之间的动态数据共享。</li>
+<li><strong>典型用例</strong>：适用于频繁需要调整的全局配置参数或机器人状态信息，例如控制器的增益、传感器的标定值等。</li>
+</ul>
+<h4 id="例子：机器人导航中更新运行速度"><a href="#例子：机器人导航中更新运行速度" class="headerlink" title="例子：机器人导航中更新运行速度"></a><strong>例子</strong>：机器人导航中更新运行速度</h4><blockquote>
+<p><strong>场景</strong>：用户调整机器人导航中的运行速度，并动态修改导航参数，让机器人行驶更快或更慢。</p>
+</blockquote>
+<ul>
+<li>参数服务存储：存储当前导航的线性速度和角速度，以便所有相关模块能访问。</li>
+<li>客户端操作：用户可以访问这些参数（查询或修改），导航模块会读取新的速度参数并更新运动控制。（有点类似于写后端的时候的get、set方法）</li>
+</ul>
+<p><strong>参数服务中的数据示例</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ROS Parameter Server 示例数据</span></span><br><span class="line">/navigation/max_linear_velocity: 1.0  <span class="comment"># 最大线速度 (m/s)</span></span><br><span class="line">/navigation/max_angular_velocity: 0.5  <span class="comment"># 最大角速度 (rad/s)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>操作流程</strong>：</p>
+<ol>
+<li>用户通过客户端修改导航速度：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rosparam <span class="built_in">set</span> /navigation/max_linear_velocity 1.5  <span class="comment"># 动态调整速度为 1.5m/s</span></span><br></pre></td></tr></table></figure></li>
+<li>导航模块会实时读取参数 <code>/navigation/max_linear_velocity</code> 并更新速度：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导航模块读取速度参数</span></span><br><span class="line">max_linear_velocity = rospy.get_param(<span class="string">&#x27;/navigation/max_linear_velocity&#x27;</span>, <span class="number">1.0</span>)</span><br><span class="line">control_robot_speed(max_linear_velocity)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>流程图</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">用户界面（速度控制参数修改）</span><br><span class="line">    ↕ 参数读写操作</span><br><span class="line">参数服务器：/navigation/max_linear_velocity</span><br><span class="line">    ↓</span><br><span class="line">导航模块：动态读取参数，更新控制逻辑</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><table>
+<thead>
+<tr>
+<th>通信方式</th>
+<th>特点</th>
+<th>示例场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>话题通信</strong></td>
+<td>单向多对多，实时传输信息</td>
+<td>激光雷达数据传输</td>
+</tr>
+<tr>
+<td><strong>服务通信</strong></td>
+<td>请求-响应模式，适合短时任务</td>
+<td>请求机械臂抓取物体</td>
+</tr>
+<tr>
+<td><strong>动作通信</strong></td>
+<td>带有反馈的请求-响应模式，适合耗时任务</td>
+<td>导航到目标点</td>
+</tr>
+<tr>
+<td><strong>参数服务</strong></td>
+<td>中心化的参数共享与管理，适用于动态参数调整</td>
+<td>动态调整机器人速度</td>
+</tr>
+</tbody></table>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Blogs</a></li>
+        
+          <li><a href="/categories/">catgories</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ROS2%E9%87%8C%E9%9D%A2%E7%9A%84%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F%E5%88%86%E4%B8%BA%E5%9B%9B%E7%A7%8D%EF%BC%9A%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%EF%BC%8C%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%EF%BC%8C%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%E4%BB%A5%E5%8F%8A%E5%8F%82%E6%95%B0%E6%9C%8D%E5%8A%A1%E3%80%82%E5%85%B6%E4%B8%AD%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%E5%92%8C%E5%8F%82%E6%95%B0%E6%9C%8D%E5%8A%A1%E6%98%AF%E5%9F%BA%E4%BA%8E%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E5%92%8C%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%E7%9A%84%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">ROS2里面的通信方式分为四种：话题通信，服务通信，动作通信以及参数服务。其中动作通信和参数服务是基于话题通信和服务通信的。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%EF%BC%88Topic-Communication%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">1. 话题通信（Topic Communication）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="toc-number">1.1.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E4%BC%A0%E6%84%9F%E5%99%A8%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="toc-number">1.1.2.</span> <span class="toc-text">例子：机器人传感器数据传输</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E9%80%9A%E4%BF%A1%EF%BC%88Service-Communication%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">2. 服务通信（Service Communication）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E6%9C%BA%E6%A2%B0%E8%87%82%E7%9A%84%E6%8A%93%E5%8F%96"><span class="toc-number">1.2.2.</span> <span class="toc-text">例子：机器人机械臂的抓取</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8A%A8%E4%BD%9C%E9%80%9A%E4%BF%A1%EF%BC%88Action-Communication%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">3. 动作通信（Action Communication）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-2"><span class="toc-number">1.3.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%AF%BC%E8%88%AA"><span class="toc-number">1.3.2.</span> <span class="toc-text">例子：机器人导航</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%8F%82%E6%95%B0%E6%9C%8D%E5%8A%A1%EF%BC%88Parameter-Server%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">4. 参数服务（Parameter Server）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-3"><span class="toc-number">1.4.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%EF%BC%9A%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%AF%BC%E8%88%AA%E4%B8%AD%E6%9B%B4%E6%96%B0%E8%BF%90%E8%A1%8C%E9%80%9F%E5%BA%A6"><span class="toc-number">1.4.2.</span> <span class="toc-text">例子：机器人导航中更新运行速度</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.5.</span> <span class="toc-text">总结</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&text=ROS2学习之通信概述"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&is_video=false&description=ROS2学习之通信概述"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=ROS2学习之通信概述&body=Check out this article: http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&title=ROS2学习之通信概述"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&name=ROS2学习之通信概述&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/&t=ROS2学习之通信概述"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    tyfelix
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

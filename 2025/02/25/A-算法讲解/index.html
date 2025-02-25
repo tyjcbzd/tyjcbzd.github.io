@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="什么是A*算法？A-Star算法是一种用于图搜索和路径规划的启发式搜索算法。它可以在一个图结构中找到从起点到目标点的最低成本路径。A_算法被广泛应用于机器人导航、游戏开发以及解决最短路径等问题。  在学习 A* 算法之前，需要了解 贪婪最佳优先搜索算法 和 Dijkstra 方法的基本思想，以及它们各自的优缺点。同时，还需要理解为什么 A* 算法能够结合两种方法的优点，并做到既高效又能保证找到最">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A*算法讲解">
+<meta property="og:url" content="http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Tang Yi&#39;s Blog">
+<meta property="og:description" content="什么是A*算法？A-Star算法是一种用于图搜索和路径规划的启发式搜索算法。它可以在一个图结构中找到从起点到目标点的最低成本路径。A_算法被广泛应用于机器人导航、游戏开发以及解决最短路径等问题。  在学习 A* 算法之前，需要了解 贪婪最佳优先搜索算法 和 Dijkstra 方法的基本思想，以及它们各自的优缺点。同时，还需要理解为什么 A* 算法能够结合两种方法的优点，并做到既高效又能保证找到最">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-25T17:24:22.000Z">
+<meta property="article:modified_time" content="2025-02-25T18:45:25.818Z">
+<meta property="article:author" content="tyfelix">
+<meta property="article:tag" content="全局路径规划">
+<meta property="article:tag" content="基于图搜索的路径规划">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/chicken.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>A*算法讲解</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&text=A*算法讲解"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&is_video=false&description=A*算法讲解"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=A*算法讲解&body=Check out this article: http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&name=A*算法讲解&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&t=A*算法讲解"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%B4%AA%E5%A9%AA%E6%9C%80%E4%BD%B3%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95-Greedy-Best-First-Search"><span class="toc-number">1.</span> <span class="toc-text">1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3"><span class="toc-number">1.1.</span> <span class="toc-text">基本思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">1.4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="toc-number">1.5.</span> <span class="toc-text">举例说明</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Dijkstra-%E7%AE%97%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">2. Dijkstra 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3-1"><span class="toc-number">2.1.</span> <span class="toc-text">基本思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0-1"><span class="toc-number">2.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">2.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="toc-number">2.4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B"><span class="toc-number">2.5.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-A-%E7%AE%97%E6%B3%95%EF%BC%9A%E7%BB%BC%E5%90%88%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%B3%95%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">3.</span> <span class="toc-text">3. A* 算法：综合两种方法的改进</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="toc-number">3.1.</span> <span class="toc-text">核心思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0-2"><span class="toc-number">3.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-2"><span class="toc-number">3.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-2"><span class="toc-number">3.4.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0"><span class="toc-number">4.</span> <span class="toc-text">4. 启发式函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0"><span class="toc-number">5.</span> <span class="toc-text">常见的启发式函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB%EF%BC%88Manhattan-Distance%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">1. 曼哈顿距离（Manhattan Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="toc-number">5.1.1.</span> <span class="toc-text">示例：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%BD%93%E5%89%8D%E4%BD%8D%E7%BD%AE%E6%98%AF-1-1-%EF%BC%8C%E7%9B%AE%E6%A0%87%E7%82%B9%E6%98%AF-4-3-%EF%BC%8C%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB%E4%B8%BA%EF%BC%9A-h-n-1-4-1-3-3-2-5"><span class="toc-number"></span> <span class="toc-text">如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：$${h(n) &#x3D; |1-4| + |1-3| &#x3D; 3 + 2 &#x3D; 5}$$</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB%EF%BC%88Euclidean-Distance%EF%BC%89"><span class="toc-number">0.1.</span> <span class="toc-text">2. 欧几里得距离（Euclidean Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-1"><span class="toc-number">0.1.1.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%AF%B9%E8%A7%92%E8%B7%9D%E7%A6%BB%EF%BC%88Diagonal-Distance%EF%BC%89"><span class="toc-number">0.2.</span> <span class="toc-text">3. 对角距离（Diagonal Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-2"><span class="toc-number">0.2.1.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%8A%A0%E6%9D%83%E5%90%AF%E5%8F%91%E5%BC%8F%EF%BC%88Weighted-Heuristic%EF%BC%89"><span class="toc-number">0.3.</span> <span class="toc-text">4. 加权启发式（Weighted Heuristic）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-3"><span class="toc-number">0.3.1.</span> <span class="toc-text">示例：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%87%E5%A6%82%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB%E4%B8%BA-10%EF%BC%8C%E9%80%89%E6%8B%A9-w-1-5-%EF%BC%8C%E5%88%99%EF%BC%9A-h-n-w-cdot-h-text-euclidean-1-5-cdot-10-15"><span class="toc-number"></span> <span class="toc-text">假如欧几里得距离为 10，选择 ( w&#x3D;1.5 )，则：$${h(n) &#x3D; w \cdot h_{\text{euclidean}} &#x3D; 1.5 \cdot 10 &#x3D; 15}$$</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E9%99%85%E4%BD%9C%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">二、启发式函数的实际作用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%8C%9C%E6%B5%8B%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%8E%A5%E8%BF%91%E7%9B%AE%E6%A0%87"><span class="toc-number">1.1.</span> <span class="toc-text">1. 猜测如何快速接近目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%97%A0%E9%9A%9C%E7%A2%8D%E5%81%87%E8%AE%BE%E4%B8%8B%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">2. 无障碍假设下的启发式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%A4%AA%E4%BD%8E%E4%BC%B0%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">3. 为什么不能太低估？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E7%9A%84%E8%A6%81%E6%B1%82"><span class="toc-number">1.4.</span> <span class="toc-text">启发式函数的要求</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%E6%97%B6%E7%9A%84%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE"><span class="toc-number">2.</span> <span class="toc-text">三、实际应用时的选择建议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%AF%94%E8%BE%83%E4%B8%89%E7%A7%8D%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">5. 比较三种算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E7%A4%BA%E4%BE%8B%EF%BC%9A%E7%BD%91%E6%A0%BC%E5%9C%B0%E5%9B%BE%E4%B8%8A%E7%9A%84%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92"><span class="toc-number">4.</span> <span class="toc-text">6. 示例：网格地图上的路径规划</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        A*算法讲解
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">tyfelix</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-02-25T17:24:22.000Z" class="dt-published" itemprop="datePublished">2025-02-25</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">路径规划</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" rel="tag">全局路径规划</a>, <a class="p-category" href="/tags/%E5%9F%BA%E4%BA%8E%E5%9B%BE%E6%90%9C%E7%B4%A2%E7%9A%84%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" rel="tag">基于图搜索的路径规划</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <ul>
+<li>什么是<code>A*</code>算法？A-Star算法是一种用于图搜索和路径规划的启发式搜索算法。它可以在一个图结构中找到从起点到目标点的最低成本路径。A_算法被广泛应用于机器人导航、游戏开发以及解决最短路径等问题。</li>
+</ul>
+<p>在学习 <code>A*</code> 算法之前，需要了解 <strong>贪婪最佳优先搜索算法</strong> 和 <strong>Dijkstra</strong> 方法的基本思想，以及它们各自的优缺点。同时，还需要理解为什么 <code>A*</code> 算法能够结合两种方法的优点，并做到既高效又能保证找到最优解。</p>
+<h3 id="1-贪婪最佳优先搜索算法-Greedy-Best-First-Search"><a href="#1-贪婪最佳优先搜索算法-Greedy-Best-First-Search" class="headerlink" title="1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)"></a><strong>1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)</strong></h3><h4 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a><strong>基本思想</strong></h4><ul>
+<li>贪婪算法是一种以局部最优解为原则的搜索方式。</li>
+<li>在每一步决策时，优先选择离目标最近的节点，期望快速逼近目标点。</li>
+<li>使用<strong>启发式函数 (h(n))</strong> 来估计当前节点 (n) 到目标节点的距离。</li>
+<li>贪婪算法的优先级完全由 (h(n)) 决定，而不考虑已走路径的代价 (g(n))。</li>
+</ul>
+<h4 id="评价函数"><a href="#评价函数" class="headerlink" title="评价函数"></a><strong>评价函数</strong></h4><p>贪婪算法的评价函数为：<br>$${f(n) &#x3D; h(n)}$$</p>
+<ul>
+<li>${h(n)}$：当前节点 ${n}$到目标节点的<strong>估计代价</strong>，通常是基于启发式计算的距离（如欧几里得距离、曼哈顿距离等）。</li>
+</ul>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a><strong>优点</strong></h4><ul>
+<li><strong>速度快</strong>：直接优先选择离目标最近的节点，能快速找到接近目标的路径，计算效率较高。</li>
+<li><strong>简单易实现</strong>：只需要维护每个节点的启发式函数 ${h(n)}$ 值。</li>
+</ul>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a><strong>缺点</strong></h4><ul>
+<li><strong>有可能无法找到最优解</strong>：因为只考虑了目标的方向，而忽略了当前路径的总代价 ${g(n)}$。路径可能会绕远路。</li>
+<li><strong>容易陷入局部最优</strong>：如果当前节点的 ${h(n)}$ 是最低的，但如果途中存在障碍，可能会使算法停滞。</li>
+</ul>
+<h4 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a><strong>举例说明</strong></h4><ul>
+<li>假设地图中有一个从起点 (A) 到目标点 (B) 的任务，中间存在一个障碍物墙。</li>
+<li>贪婪算法可能会沿着直线接近目标点 (B)，但由于障碍物的存在，算法可能会长时间绕不开墙障碍，甚至陷入死锁。</li>
+</ul>
+<hr>
+<h3 id="2-Dijkstra-算法"><a href="#2-Dijkstra-算法" class="headerlink" title="2. Dijkstra 算法"></a><strong>2. Dijkstra 算法</strong></h3><h4 id="基本思想-1"><a href="#基本思想-1" class="headerlink" title="基本思想"></a><strong>基本思想</strong></h4><ul>
+<li>Dijkstra 是一种逐层扩展探索的算法，在每一步都优先选择<strong>当前路径代价最小</strong>的节点。</li>
+<li>与贪婪算法不同，它完全不考虑目标点的位置，而是从起点出发，逐一扩展所有可能的路径，最终保证找到的是<strong>全局最优路径</strong>。</li>
+</ul>
+<h4 id="评价函数-1"><a href="#评价函数-1" class="headerlink" title="评价函数"></a><strong>评价函数</strong></h4><p>它的评价函数为：<br>$${f(n) &#x3D; g(n)}$$</p>
+<ul>
+<li>${g(n)}$：从起点到当前节点  ${n}$ 的路径代价。通常表示路径长度（距离）或者实际行走的代价。</li>
+</ul>
+<h4 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a><strong>优点</strong></h4><ul>
+<li><strong>能够找到最优解</strong>：因为它以 ${g(n)}$为依据逐层扩展，最终能遍历所有可能的解空间，找到路径代价最小的解。</li>
+<li><strong>具有稳定性</strong>：无论在什么设置下，总能保证路径是最优路径。</li>
+</ul>
+<h4 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a><strong>缺点</strong></h4><ul>
+<li><strong>计算开销较大</strong>：Dijkstra 必须访问所有可能的节点才能确定最终解，因此在较大的图中效率较低。</li>
+<li><strong>不直观</strong>：算法并不关注目标点的位置，可能会遍历较远或无关的地方，增加开销。</li>
+</ul>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a><strong>举例</strong></h4><ul>
+<li>假设从 (A) 到 (B) 的任务，中途有多个障碍物。</li>
+<li>即使目标点 (B) 离当前节点很近，Dijkstra 同样可能先探索远离 (B) 的其他可能路径。因此它的效率不如贪婪算法。</li>
+</ul>
+<hr>
+<h3 id="3-A-算法：综合两种方法的改进"><a href="#3-A-算法：综合两种方法的改进" class="headerlink" title="3. A* 算法：综合两种方法的改进"></a><strong>3. <code>A*</code> 算法：综合两种方法的改进</strong></h3><h4 id="核心思路"><a href="#核心思路" class="headerlink" title="核心思路"></a><strong>核心思路</strong></h4><p>A* 算法结合了贪婪算法和 Dijkstra 的优点，在每一步选择节点时，同时考虑：</p>
+<ol>
+<li><strong>当前节点到起点的路径代价  ${g(n)}$</strong>（确保路径是最优的）。</li>
+<li><strong>当前节点到目标的估计代价  ${h(n)}$</strong>（确保朝目标方向前进）。</li>
+</ol>
+<p>通过这两项的加权和，<code>A*</code> 算法实现了兼顾效率和全局最优的平衡。</p>
+<h4 id="评价函数-2"><a href="#评价函数-2" class="headerlink" title="评价函数"></a><strong>评价函数</strong></h4><p>A* 算法的评价函数为：<br>$${f(n) &#x3D; g(n) + h(n)}$$</p>
+<ul>
+<li><strong>${g(n)}$</strong>：从起点到当前节点的实际路径代价。这部分使得 <code>A* </code>能够像 <code>Dijkstra</code>一样权衡整体路径的代价。</li>
+<li><strong>${h(n)}$</strong>：从当前节点到目标节点的启发式估计代价。这部分使得 <code>A* </code>有方向性，更快速地逼近目标。</li>
+</ul>
+<h4 id="优点-2"><a href="#优点-2" class="headerlink" title="优点"></a><strong>优点</strong></h4><ul>
+<li><strong>保证最优解</strong>：如果${g(n)}$ 是<strong>可接受估计函数（admissible heuristic）</strong>，<code>A*</code> 能够保证找到最优路径。</li>
+<li><strong>效率高</strong>：相比 Dijkstra，<code>A* </code>加入了启发式函数 (h(n))，减少了不必要的节点遍历。</li>
+<li><strong>可以根据启发式函数调整</strong>：灵活地选择不同的启发式函数适配不同的问题。</li>
+</ul>
+<h4 id="缺点-2"><a href="#缺点-2" class="headerlink" title="缺点"></a><strong>缺点</strong></h4><ul>
+<li><strong>依赖启发式函数的选择</strong>：启发式函数设计不佳（如估计值过大或偏差）会导致准确性或效率下降。</li>
+<li><strong>开销不小</strong>：虽然比 Dijkstra 更高效，但在某些复杂情况下也需要遍历大量节点，依旧存在性能瓶颈。</li>
+</ul>
+<hr>
+<h3 id="4-启发式函数"><a href="#4-启发式函数" class="headerlink" title="4. 启发式函数"></a><strong>4. 启发式函数</strong></h3><p>在 A* 算法中，启发式函数 ${h(n)}$ 的选择至关重要。但是这存在一个问题：<strong>在不知道障碍物的情况下，如何设计启发式函数</strong>，或者说，如何去“猜测”到目标点的代价。</p>
+<p><strong>关键思路：尽量简单且高效</strong><br>启发式函数只是一个<strong>估计</strong>，它不需要绝对准确，但需要具有一定的指导性。它的目标是为搜索提供方向，使你尽可能接近目标（在路径规划中叫“引导搜索过程”）。</p>
+<h3 id="常见的启发式函数"><a href="#常见的启发式函数" class="headerlink" title="常见的启发式函数"></a>常见的启发式函数</h3><p>在没有障碍物或不知道障碍物分布的情况下，可以使用纯几何信息来设计启发式函数。以下是一些常见的几何估计方式：</p>
+<h4 id="1-曼哈顿距离（Manhattan-Distance）"><a href="#1-曼哈顿距离（Manhattan-Distance）" class="headerlink" title="1. 曼哈顿距离（Manhattan Distance）"></a>1. <strong>曼哈顿距离（Manhattan Distance）</strong></h4><ul>
+<li><p><strong>适用场景</strong>：当只能水平或垂直移动时，比如你在用栅格地图，且每一步只能沿网格的水平方向或垂直方向走。</p>
+</li>
+<li><p><strong>计算公式</strong>：<br>$${ h(n) &#x3D; |x_{\text{current}} - x_{\text{goal}}| + |y_{\text{current}} - y_{\text{goal}}|}$$</p>
+</li>
+<li><p><strong>特点</strong>：它总是估计当前位置和目标点之间的路径步数，忽略了对角移动和障碍物。</p>
+</li>
+</ul>
+<h5 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h5><h2 id="如果当前位置是-1-1-，目标点是-4-3-，曼哈顿距离为：-h-n-1-4-1-3-3-2-5"><a href="#如果当前位置是-1-1-，目标点是-4-3-，曼哈顿距离为：-h-n-1-4-1-3-3-2-5" class="headerlink" title="如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：$${h(n) &#x3D; |1-4| + |1-3| &#x3D; 3 + 2 &#x3D; 5}$$"></a>如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：<br>$${h(n) &#x3D; |1-4| + |1-3| &#x3D; 3 + 2 &#x3D; 5}$$</h2><h4 id="2-欧几里得距离（Euclidean-Distance）"><a href="#2-欧几里得距离（Euclidean-Distance）" class="headerlink" title="2. 欧几里得距离（Euclidean Distance）"></a>2. <strong>欧几里得距离（Euclidean Distance）</strong></h4><ul>
+<li><strong>适用场景</strong>：当机器人或者实体可以移动到任何方向（包括对角线）时，比如让机器人沿直线移动。</li>
+<li><strong>计算公式</strong>：<br>$${<br> h(n) &#x3D; \sqrt{(x_{\text{current}} - x_{\text{goal}})^2 + (y_{\text{current}} - y_{\text{goal}})^2}<br>}$$</li>
+<li><strong>特点</strong>：<ul>
+<li>欧几里得距离给出当前位置到目标点的物理直线距离，因此在无障碍物场景中是最优估计。</li>
+<li>它不关心环境中的障碍物，但能提供“直线方向”的引导。</li>
+</ul>
+</li>
+</ul>
+<h5 id="示例：-1"><a href="#示例：-1" class="headerlink" title="示例："></a>示例：</h5><p>当前位置 ( 1, 1 )，目标点 ( 4, 3 )，欧几里得距离：<br>$${<br>h(n) &#x3D; \sqrt{(1-4)^2 + (1-3)^2} &#x3D; \sqrt{9 + 4} &#x3D; \sqrt{13} \approx 3.6<br>}$$</p>
+<hr>
+<h4 id="3-对角距离（Diagonal-Distance）"><a href="#3-对角距离（Diagonal-Distance）" class="headerlink" title="3. 对角距离（Diagonal Distance）"></a>3. <strong>对角距离（Diagonal Distance）</strong></h4><ul>
+<li><strong>适用场景</strong>：适合栅格地图机器人能沿对角方向移动，同时垂直&#x2F;水平&#x2F;对角线步长不同的场景。</li>
+<li><strong>计算公式</strong>：<br>$${<br>h(n) &#x3D; D_{\text{straight}} \times (\Delta x + \Delta y) + (D_{\text{diagonal}} - 2 \times D_{\text{straight}}) \times \text{min}(\Delta x, \Delta y)<br>}$$<br>其中：<ul>
+<li>${\Delta x &#x3D; |x_{\text{current}} - x_{\text{goal}}|}$</li>
+<li>${\Delta y &#x3D; |y_{\text{current}} - y_{\text{goal}}|}$</li>
+<li>${D_{\text{straight}}}$：代表水平&#x2F;垂直移动代价（常常设为1）。</li>
+<li>${D_{\text{diagonal}}}$：代表对角移动代价（常常设为 ${\sqrt{2}}$）。</li>
+</ul>
+</li>
+<li><strong>特点</strong>：<ul>
+<li>它类似欧几里得距离的简化版本，但是使用加法代替平方根计算，更快速。</li>
+<li>在环境允许对角线移动的情况下是一个优秀的估计方法。</li>
+</ul>
+</li>
+</ul>
+<h5 id="示例：-2"><a href="#示例：-2" class="headerlink" title="示例："></a>示例：</h5><p>当前位置 ( (1, 1) )，目标点 ( (4, 3) )，假设 ( D_{\text{straight}} &#x3D; 1 )，( D_{\text{diagonal}} &#x3D; \sqrt{2} )：<br>$${<br>h(n) &#x3D; 1 \times (3+2) + (\sqrt{2} - 2 \times 1) \times \min(3, 2) &#x3D; 5 + (\sqrt{2} - 2) \times 2<br>}$$</p>
+<hr>
+<h4 id="4-加权启发式（Weighted-Heuristic）"><a href="#4-加权启发式（Weighted-Heuristic）" class="headerlink" title="4. 加权启发式（Weighted Heuristic）"></a>4. <strong>加权启发式（Weighted Heuristic）</strong></h4><ul>
+<li><strong>适用场景</strong>：当知道  ${h(n)}$  可能偏低而希望加快算法速度时，可以引入权重  w ：<br>$${<br>  h(n) &#x3D; w \cdot \text{启发式方法}<br>  }$$<ul>
+<li>如果 ( w&gt;1 )，启发式估计会更加“激进”，算法速度更快但可能牺牲最优解。</li>
+<li>如果 ( w&lt;1 )，启发式估计更保守，但解会更准确。</li>
+</ul>
+</li>
+</ul>
+<h5 id="示例：-3"><a href="#示例：-3" class="headerlink" title="示例："></a>示例：</h5><h2 id="假如欧几里得距离为-10，选择-w-1-5-，则：-h-n-w-cdot-h-text-euclidean-1-5-cdot-10-15"><a href="#假如欧几里得距离为-10，选择-w-1-5-，则：-h-n-w-cdot-h-text-euclidean-1-5-cdot-10-15" class="headerlink" title="假如欧几里得距离为 10，选择 ( w&#x3D;1.5 )，则：$${h(n) &#x3D; w \cdot h_{\text{euclidean}} &#x3D; 1.5 \cdot 10 &#x3D; 15}$$"></a>假如欧几里得距离为 10，选择 ( w&#x3D;1.5 )，则：<br>$${<br>h(n) &#x3D; w \cdot h_{\text{euclidean}} &#x3D; 1.5 \cdot 10 &#x3D; 15<br>}$$</h2><h3 id="二、启发式函数的实际作用"><a href="#二、启发式函数的实际作用" class="headerlink" title="二、启发式函数的实际作用"></a><strong>二、启发式函数的实际作用</strong></h3><h4 id="1-猜测如何快速接近目标"><a href="#1-猜测如何快速接近目标" class="headerlink" title="1. 猜测如何快速接近目标"></a><strong>1. 猜测如何快速接近目标</strong></h4><p>启发式函数不需要考虑障碍物，它只是用来让算法知道“往哪个方向走得更接近目标”。</p>
+<h4 id="2-无障碍假设下的启发式"><a href="#2-无障碍假设下的启发式" class="headerlink" title="2. 无障碍假设下的启发式"></a><strong>2. 无障碍假设下的启发式</strong></h4><p>在没有障碍物时，最优的路径是直线路径（例如欧几里得距离）。即使有障碍物，启发式函数依然提供了一个大致方向，但会根据代价函数 ( g(n) ) 一步步调整路径。</p>
+<h4 id="3-为什么不能太低估？"><a href="#3-为什么不能太低估？" class="headerlink" title="3. 为什么不能太低估？"></a><strong>3. 为什么不能太低估？</strong></h4><p>启发式函数如果估计过低，算法会更倾向于穷尽搜索，类似于 Dijkstra 算法，效率较低。因此，启发式函数应尽可能接近实际代价，但不得过高（否则可能找不到最优解）。**</p>
+<h4 id="启发式函数的要求"><a href="#启发式函数的要求" class="headerlink" title="启发式函数的要求"></a><strong>启发式函数的要求</strong></h4><ol>
+<li><strong>可接受性（Admissible）</strong>：${h(n)}$ 永远不超过当前节点到目标节点的真实最优代价。</li>
+<li><strong>一致性（Consistent &#x2F; Monotone）</strong>：对于任意两个相邻节点 ${(n, n’)}$，满足：<br>$${<br>h(n) \leq c(n, n’) + h(n’)<br>}$$</li>
+</ol>
+<p>其中 ${c(n, n’)}$ 是从 (n) 到 (n’) 的代价）<br>满足这两个条件时，A* 能够保证找到全局最优解。</p>
+<hr>
+<h3 id="三、实际应用时的选择建议"><a href="#三、实际应用时的选择建议" class="headerlink" title="三、实际应用时的选择建议"></a><strong>三、实际应用时的选择建议</strong></h3><ol>
+<li><strong>水平方向和垂直方向移动</strong>：<ul>
+<li><strong>曼哈顿距离</strong>是最常用的启发式。</li>
+<li>适用于简单的 2D 栅格地图。</li>
+</ul>
+</li>
+<li><strong>对角线和任意方向移动</strong>：<ul>
+<li><strong>欧几里得距离</strong>是物理意义上最优的距离估计。</li>
+<li>更适用于机器人路径规划或飞行器导航。</li>
+</ul>
+</li>
+<li><strong>复杂地图权重调整</strong>：<ul>
+<li>使用启发式权重 ( w ) 来控制搜索效率和解的质量。</li>
+</ul>
+</li>
+<li><strong>动态启发式调整</strong>（高级场景）：<ul>
+<li>在搜索路径的过程中，动态更新 ( h(n) ) 以适应环境变化。例如，当检测到有障碍物时，切换策略。</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-比较三种算法"><a href="#5-比较三种算法" class="headerlink" title="5. 比较三种算法"></a><strong>5. 比较三种算法</strong></h3><table>
+<thead>
+<tr>
+<th>算法</th>
+<th>优先选择考虑</th>
+<th>是否能找到最优解</th>
+<th>假如图较大时效率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>贪婪最佳优先搜索</td>
+<td>距离目标点最近的节点</td>
+<td>否</td>
+<td>比较高</td>
+</tr>
+<tr>
+<td>Dijkstra</td>
+<td>距离起点代价最小的节点</td>
+<td>是</td>
+<td>低</td>
+</tr>
+<tr>
+<td>A*</td>
+<td>综合起点和目标的节点</td>
+<td>是</td>
+<td>中等偏高</td>
+</tr>
+</tbody></table>
+<p><strong>小结</strong>：</p>
+<ul>
+<li>贪婪搜索速度快但无法找到全局最优解（局部最优性）。</li>
+<li>Dijkstra 找到最优解，但效率较低。</li>
+<li>A* 综合两者，能找到全局最优解，同时较高效，是目前最常用的路径规划算法之一。</li>
+</ul>
+<hr>
+<h3 id="6-示例：网格地图上的路径规划"><a href="#6-示例：网格地图上的路径规划" class="headerlink" title="6. 示例：网格地图上的路径规划"></a><strong>6. 示例：网格地图上的路径规划</strong></h3><p>伪代码实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">A_star</span>(<span class="params">grid, start, goal, heuristic</span>):</span><br><span class="line">    OPEN = PriorityQueue()  <span class="comment"># 优先队列存储待探索节点</span></span><br><span class="line">    CLOSED = <span class="built_in">set</span>()          <span class="comment"># 集合存储已探索节点</span></span><br><span class="line"></span><br><span class="line">    g = &#123;start: <span class="number">0</span>&#125;          <span class="comment"># 起点到当前点的总代价</span></span><br><span class="line">    f = &#123;start: heuristic(start, goal)&#125;  <span class="comment"># 估计总代价 f(n) = g(n) + h(n)</span></span><br><span class="line"></span><br><span class="line">    OPEN.put((f[start], start))  <span class="comment"># 插入起点到OPEN队列</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> OPEN.empty():</span><br><span class="line">        _, current = OPEN.get()  <span class="comment"># 当前代价函数最小的节点</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> current == goal:</span><br><span class="line">            <span class="keyword">return</span> reconstruct_path(CLOSED, start, goal)  <span class="comment"># 找到路径</span></span><br><span class="line"></span><br><span class="line">        CLOSED.add(current)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> neighbor <span class="keyword">in</span> get_neighbors(grid, current):</span><br><span class="line">            <span class="keyword">if</span> neighbor <span class="keyword">in</span> CLOSED:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            </span><br><span class="line">            tentative_g = g[current] + move_cost(current, neighbor)  <span class="comment"># 更新 g 值</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> g <span class="keyword">or</span> tentative_g &lt; g[neighbor]:</span><br><span class="line">                g[neighbor] = tentative_g</span><br><span class="line">                f[neighbor] = g[neighbor] + heuristic(neighbor, goal)</span><br><span class="line">                OPEN.put((f[neighbor], neighbor))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span>  <span class="comment"># 未找到路径</span></span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Blogs</a></li>
+        
+          <li><a href="/categories/">catgories</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%B4%AA%E5%A9%AA%E6%9C%80%E4%BD%B3%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95-Greedy-Best-First-Search"><span class="toc-number">1.</span> <span class="toc-text">1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3"><span class="toc-number">1.1.</span> <span class="toc-text">基本思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">1.4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="toc-number">1.5.</span> <span class="toc-text">举例说明</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Dijkstra-%E7%AE%97%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">2. Dijkstra 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3-1"><span class="toc-number">2.1.</span> <span class="toc-text">基本思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0-1"><span class="toc-number">2.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">2.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="toc-number">2.4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B"><span class="toc-number">2.5.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-A-%E7%AE%97%E6%B3%95%EF%BC%9A%E7%BB%BC%E5%90%88%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%B3%95%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">3.</span> <span class="toc-text">3. A* 算法：综合两种方法的改进</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="toc-number">3.1.</span> <span class="toc-text">核心思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0-2"><span class="toc-number">3.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-2"><span class="toc-number">3.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-2"><span class="toc-number">3.4.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0"><span class="toc-number">4.</span> <span class="toc-text">4. 启发式函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0"><span class="toc-number">5.</span> <span class="toc-text">常见的启发式函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB%EF%BC%88Manhattan-Distance%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">1. 曼哈顿距离（Manhattan Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="toc-number">5.1.1.</span> <span class="toc-text">示例：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%BD%93%E5%89%8D%E4%BD%8D%E7%BD%AE%E6%98%AF-1-1-%EF%BC%8C%E7%9B%AE%E6%A0%87%E7%82%B9%E6%98%AF-4-3-%EF%BC%8C%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB%E4%B8%BA%EF%BC%9A-h-n-1-4-1-3-3-2-5"><span class="toc-number"></span> <span class="toc-text">如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：$${h(n) &#x3D; |1-4| + |1-3| &#x3D; 3 + 2 &#x3D; 5}$$</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB%EF%BC%88Euclidean-Distance%EF%BC%89"><span class="toc-number">0.1.</span> <span class="toc-text">2. 欧几里得距离（Euclidean Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-1"><span class="toc-number">0.1.1.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%AF%B9%E8%A7%92%E8%B7%9D%E7%A6%BB%EF%BC%88Diagonal-Distance%EF%BC%89"><span class="toc-number">0.2.</span> <span class="toc-text">3. 对角距离（Diagonal Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-2"><span class="toc-number">0.2.1.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%8A%A0%E6%9D%83%E5%90%AF%E5%8F%91%E5%BC%8F%EF%BC%88Weighted-Heuristic%EF%BC%89"><span class="toc-number">0.3.</span> <span class="toc-text">4. 加权启发式（Weighted Heuristic）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-3"><span class="toc-number">0.3.1.</span> <span class="toc-text">示例：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%87%E5%A6%82%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB%E4%B8%BA-10%EF%BC%8C%E9%80%89%E6%8B%A9-w-1-5-%EF%BC%8C%E5%88%99%EF%BC%9A-h-n-w-cdot-h-text-euclidean-1-5-cdot-10-15"><span class="toc-number"></span> <span class="toc-text">假如欧几里得距离为 10，选择 ( w&#x3D;1.5 )，则：$${h(n) &#x3D; w \cdot h_{\text{euclidean}} &#x3D; 1.5 \cdot 10 &#x3D; 15}$$</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E9%99%85%E4%BD%9C%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">二、启发式函数的实际作用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%8C%9C%E6%B5%8B%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%8E%A5%E8%BF%91%E7%9B%AE%E6%A0%87"><span class="toc-number">1.1.</span> <span class="toc-text">1. 猜测如何快速接近目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%97%A0%E9%9A%9C%E7%A2%8D%E5%81%87%E8%AE%BE%E4%B8%8B%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">2. 无障碍假设下的启发式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%A4%AA%E4%BD%8E%E4%BC%B0%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">3. 为什么不能太低估？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E7%9A%84%E8%A6%81%E6%B1%82"><span class="toc-number">1.4.</span> <span class="toc-text">启发式函数的要求</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%E6%97%B6%E7%9A%84%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE"><span class="toc-number">2.</span> <span class="toc-text">三、实际应用时的选择建议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%AF%94%E8%BE%83%E4%B8%89%E7%A7%8D%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">5. 比较三种算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E7%A4%BA%E4%BE%8B%EF%BC%9A%E7%BD%91%E6%A0%BC%E5%9C%B0%E5%9B%BE%E4%B8%8A%E7%9A%84%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92"><span class="toc-number">4.</span> <span class="toc-text">6. 示例：网格地图上的路径规划</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&text=A*算法讲解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&is_video=false&description=A*算法讲解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=A*算法讲解&body=Check out this article: http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&name=A*算法讲解&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&t=A*算法讲解"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    tyfelix
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="最近学习ROS1，但是需要Ubuntu20.04的桌面环境。使用MAC电脑，一是安装双系统，二是在MAC里面安装虚拟机，然后在虚拟机里面安装Ubuntu。因为是学习为主，所以选择后者。参考了全网的教程，下面记录整个过程： 前提：我的电脑是MBP M2 16G&#x2F;256G  1.在MAC中安装虚拟机VMWare1.1 下载VMWare VMWare被boardcom收购之后，需要先去注册账号">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MAC电脑安装Ubuntu20.04并安装ROS1-noetic">
+<meta property="og:url" content="http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/index.html">
+<meta property="og:site_name" content="Tang Yi&#39;s Blog">
+<meta property="og:description" content="最近学习ROS1，但是需要Ubuntu20.04的桌面环境。使用MAC电脑，一是安装双系统，二是在MAC里面安装虚拟机，然后在虚拟机里面安装Ubuntu。因为是学习为主，所以选择后者。参考了全网的教程，下面记录整个过程： 前提：我的电脑是MBP M2 16G&#x2F;256G  1.在MAC中安装虚拟机VMWare1.1 下载VMWare VMWare被boardcom收购之后，需要先去注册账号">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-04-08T13:47:14.000Z">
+<meta property="article:modified_time" content="2025-04-08T14:35:19.543Z">
+<meta property="article:author" content="tyfelix">
+<meta property="article:tag" content="ROS1">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/chicken.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>MAC电脑安装Ubuntu20.04并安装ROS1-noetic</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&text=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&is_video=false&description=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MAC电脑安装Ubuntu20.04并安装ROS1-noetic&body=Check out this article: http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&name=MAC电脑安装Ubuntu20.04并安装ROS1-noetic&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&t=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E8%BF%91%E5%AD%A6%E4%B9%A0ROS1%EF%BC%8C%E4%BD%86%E6%98%AF%E9%9C%80%E8%A6%81Ubuntu20-04%E7%9A%84%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E3%80%82%E4%BD%BF%E7%94%A8MAC%E7%94%B5%E8%84%91%EF%BC%8C%E4%B8%80%E6%98%AF%E5%AE%89%E8%A3%85%E5%8F%8C%E7%B3%BB%E7%BB%9F%EF%BC%8C%E4%BA%8C%E6%98%AF%E5%9C%A8MAC%E9%87%8C%E9%9D%A2%E5%AE%89%E8%A3%85%E8%99%9A%E6%8B%9F%E6%9C%BA%EF%BC%8C%E7%84%B6%E5%90%8E%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%87%8C%E9%9D%A2%E5%AE%89%E8%A3%85Ubuntu%E3%80%82%E5%9B%A0%E4%B8%BA%E6%98%AF%E5%AD%A6%E4%B9%A0%E4%B8%BA%E4%B8%BB%EF%BC%8C%E6%89%80%E4%BB%A5%E9%80%89%E6%8B%A9%E5%90%8E%E8%80%85%E3%80%82%E5%8F%82%E8%80%83%E4%BA%86%E5%85%A8%E7%BD%91%E7%9A%84%E6%95%99%E7%A8%8B%EF%BC%8C%E4%B8%8B%E9%9D%A2%E8%AE%B0%E5%BD%95%E6%95%B4%E4%B8%AA%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">最近学习ROS1，但是需要Ubuntu20.04的桌面环境。使用MAC电脑，一是安装双系统，二是在MAC里面安装虚拟机，然后在虚拟机里面安装Ubuntu。因为是学习为主，所以选择后者。参考了全网的教程，下面记录整个过程：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9C%A8MAC%E4%B8%AD%E5%AE%89%E8%A3%85%E8%99%9A%E6%8B%9F%E6%9C%BAVMWare"><span class="toc-number">2.</span> <span class="toc-text">1.在MAC中安装虚拟机VMWare</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%B8%8B%E8%BD%BDVMWare"><span class="toc-number">2.1.</span> <span class="toc-text">1.1 下载VMWare</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%AE%89%E8%A3%85VMWare"><span class="toc-number">2.2.</span> <span class="toc-text">1.2 安装VMWare</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%8B%E8%BD%BDUbuntu20-04"><span class="toc-number">3.</span> <span class="toc-text">2.下载Ubuntu20.04</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%9C%A8VMWare%E4%B8%AD%E5%AE%89%E8%A3%85VMWare"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 在VMWare中安装VMWare</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        MAC电脑安装Ubuntu20.04并安装ROS1-noetic
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">tyfelix</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-04-08T13:47:14.000Z" class="dt-published" itemprop="datePublished">2025-04-08</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E7%9B%B8%E5%85%B3/">配置环境相关</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/ROS1/" rel="tag">ROS1</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="最近学习ROS1，但是需要Ubuntu20-04的桌面环境。使用MAC电脑，一是安装双系统，二是在MAC里面安装虚拟机，然后在虚拟机里面安装Ubuntu。因为是学习为主，所以选择后者。参考了全网的教程，下面记录整个过程："><a href="#最近学习ROS1，但是需要Ubuntu20-04的桌面环境。使用MAC电脑，一是安装双系统，二是在MAC里面安装虚拟机，然后在虚拟机里面安装Ubuntu。因为是学习为主，所以选择后者。参考了全网的教程，下面记录整个过程：" class="headerlink" title="最近学习ROS1，但是需要Ubuntu20.04的桌面环境。使用MAC电脑，一是安装双系统，二是在MAC里面安装虚拟机，然后在虚拟机里面安装Ubuntu。因为是学习为主，所以选择后者。参考了全网的教程，下面记录整个过程："></a>最近学习ROS1，但是需要Ubuntu20.04的桌面环境。使用MAC电脑，一是安装双系统，二是在MAC里面安装虚拟机，然后在虚拟机里面安装Ubuntu。因为是学习为主，所以选择后者。参考了全网的教程，下面记录整个过程：</h2><ul>
+<li>前提：我的电脑是MBP M2 16G&#x2F;256G</li>
+</ul>
+<h2 id="1-在MAC中安装虚拟机VMWare"><a href="#1-在MAC中安装虚拟机VMWare" class="headerlink" title="1.在MAC中安装虚拟机VMWare"></a>1.在MAC中安装虚拟机VMWare</h2><h3 id="1-1-下载VMWare"><a href="#1-1-下载VMWare" class="headerlink" title="1.1 下载VMWare"></a>1.1 下载VMWare</h3><blockquote>
+<p>VMWare被boardcom收购之后，需要先去注册账号才可以下载VMWare。<br>这里我注册的时候，发现有一些邮箱被禁止。然后有时候邮箱收不到验证码。这里我贴出我下载的版本的网盘分享：【网盘1】</p>
+</blockquote>
+<h3 id="1-2-安装VMWare"><a href="#1-2-安装VMWare" class="headerlink" title="1.2 安装VMWare"></a>1.2 安装VMWare</h3><h2 id="2-下载Ubuntu20-04"><a href="#2-下载Ubuntu20-04" class="headerlink" title="2.下载Ubuntu20.04"></a>2.下载Ubuntu20.04</h2><p>因为是M2，只能下载arm64的Ubuntu20.04.官方下载地址：<a target="_blank" rel="noopener" href="https://cdimage.ubuntu.com/releases/20.04/release/">https://cdimage.ubuntu.com/releases/20.04/release/</a><br>当然，对于不方便下载的朋友，也给出网盘分享：<br>【网盘2】</p>
+<h3 id="2-1-在VMWare中安装VMWare"><a href="#2-1-在VMWare中安装VMWare" class="headerlink" title="2.1 在VMWare中安装VMWare"></a>2.1 在VMWare中安装VMWare</h3><p>同样的，因为是M2，所以只能先下载服务器端，然后再下载桌面版的方式使用。</p>
+<p>参考内容：</p>
+<ul>
+<li>1.一键安装ros1和ros2： <a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_46406504/article/details/142550777">https://blog.csdn.net/m0_46406504/article/details/142550777</a> </li>
+<li>2.mac m1、2安装ubuntu20.04： <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1V4421D7Gt/?spm_id_from=333.788.top_right_bar_window_history.content.click&vd_source=9a795e00312d6919ce8ce477458738f4">https://www.bilibili.com/video/BV1V4421D7Gt/?spm_id_from=333.788.top_right_bar_window_history.content.click&amp;vd_source=9a795e00312d6919ce8ce477458738f4</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Blogs</a></li>
+        
+          <li><a href="/categories/">catgories</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E8%BF%91%E5%AD%A6%E4%B9%A0ROS1%EF%BC%8C%E4%BD%86%E6%98%AF%E9%9C%80%E8%A6%81Ubuntu20-04%E7%9A%84%E6%A1%8C%E9%9D%A2%E7%8E%AF%E5%A2%83%E3%80%82%E4%BD%BF%E7%94%A8MAC%E7%94%B5%E8%84%91%EF%BC%8C%E4%B8%80%E6%98%AF%E5%AE%89%E8%A3%85%E5%8F%8C%E7%B3%BB%E7%BB%9F%EF%BC%8C%E4%BA%8C%E6%98%AF%E5%9C%A8MAC%E9%87%8C%E9%9D%A2%E5%AE%89%E8%A3%85%E8%99%9A%E6%8B%9F%E6%9C%BA%EF%BC%8C%E7%84%B6%E5%90%8E%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%87%8C%E9%9D%A2%E5%AE%89%E8%A3%85Ubuntu%E3%80%82%E5%9B%A0%E4%B8%BA%E6%98%AF%E5%AD%A6%E4%B9%A0%E4%B8%BA%E4%B8%BB%EF%BC%8C%E6%89%80%E4%BB%A5%E9%80%89%E6%8B%A9%E5%90%8E%E8%80%85%E3%80%82%E5%8F%82%E8%80%83%E4%BA%86%E5%85%A8%E7%BD%91%E7%9A%84%E6%95%99%E7%A8%8B%EF%BC%8C%E4%B8%8B%E9%9D%A2%E8%AE%B0%E5%BD%95%E6%95%B4%E4%B8%AA%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">最近学习ROS1，但是需要Ubuntu20.04的桌面环境。使用MAC电脑，一是安装双系统，二是在MAC里面安装虚拟机，然后在虚拟机里面安装Ubuntu。因为是学习为主，所以选择后者。参考了全网的教程，下面记录整个过程：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9C%A8MAC%E4%B8%AD%E5%AE%89%E8%A3%85%E8%99%9A%E6%8B%9F%E6%9C%BAVMWare"><span class="toc-number">2.</span> <span class="toc-text">1.在MAC中安装虚拟机VMWare</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%B8%8B%E8%BD%BDVMWare"><span class="toc-number">2.1.</span> <span class="toc-text">1.1 下载VMWare</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%AE%89%E8%A3%85VMWare"><span class="toc-number">2.2.</span> <span class="toc-text">1.2 安装VMWare</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%8B%E8%BD%BDUbuntu20-04"><span class="toc-number">3.</span> <span class="toc-text">2.下载Ubuntu20.04</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%9C%A8VMWare%E4%B8%AD%E5%AE%89%E8%A3%85VMWare"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 在VMWare中安装VMWare</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&text=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&is_video=false&description=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=MAC电脑安装Ubuntu20.04并安装ROS1-noetic&body=Check out this article: http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&title=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&name=MAC电脑安装Ubuntu20.04并安装ROS1-noetic&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/&t=MAC电脑安装Ubuntu20.04并安装ROS1-noetic"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    tyfelix
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

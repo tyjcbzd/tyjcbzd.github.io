@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Dynamic Window Apporach 概念：动态窗口方法的基本思想是根据机器人运动模型在速度空间（V，ω）中采样多组速度，创建一个具有所有可行速度的动态窗口，预测机器人在时间t中的每组速度（v，ω）潜在轨迹，使用特定的评估功能同时评估集合的轨迹，并执行具有最高评估的集合，直到下一个执行。  DWA（Dynamic Window Approach）算法是一种用于机器人局部路径规划的经典实时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DWA算法">
+<meta property="og:url" content="http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Tang Yi&#39;s Blog">
+<meta property="og:description" content="Dynamic Window Apporach 概念：动态窗口方法的基本思想是根据机器人运动模型在速度空间（V，ω）中采样多组速度，创建一个具有所有可行速度的动态窗口，预测机器人在时间t中的每组速度（v，ω）潜在轨迹，使用特定的评估功能同时评估集合的轨迹，并执行具有最高评估的集合，直到下一个执行。  DWA（Dynamic Window Approach）算法是一种用于机器人局部路径规划的经典实时">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-04-21T07:25:59.000Z">
+<meta property="article:modified_time" content="2025-04-21T07:39:50.809Z">
+<meta property="article:author" content="tyfelix">
+<meta property="article:tag" content="局部路径规划">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/chicken.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>DWA算法</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&text=DWA算法"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&is_video=false&description=DWA算法"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DWA算法&body=Check out this article: http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&name=DWA算法&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&t=DWA算法"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dynamic-Window-Apporach"><span class="toc-number">1.</span> <span class="toc-text">Dynamic Window Apporach</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DWA%E7%AE%97%E6%B3%95%E7%9A%84%E8%BE%93%E5%85%A5"><span class="toc-number">2.</span> <span class="toc-text">DWA算法的输入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DWA%E7%AE%97%E6%B3%95%E7%9A%84%E4%B8%BB%E8%A6%81%E6%AD%A5%E9%AA%A4"><span class="toc-number">3.</span> <span class="toc-text">DWA算法的主要步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%A1%AE%E5%AE%9A%E5%8A%A8%E6%80%81%E7%AA%97%E5%8F%A3"><span class="toc-number">3.1.</span> <span class="toc-text">1. 确定动态窗口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%9F%BA%E4%BA%8E%E9%80%9F%E5%BA%A6%E9%87%87%E6%A0%B7%E6%A8%A1%E6%8B%9F%E8%BD%A8%E8%BF%B9"><span class="toc-number">3.2.</span> <span class="toc-text">2. 基于速度采样模拟轨迹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%BD%A8%E8%BF%B9%E8%AF%84%E4%BC%B0"><span class="toc-number">3.3.</span> <span class="toc-text">3. 轨迹评估</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">3.3.1.</span> <span class="toc-text">3.评价函数的表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%BB%8F%E5%85%B8%E5%BD%A2%E5%BC%8F%EF%BC%88Fox-et-al-1997-%E5%8E%9F%E8%AE%BA%E6%96%87%EF%BC%89%EF%BC%9A"><span class="toc-number">3.3.2.</span> <span class="toc-text">3.1. 经典形式（Fox et al. 1997 原论文）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%90%84%E9%A1%B9%E5%90%AB%E4%B9%89%E8%A7%A3%E9%87%8A"><span class="toc-number">3.3.3.</span> <span class="toc-text">3.2. 各项含义解释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E7%BB%BC%E5%90%88"><span class="toc-number">3.3.4.</span> <span class="toc-text">3.3. 综合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E5%8E%9F%E6%96%87%E5%85%AC%E5%BC%8F%E5%8F%82%E8%80%83"><span class="toc-number">3.3.5.</span> <span class="toc-text">论文原文公式参考</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E9%80%89%E6%8B%A9%E6%9C%80%E4%BC%98%E9%80%9F%E5%BA%A6"><span class="toc-number">3.4.</span> <span class="toc-text">4. 选择最优速度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%9B%B4%E6%96%B0%E7%8A%B6%E6%80%81%EF%BC%8C%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C"><span class="toc-number">3.5.</span> <span class="toc-text">5. 更新状态，循环执行</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DWA%E7%AE%97%E6%B3%95%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">4.</span> <span class="toc-text">DWA算法的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E7%82%B9%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">优点：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">缺点：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        DWA算法
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">tyfelix</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-04-21T07:25:59.000Z" class="dt-published" itemprop="datePublished">2025-04-21</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">路径规划</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/%E5%B1%80%E9%83%A8%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" rel="tag">局部路径规划</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Dynamic-Window-Apporach"><a href="#Dynamic-Window-Apporach" class="headerlink" title="Dynamic Window Apporach"></a>Dynamic Window Apporach</h1><ul>
+<li>概念：动态窗口方法的基本思想是根据机器人运动模型在速度空间（V，ω）中采样多组速度，创建一个具有所有可行速度的动态窗口，预测机器人在时间t中的每组速度（v，ω）潜在轨迹，使用特定的评估功能同时评估集合的轨迹，并执行具有最高评估的集合，直到下一个执行。</li>
+</ul>
+<p>DWA（<strong>Dynamic Window Approach</strong>）算法是一种用于机器人局部路径规划的经典实时避障算法。它通过评估在动态环境中机器人可能的速度和方向选择（线速度与角速度的组合），寻找一条最优轨迹，使机器人沿着该轨迹移动到目标点，同时避免碰撞。</p>
+<ul>
+<li>核心思想：机器人通过短时间内的运动模拟，预测自身轨迹，评估不同速度组合在短时间内的效果，然后选择最优的速度组合（线速度和角速度）作为下一时刻的控制命令。</li>
+</ul>
+<hr>
+<h1 id="DWA算法的输入"><a href="#DWA算法的输入" class="headerlink" title="DWA算法的输入"></a><strong>DWA算法的输入</strong></h1><ol>
+<li><p><strong>机器人当前的状态</strong>：</p>
+<ul>
+<li>当前的线速度 ${v}$</li>
+<li>当前的角速度 ${\omega}$</li>
+<li>当前的位置和方向${(x,y,\theta)}$</li>
+</ul>
+</li>
+<li><p><strong>机器人的运动学约束</strong>：</p>
+<ul>
+<li>最大和最小的线速度：${v_{min} \leq v \leq v_{max}}$</li>
+<li>最大和最小的角速度：${\omega_{min} \leq \omega \leq \omega_{max} }$</li>
+<li>最大线加速度和角加速度：${a_v}$ 和 ${a_\omega}$</li>
+</ul>
+</li>
+<li><p><strong>目标位置</strong>：</p>
+<ul>
+<li>目标点的坐标${(x_{goal}, y_{goal)}}$</li>
+</ul>
+</li>
+<li><p><strong>障碍物信息</strong>：</p>
+<ul>
+<li>障碍物的环境地图（通过雷达或摄像头获得环境中障碍物的分布）。</li>
+</ul>
+</li>
+<li><p><strong>机器人动态模型</strong>：</p>
+<ul>
+<li>模拟机器人在短时间内的运动轨迹。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h1 id="DWA算法的主要步骤"><a href="#DWA算法的主要步骤" class="headerlink" title="DWA算法的主要步骤"></a><strong>DWA算法的主要步骤</strong></h1><h2 id="1-确定动态窗口"><a href="#1-确定动态窗口" class="headerlink" title="1. 确定动态窗口"></a>1. <strong>确定动态窗口</strong></h2><p>动态窗口是指在当前时刻内，根据机器人的运动学约束和动态限制划定可能的速度范围：</p>
+<p>$$<br>v_{range} &#x3D; [v_{min}, v_{max}] \cap [v - a_v \cdot \Delta t, v + a_v \cdot \Delta t]\<br>$$</p>
+<p>$$<br>\omega_{range} &#x3D; [\omega_{min}, \omega_{max}] \cap [\omega - a_\omega \cdot \Delta t, \omega + a_\omega \cdot \Delta t]<br>$$<br>其中，${[v - a_v \cdot \Delta t, v + a_v \cdot \Delta t]}$和${[\omega - a_\omega \cdot \Delta t, \omega + a_\omega \cdot \Delta t]}$是根据加速度限制计算的瞬时速度范围。</p>
+<p>动态窗口比单纯使用机器人物理限制更实际，因为它考虑了短时间内速度的动态变化范围。</p>
+<h2 id="2-基于速度采样模拟轨迹"><a href="#2-基于速度采样模拟轨迹" class="headerlink" title="2. 基于速度采样模拟轨迹"></a>2. <strong>基于速度采样模拟轨迹</strong></h2><p>在动态窗口内，对可能的速度组合（线速度 ${v}$和角速度 ${\omega}$ 进行采样，生成轨迹。轨迹的预测基于机器人运动模型，例如：</p>
+<p>假设机器人当前的状态为位置 ${(x, y, \theta)}$，一个时间间隔 ( T ) 的预测轨迹可以通过如下公式模拟：<br>$$<br>x’ &#x3D; x + v \cdot \cos(\theta) \cdot T<br>$$<br>$$<br>y’ &#x3D; y + v \cdot \sin(\theta) \cdot T<br>$$<br>$$<br>\theta’ &#x3D; \theta + \omega \cdot T<br>$$</p>
+<h2 id="3-轨迹评估"><a href="#3-轨迹评估" class="headerlink" title="3. 轨迹评估"></a>3. <strong>轨迹评估</strong></h2><p><strong>传统 DWA 算法</strong>中对速度对（<code>v</code>, <code>w</code>，即线速度和角速度）的选择，依赖一个**评价函数（objective function）**来评估每个候选速度对轨迹的优劣。算法流程就是在速度空间内采样可行的速度对，并用评价函数给它们打分，最终选择分数最高的速度对来执行。</p>
+<hr>
+<h3 id="3-评价函数的表达式"><a href="#3-评价函数的表达式" class="headerlink" title="3.评价函数的表达式"></a><strong>3.评价函数的表达式</strong></h3><h3 id="3-1-经典形式（Fox-et-al-1997-原论文）："><a href="#3-1-经典形式（Fox-et-al-1997-原论文）：" class="headerlink" title="3.1. 经典形式（Fox et al. 1997 原论文）："></a><strong>3.1. 经典形式（Fox et al. 1997 原论文）：</strong></h3><p>原始论文中的 DWA 评价函数一般为如下加权和形式：</p>
+<p>$$<br>G(v, w) &#x3D; \alpha \cdot heading(v, w) + \beta \cdot dist(v, w) + \gamma \cdot vel(v, w)<br>$$<br>其中：</p>
+<ul>
+<li>${v}$ ：线速度</li>
+<li>${\omega}$：角速度</li>
+<li>${\alpha, \beta, \gamma}$：权重系数（用于平衡各项重要性）</li>
+</ul>
+<h3 id="3-2-各项含义解释"><a href="#3-2-各项含义解释" class="headerlink" title="3.2. 各项含义解释"></a><strong>3.2. 各项含义解释</strong></h3><ol>
+<li><strong>heading(v, w)：朝向目标的得分</strong><ul>
+<li>描述当前轨迹末端（模拟一小段时间后的位置）与目标点之间的距离或方向误差。</li>
+<li>目的是鼓励轨迹朝向目标前进。</li>
+<li>通常值越大，表示末端越靠近目标朝向。</li>
+</ul>
+</li>
+</ol>
+<p>具体公式：<br>$$<br>heading(v,\omega)&#x3D;\pi-|\theta_g - \theta_t|<br>$$</p>
+<ul>
+<li>${\theta_g}$ : 机器人当前点指向目标点的连线和x轴之间的角度</li>
+<li>${\theta_t}$: 机器人在预测轨迹的末端（目标点）的姿态角与水平线&#x2F;x轴之间的夹角</li>
+</ul>
+<ol start="2">
+<li><strong>dist(v, w)：距离障碍物的得分</strong></li>
+</ol>
+<ul>
+<li>评估沿着当前轨迹行进时，能保持多大的安全距离（离障碍物最近的距离）。</li>
+<li>目的是让轨迹尽可能远离障碍物，提高安全性。</li>
+<li>可以定义为轨迹上离障碍物的最近距离，或与安全距离的差值。</li>
+</ul>
+<p>具体公式：（这里归一化了，防止过于高）,距离最近的障碍物的距离越大越好<br>$$<br>dist(v,w)&#x3D;min(1, \frac{d_{min}}{d_{safe}})<br>$$</p>
+<ul>
+<li>${d_{min}}$：轨迹中离障碍物最近的距离.</li>
+<li>${d_{safe}}$：定义的安全距离（如 0.5 米，得分最大为1）</li>
+</ul>
+<ol start="3">
+<li><strong>vel(v, w)：速度得分</strong></li>
+</ol>
+<ul>
+<li>对当前速度分量 v 的奖励，偏好较高的行进速度加快到达目标。</li>
+<li>通常直接用 (v) 或用 ${\frac{v}{v_{max}}}$归一化。</li>
+</ul>
+<h3 id="3-3-综合"><a href="#3-3-综合" class="headerlink" title="3.3. 综合"></a><strong>3.3. 综合</strong></h3><p>将这三项做加权和，得到的得分越高表示该速度对优先级越高。</p>
+<hr>
+<h3 id="论文原文公式参考"><a href="#论文原文公式参考" class="headerlink" title="论文原文公式参考"></a><strong>论文原文公式参考</strong></h3><p>原文给出：</p>
+<blockquote>
+<p>“The value function G(v,ω) for each sampled (v,ω) pair is calculated as a weighted sum of the following three criteria:</p>
+</blockquote>
+<ol>
+<li><strong>heading(v,ω):</strong> The difference between the robot’s heading and the direction to the goal after a short forward simulation,</li>
+<li><strong>dist(v,ω):</strong> The minimum distance to the nearest obstacle along the trajectory generated by (v,ω),</li>
+<li><strong>vel(v,ω):</strong> The forward velocity (encouraging faster trajectories).”</li>
+</ol>
+<hr>
+<blockquote>
+<p>传统 DWA 的评价函数是目标朝向、避障安全和速度的加权求和，这三者在决策速度和转向时作为优先级评估基础。</p>
+</blockquote>
+<h2 id="4-选择最优速度"><a href="#4-选择最优速度" class="headerlink" title="4. 选择最优速度"></a>4. <strong>选择最优速度</strong></h2><p>在所有的速度采样中，选择得分最高的速度组合（线速度${v}$ 和角速度${ \omega}$），作为当前时刻的控制命令。</p>
+<h2 id="5-更新状态，循环执行"><a href="#5-更新状态，循环执行" class="headerlink" title="5. 更新状态，循环执行"></a>5. <strong>更新状态，循环执行</strong></h2><p>根据选取的速度组合更新机器人的运动状态，重复上述过程，直至机器人到达目标点。</p>
+<hr>
+<h1 id="DWA算法的优缺点"><a href="#DWA算法的优缺点" class="headerlink" title="DWA算法的优缺点"></a><strong>DWA算法的优缺点</strong></h1><h2 id="优点："><a href="#优点：" class="headerlink" title="优点："></a><strong>优点</strong>：</h2><ol>
+<li><strong>实时性强</strong>：DWA以短时间窗口内的动态信息进行评估，适合实时路径规划。</li>
+<li><strong>高效</strong>：通过动态窗口限制搜索范围，大大减少了计算量。</li>
+<li><strong>普遍适用性</strong>：适用于具有速度和加速度约束的机器人，易于部署。</li>
+<li><strong>灵活性</strong>：可以权衡多种评价指标（如速度、目标距离、障碍物距离），适应不同场景。</li>
+</ol>
+<h2 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a><strong>缺点</strong>：</h2><ol>
+<li><strong>局部最优问题</strong>：因只关注短时间内的轨迹，可能导致机器人陷入局部最优（如某些复杂障碍物死角）。</li>
+<li><strong>对参数敏感</strong>：权重参数的设置对性能影响很大，调整不当会导致效果欠佳。</li>
+<li><strong>不适应全局路径规划</strong>：DWA本质是局部路径规划方法，如缺乏合理的全局规划指引，可能偏离全局最优路径。</li>
+<li><strong>复杂障碍物环境适应性较差</strong>：在障碍物密集或动态障碍物较多的场景下，DWA可能存在效率和安全性问题。</li>
+</ol>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h1><p>传统DWA通过动态窗口对速度空间进行约束，对每种可能的速度组合进行评估并选出最优速度，适合于动态实时机器人局部规划任务。然而，由于其是短时间范围的局部优化方法，容易受到局部最优、复杂障碍环境等问题影响。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Blogs</a></li>
+        
+          <li><a href="/categories/">catgories</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dynamic-Window-Apporach"><span class="toc-number">1.</span> <span class="toc-text">Dynamic Window Apporach</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DWA%E7%AE%97%E6%B3%95%E7%9A%84%E8%BE%93%E5%85%A5"><span class="toc-number">2.</span> <span class="toc-text">DWA算法的输入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DWA%E7%AE%97%E6%B3%95%E7%9A%84%E4%B8%BB%E8%A6%81%E6%AD%A5%E9%AA%A4"><span class="toc-number">3.</span> <span class="toc-text">DWA算法的主要步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%A1%AE%E5%AE%9A%E5%8A%A8%E6%80%81%E7%AA%97%E5%8F%A3"><span class="toc-number">3.1.</span> <span class="toc-text">1. 确定动态窗口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%9F%BA%E4%BA%8E%E9%80%9F%E5%BA%A6%E9%87%87%E6%A0%B7%E6%A8%A1%E6%8B%9F%E8%BD%A8%E8%BF%B9"><span class="toc-number">3.2.</span> <span class="toc-text">2. 基于速度采样模拟轨迹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%BD%A8%E8%BF%B9%E8%AF%84%E4%BC%B0"><span class="toc-number">3.3.</span> <span class="toc-text">3. 轨迹评估</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0%E7%9A%84%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-number">3.3.1.</span> <span class="toc-text">3.评价函数的表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%BB%8F%E5%85%B8%E5%BD%A2%E5%BC%8F%EF%BC%88Fox-et-al-1997-%E5%8E%9F%E8%AE%BA%E6%96%87%EF%BC%89%EF%BC%9A"><span class="toc-number">3.3.2.</span> <span class="toc-text">3.1. 经典形式（Fox et al. 1997 原论文）：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%90%84%E9%A1%B9%E5%90%AB%E4%B9%89%E8%A7%A3%E9%87%8A"><span class="toc-number">3.3.3.</span> <span class="toc-text">3.2. 各项含义解释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E7%BB%BC%E5%90%88"><span class="toc-number">3.3.4.</span> <span class="toc-text">3.3. 综合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E5%8E%9F%E6%96%87%E5%85%AC%E5%BC%8F%E5%8F%82%E8%80%83"><span class="toc-number">3.3.5.</span> <span class="toc-text">论文原文公式参考</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E9%80%89%E6%8B%A9%E6%9C%80%E4%BC%98%E9%80%9F%E5%BA%A6"><span class="toc-number">3.4.</span> <span class="toc-text">4. 选择最优速度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%9B%B4%E6%96%B0%E7%8A%B6%E6%80%81%EF%BC%8C%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C"><span class="toc-number">3.5.</span> <span class="toc-text">5. 更新状态，循环执行</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DWA%E7%AE%97%E6%B3%95%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-number">4.</span> <span class="toc-text">DWA算法的优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E7%82%B9%EF%BC%9A"><span class="toc-number">4.1.</span> <span class="toc-text">优点：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="toc-number">4.2.</span> <span class="toc-text">缺点：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&text=DWA算法"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&is_video=false&description=DWA算法"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DWA算法&body=Check out this article: http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&title=DWA算法"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&name=DWA算法&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/21/DWA%E7%AE%97%E6%B3%95/&t=DWA算法"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    tyfelix
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

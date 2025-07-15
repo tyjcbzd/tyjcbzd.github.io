@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Q-learning简介Q-learning算法是model- free的TD算法(Temporal Difference)之一。它的目的是让智能代理学习通过与环境互动来最大化累积奖励的最佳策略（optimal policy）。它的学习流程满足马尔可夫过程(MDP)。它属于值迭代（value iteration）方法，通过构建并更新“动作-状态价值函数”（Q函数），实现对环境的最优决策。  Q1.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DL-Q learning算法">
+<meta property="og:url" content="http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Tang Yi&#39;s Blog">
+<meta property="og:description" content="Q-learning简介Q-learning算法是model- free的TD算法(Temporal Difference)之一。它的目的是让智能代理学习通过与环境互动来最大化累积奖励的最佳策略（optimal policy）。它的学习流程满足马尔可夫过程(MDP)。它属于值迭代（value iteration）方法，通过构建并更新“动作-状态价值函数”（Q函数），实现对环境的最优决策。  Q1.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/post_images/RL-bellman.png">
+<meta property="article:published_time" content="2025-07-12T08:25:16.000Z">
+<meta property="article:modified_time" content="2025-07-15T14:41:46.713Z">
+<meta property="article:author" content="tyfelix">
+<meta property="article:tag" content="强化学习">
+<meta property="article:tag" content="Q-learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/post_images/RL-bellman.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/chicken.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>DL-Q learning算法</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2025/06/18/%E4%BB%8E%E9%9B%B6%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E6%9C%BA%E5%99%A8%E4%BA%BA/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&text=DL-Q learning算法"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&is_video=false&description=DL-Q learning算法"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DL-Q learning算法&body=Check out this article: http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&name=DL-Q learning算法&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&t=DL-Q learning算法"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-learning%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">Q-learning简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-learning%E7%AE%97%E6%B3%95%E5%85%B7%E4%BD%93%E8%A7%A3%E8%AF%BB"><span class="toc-number">2.</span> <span class="toc-text">Q-learning算法具体解读</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">2.1.</span> <span class="toc-text">3. 算法流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%AE%97%E6%B3%95%E7%89%B9%E6%80%A7"><span class="toc-number">2.2.</span> <span class="toc-text">4. 算法特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-learning%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">Q-learning伪代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F-Q%E5%80%BC%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F%EF%BC%88%E6%97%B6%E5%BA%8F%E7%89%88%E6%9C%AC%EF%BC%89%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">数学公式-Q值更新公式（时序版本）：</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        DL-Q learning算法
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">tyfelix</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-07-12T08:25:16.000Z" class="dt-published" itemprop="datePublished">2025-07-12</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">路径规划</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/tags/Q-learning/" rel="tag">Q-learning</a>, <a class="p-category" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h2 id="Q-learning简介"><a href="#Q-learning简介" class="headerlink" title="Q-learning简介"></a>Q-learning简介</h2><p>Q-learning算法是model- free的TD算法(Temporal Difference)之一。它的目的是让智能代理学习通过与环境互动来最大化累积奖励的最佳策略（optimal policy）。它的学习流程满足马尔可夫过程(MDP)。它属于值迭代（value iteration）方法，通过构建并更新“动作-状态价值函数”（Q函数），实现对环境的最优决策。</p>
+<blockquote>
+<p>Q1. 什么是<strong>model-free</strong>？</p>
+<ul>
+<li>**model-free（无模型）**意思是，该算法在学习如何做决策时 <strong>不需要提前知道环境的全部规则或转移概率</strong>。</li>
+<li>换句话说，Q-Learning <strong>不需要知道“做了某动作后，环境会怎么变化”这个模型</strong>，它只是通过与环境的反复交互、实践操作，不断总结经验，来学会什么是好决策。</li>
+<li>相对的还有<strong>model-based</strong>（有模型）算法，这类算法需要先<strong>学习或者已经有一个环境的模型</strong>，即知道“在某一个状态采取某个动作后，下一步最可能到达哪个状态”，然后用这些信息做决策。</li>
+</ul>
+<p>举例：</p>
+<ul>
+<li><p>Model-free就像是在玩一个新游戏时，完全不知道规则，通过不断尝试和反馈，慢慢学会如何玩得更好。</p>
+</li>
+<li><p>Model-based就像是事先有攻略或说明书，已经知道每个决定背后的后果，然后用这些知识决策。</p>
+<p><strong>这个地方的TD指的是边走边学，而不是等一整个回合结束。</strong></p>
+</li>
+</ul>
+</blockquote>
+<h2 id="Q-learning算法具体解读"><a href="#Q-learning算法具体解读" class="headerlink" title="Q-learning算法具体解读"></a>Q-learning算法具体解读</h2><ul>
+<li>Q-learning的核心思想</li>
+</ul>
+<p>Q-learning的目标是学习一个最优的Q函数 ${Q^*(s, a)}$，定义在状态 ${ s }$ 和动作 ${ a }$ 上，反映在状态 ${ s }$ 下采取动作 ${ a }$ 后能获得的最大期望回报（reward）。</p>
+<p>最优Q函数满足贝尔曼最优方程。 方程为：</p>
+<p><img src="/post_images/RL-bellman.png" alt="Bellman equation"></p>
+<p>其中：</p>
+<ul>
+<li>${ r }$：执行动作 ${ a }$ 后获得的即时奖励</li>
+<li>${ \gamma }$：折扣因子（ ${ 0 &lt; \gamma &lt; 1 }$ ）</li>
+<li>${ s_{t+1} }$：执行动作后的下一个状态</li>
+<li>${ a_{t+1} }$：下一个状态可能采取的动作</li>
+</ul>
+<hr>
+<h3 id="3-算法流程"><a href="#3-算法流程" class="headerlink" title="3. 算法流程"></a>3. 算法流程</h3><p><strong>核心步骤如下：</strong></p>
+<ol>
+<li>随机初始化 Q 表（ ${ Q(s, a) }$ ）</li>
+<li>重复以下过程（直至收敛）：<ul>
+<li>在当前状态 ${ s_t }$ 选择动作 ${ a_t }$（通常采用 ${\epsilon}$-贪婪策略）</li>
+<li>执行动作 ${ a_t }$，获得奖励 ${ r_{t+1} }$ 并转移到下一个状态 ${ s_{t+1} }$</li>
+<li>更新 Q 表：Q表格的更新使用下面的公式</li>
+</ul>
+</li>
+</ol>
+<p>${<br>Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma \max_{a_{t+1}} Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t) \right]<br>}$</p>
+<p>其中：</p>
+<ul>
+<li>${ \alpha }$：学习率（ ${ 0 &lt; \alpha \leq 1 }$ ）</li>
+<li>${ \max_{a_{t+1}} Q(s_{t+1}, a_{t+1}) }$：对下一个状态选择价值最大的动作</li>
+<li>${ r_{t+1} + \gamma \max_{a_{t+1}} Q(s_{t+1}, a_{t+1}) }$：目标值</li>
+<li>${ Q(s_t, a_t) }$：当前估计</li>
+</ul>
+<ol start="3">
+<li>将状态更新为 ${ s_{t+1} }$，继续上述过程</li>
+</ol>
+<blockquote>
+<p>其中 ${<br>\left [ r_{t+1} + \gamma \max_{a_{t+1}} Q(s_{t+1}, a_{t+1}) - Q(s_t, a_t) \right]<br>}$ 这个整体叫做 TD error，用来衡量 Q 表的更新是否偏离了真实的 Q 值。</p>
+</blockquote>
+<hr>
+<h3 id="4-算法特性"><a href="#4-算法特性" class="headerlink" title="4. 算法特性"></a>4. 算法特性</h3><ul>
+<li>Q-learning是<strong>离线、无模型、值函数型</strong>强化学习方法。</li>
+<li>能够在未知环境中通过试错学习最优策略。</li>
+<li>最终收敛于最优Q函数，只要每个动作在每个状态都有无限次被探索的机会。</li>
+</ul>
+<h2 id="Q-learning伪代码"><a href="#Q-learning伪代码" class="headerlink" title="Q-learning伪代码"></a>Q-learning伪代码</h2><h3 id="数学公式-Q值更新公式（时序版本）："><a href="#数学公式-Q值更新公式（时序版本）：" class="headerlink" title="数学公式-Q值更新公式（时序版本）："></a>数学公式-Q值更新公式（时序版本）：</h3><p>${<br>Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_{t+1} + \gamma \max_{a} Q(s_{t+1}, a) - Q(s_t, a_t) \right]<br>}$</p>
+<p>输入：</p>
+<ul>
+<li>S：状态空间</li>
+<li>A：动作空间</li>
+<li>α（alpha）：学习率 (0 &lt; α ≤ 1)</li>
+<li>γ（gamma）：折扣因子 (0 &lt; γ &lt; 1)</li>
+<li>ε（epsilon）：探索率 (0 ≤ ε ≤ 1)</li>
+<li>max_episodes：最大回合数</li>
+<li>max_steps：每回合最大步数</li>
+</ul>
+<p>初始化：<br>  对每一对 (s, a) ∈ S × A，初始化 Q(s, a) ← 任意值（如0），但是大部分论文都利用欧氏距离的倒数来初始化这个Q表格。这样可以加速收敛。</p>
+<p>算法主体：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">输入：学习率 α，折扣因子 γ，探索率 ε，最大回合数 max_episodes，最大步数 max_steps</span><br><span class="line">初始化 Q(s, a)，对所有状态-动作对赋初值</span><br><span class="line"></span><br><span class="line">for episode = 1 to max_episodes do</span><br><span class="line">    初始化起始状态 s₀</span><br><span class="line"></span><br><span class="line">    for t = 0 to max_steps-1 do</span><br><span class="line">        按 ε-贪婪策略选择动作 aₜ：</span><br><span class="line">            - 以概率 ε：随机选择 aₜ</span><br><span class="line">            - 以概率 1-ε：选择最大 Q 值对应的 aₜ</span><br><span class="line">        执行动作 aₜ，获得奖励 rₜ₊₁ 和新状态 sₜ₊₁，done 指示是否终止</span><br><span class="line"></span><br><span class="line">        Q(sₜ, aₜ) ← Q(sₜ, aₜ) + α [rₜ₊₁ + γ * maxₐ Q(sₜ₊₁, a) - Q(sₜ, aₜ)]</span><br><span class="line"></span><br><span class="line">        若 done == True:</span><br><span class="line">            跳出当前回合</span><br><span class="line"></span><br><span class="line">        状态转移: sₜ ← sₜ₊₁</span><br><span class="line"></span><br><span class="line">    （可选）ε随回合数进行衰减</span><br><span class="line"></span><br><span class="line">输出：Q(s, a)</span><br><span class="line"></span><br><span class="line">最终策略 π(s):</span><br><span class="line">    π(s) = argmaxₐ Q(s, a)</span><br></pre></td></tr></table></figure>
+
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Blogs</a></li>
+        
+          <li><a href="/categories/">catgories</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-learning%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">Q-learning简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-learning%E7%AE%97%E6%B3%95%E5%85%B7%E4%BD%93%E8%A7%A3%E8%AF%BB"><span class="toc-number">2.</span> <span class="toc-text">Q-learning算法具体解读</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">2.1.</span> <span class="toc-text">3. 算法流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%AE%97%E6%B3%95%E7%89%B9%E6%80%A7"><span class="toc-number">2.2.</span> <span class="toc-text">4. 算法特性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-learning%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="toc-number">3.</span> <span class="toc-text">Q-learning伪代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F-Q%E5%80%BC%E6%9B%B4%E6%96%B0%E5%85%AC%E5%BC%8F%EF%BC%88%E6%97%B6%E5%BA%8F%E7%89%88%E6%9C%AC%EF%BC%89%EF%BC%9A"><span class="toc-number">3.1.</span> <span class="toc-text">数学公式-Q值更新公式（时序版本）：</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&text=DL-Q learning算法"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&is_video=false&description=DL-Q learning算法"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DL-Q learning算法&body=Check out this article: http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&title=DL-Q learning算法"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&name=DL-Q learning算法&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/07/12/DL-Q-learning%E7%AE%97%E6%B3%95/&t=DL-Q learning算法"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2025
+    tyfelix
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Blogs</a></li><!--
+     --><!--
+       --><li><a href="/categories/">catgories</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

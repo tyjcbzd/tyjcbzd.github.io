@@ -1,386 +1,905 @@
+
+
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="从零开始学习ROS2，作为一个小白有各种奇怪的问题。主要还是对整个项目的构建过程不太了解。我学习的资源主要来自B站赵虚左老师以及鱼香ROS。下面是一些学习过程中遇到的关于文件结构和配置相关的疑惑： 1.ros2项目里面的文件结构以及对应的功能是什么？1.1 首先以一个经典的项目目录举例（一个功能包，一个节点）： 123456789101112131415161718192021ros2_ws&#x2F;├─">
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="tyfelix">
+  <meta name="keywords" content="tyfelix">
+  
+    <meta name="description" content="从零开始学习ROS2，作为一个小白有各种奇怪的问题。主要还是对整个项目的构建过程不太了解。我学习的资源主要来自B站赵虚左老师以及鱼香ROS。下面是一些学习过程中遇到的关于文件结构和配置相关的疑惑： 1.ros2项目里面的文件结构以及对应的功能是什么？ 1.1 首先以一个经典的项目目录举例（一个功能包，一个节点）： 123456789101112131415161718192021ros2_ws&#x2F;├">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ROS2学习之文件结构">
-<meta property="og:url" content="http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/index.html">
+<meta property="og:url" content="https://tyfelix.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/index.html">
 <meta property="og:site_name" content="Tang Yi&#39;s Blog">
-<meta property="og:description" content="从零开始学习ROS2，作为一个小白有各种奇怪的问题。主要还是对整个项目的构建过程不太了解。我学习的资源主要来自B站赵虚左老师以及鱼香ROS。下面是一些学习过程中遇到的关于文件结构和配置相关的疑惑： 1.ros2项目里面的文件结构以及对应的功能是什么？1.1 首先以一个经典的项目目录举例（一个功能包，一个节点）： 123456789101112131415161718192021ros2_ws&#x2F;├─">
+<meta property="og:description" content="从零开始学习ROS2，作为一个小白有各种奇怪的问题。主要还是对整个项目的构建过程不太了解。我学习的资源主要来自B站赵虚左老师以及鱼香ROS。下面是一些学习过程中遇到的关于文件结构和配置相关的疑惑： 1.ros2项目里面的文件结构以及对应的功能是什么？ 1.1 首先以一个经典的项目目录举例（一个功能包，一个节点）： 123456789101112131415161718192021ros2_ws&#x2F;├">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-02-16T20:10:40.000Z">
 <meta property="article:modified_time" content="2025-04-08T13:12:38.624Z">
 <meta property="article:author" content="tyfelix">
 <meta property="article:tag" content="文件结构">
-<meta name="twitter:card" content="summary">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/chicken.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>ROS2学习之文件结构</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>ROS2学习之文件结构 - Tang Yi&#39;s Blog</title>
 
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
-	
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2025/02/07/Elsevier%E6%8A%95%E7%A8%BF%E8%AE%B0%E5%BD%95/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&text=ROS2学习之文件结构"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&is_video=false&description=ROS2学习之文件结构"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ROS2学习之文件结构&body=Check out this article: http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&name=ROS2学习之文件结构&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&t=ROS2学习之文件结构"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-ros2%E9%A1%B9%E7%9B%AE%E9%87%8C%E9%9D%A2%E7%9A%84%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E4%BB%A5%E5%8F%8A%E5%AF%B9%E5%BA%94%E7%9A%84%E5%8A%9F%E8%83%BD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">1.ros2项目里面的文件结构以及对应的功能是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A6%82%E4%BD%95%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AAros2%E9%A1%B9%E7%9B%AE%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">2.如何从零构建一个ros2项目？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%A1%B9%E7%9B%AE%E9%87%8C%E9%9D%A2%E6%B6%89%E5%8F%8A%E5%88%B0%E4%BA%86cpp%E7%9A%84%E4%BD%BF%E7%94%A8%EF%BC%8C%E9%82%A3%E4%B9%88%E9%87%8C%E9%9D%A2%E7%9A%84CmakeList-txt%E5%8C%85%E5%90%AB%E7%9A%84%E5%86%85%E5%AE%B9%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%8Cxml%E6%96%87%E4%BB%B6%E6%98%AF%E5%A6%82%E4%BD%95%E5%8E%BB%E9%85%8D%E7%BD%AE%E7%9A%84%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">3.项目里面涉及到了cpp的使用，那么里面的CmakeList.txt包含的内容是什么意思，xml文件是如何去配置的？</span></a></li></ol>
-      </div>
-    
-  </span>
-</div>
-
-    
-    <div class="content index py4 ">
-        
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        ROS2学习之文件结构
-    </h1>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
 
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">tyfelix</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2025-02-16T20:10:40.000Z" class="dt-published" itemprop="datePublished">2025-02-16</time>
-        
-      
-    </div>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/ROS2/">ROS2</a>
-    </div>
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/" rel="tag">文件结构</a>
-    </div>
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
 
 
-    </div>
-  </header>
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <p>从零开始学习ROS2，作为一个小白有各种奇怪的问题。主要还是对整个项目的构建过程不太了解。我学习的资源主要来自<code>B站赵虚左老师</code>以及<code>鱼香ROS</code>。下面是一些学习过程中遇到的关于文件结构和配置相关的疑惑：</p>
-<h3 id="1-ros2项目里面的文件结构以及对应的功能是什么？"><a href="#1-ros2项目里面的文件结构以及对应的功能是什么？" class="headerlink" title="1.ros2项目里面的文件结构以及对应的功能是什么？"></a>1.ros2项目里面的文件结构以及对应的功能是什么？</h3><p>1.1 首先以一个经典的项目目录举例（一个功能包，一个节点）：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">ros2_ws/</span><br><span class="line">├── src/</span><br><span class="line">│ ├── my_package/</span><br><span class="line">│ │ ├── package.xml</span><br><span class="line">│ │ ├── CMakeLists.txt</span><br><span class="line">│ │ ├── src/</span><br><span class="line">│ │ │ └── my_node.cpp</span><br><span class="line">│ │ ├── launch/</span><br><span class="line">│ │ │ └── my_launch.launch.py</span><br><span class="line">│ │ ├── msg/</span><br><span class="line">│ │ │ └── MyMessage.msg</span><br><span class="line">│ │ ├── srv/</span><br><span class="line">│ │ │ └── MyService.srv</span><br><span class="line">│ │ ├── config/</span><br><span class="line">│ │ │ └── params.yaml</span><br><span class="line">│ │ └── tests/</span><br><span class="line">│ │ └── test_my_node.cpp</span><br><span class="line">----my_package2</span><br><span class="line">├── build/</span><br><span class="line">├── install/</span><br><span class="line">└── log/</span><br></pre></td></tr></table></figure>
 
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"tyfelix.com","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tang Yi&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/academic/" target="_self">
+                <i class="iconfont icon-book-fill"></i>
+                <span>Academic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/academic/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-book-fill"></i>
+                  <span>Academic</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>About</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ROS2学习之文件结构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-02-16 23:10" pubdate>
+          February 16, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.9k words
+        
+      </span>
+    
+
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ROS2学习之文件结构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>从零开始学习ROS2，作为一个小白有各种奇怪的问题。主要还是对整个项目的构建过程不太了解。我学习的资源主要来自<code>B站赵虚左老师</code>以及<code>鱼香ROS</code>。下面是一些学习过程中遇到的关于文件结构和配置相关的疑惑：</p>
+<h3 id="1-ros2项目里面的文件结构以及对应的功能是什么？">1.ros2项目里面的文件结构以及对应的功能是什么？</h3>
+<p>1.1 首先以一个经典的项目目录举例（一个功能包，一个节点）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python">ros2_ws/<br>├── src/<br>│ ├── my_package/<br>│ │ ├── package.xml<br>│ │ ├── CMakeLists.txt<br>│ │ ├── src/<br>│ │ │ └── my_node.cpp<br>│ │ ├── launch/<br>│ │ │ └── my_launch.launch.py<br>│ │ ├── msg/<br>│ │ │ └── MyMessage.msg<br>│ │ ├── srv/<br>│ │ │ └── MyService.srv<br>│ │ ├── config/<br>│ │ │ └── params.yaml<br>│ │ └── tests/<br>│ │ └── test_my_node.cpp<br>----my_package2<br>├── build/<br>├── install/<br>└── log/<br></code></pre></td></tr></table></figure>
 <p>1.2 实际开发过程中，要实现整体机器的运转，需要多个功能包，每个功能包下面可能包含一个或者多个节点：（以自动避开障碍物的小车为例子：）</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">ros2_ws/ <span class="comment"># 工作空间</span></span><br><span class="line">├── src/ <span class="comment"># 源代码目录</span></span><br><span class="line">│ ├── sensor_interface/ <span class="comment"># 传感器相关功能包</span></span><br><span class="line">│ │ ├── package.xml</span><br><span class="line">│ │ ├── CMakeLists.txt</span><br><span class="line">│ │ ├── src/</span><br><span class="line">│ │ │ ├── lidar_node.cpp <span class="comment"># 激光雷达数据处理</span></span><br><span class="line">│ │ │ ├── camera_node.cpp <span class="comment"># 摄像头数据处理</span></span><br><span class="line">│ │ │ └── imu_node.cpp <span class="comment"># IMU 数据处理</span></span><br><span class="line">│ │ ├── launch/</span><br><span class="line">│ │ │ └── sensor_launch.py <span class="comment"># 传感器启动文件</span></span><br><span class="line">│ │ ├── config/</span><br><span class="line">│ │ │ └── params.yaml <span class="comment"># 传感器参数配置文件</span></span><br><span class="line">│ │ └── urdf/ <span class="comment"># （如果需要）传感器模型描述文件</span></span><br><span class="line">│</span><br><span class="line">│ ├── perception/ <span class="comment"># 感知功能包</span></span><br><span class="line">│ │ ├── package.xml</span><br><span class="line">│ │ ├── CMakeLists.txt</span><br><span class="line">│ │ ├── src/</span><br><span class="line">│ │ │ ├── obstacle_detection_node.cpp <span class="comment"># 障碍物检测</span></span><br><span class="line">│ │ │ └── obstacle_tracker_node.cpp <span class="comment"># 障碍物追踪</span></span><br><span class="line">│ │ ├── launch/</span><br><span class="line">│ │ │ └── perception_launch.py <span class="comment"># 整合感知功能节点启动</span></span><br><span class="line">│ │ └── config/</span><br><span class="line">│ │ └── detection_params.yaml <span class="comment"># 障碍物检测参数</span></span><br><span class="line">│</span><br><span class="line">│ ├── planning/ <span class="comment"># 路径规划功能包</span></span><br><span class="line">│ │ ├── package.xml</span><br><span class="line">│ │ ├── CMakeLists.txt</span><br><span class="line">│ │ ├── src/</span><br><span class="line">│ │ │ ├── local_planner_node.cpp <span class="comment"># 本地路径规划</span></span><br><span class="line">│ │ │ └── global_planner_node.cpp <span class="comment"># 全局路径规划（可选）</span></span><br><span class="line">│ │ ├── launch/</span><br><span class="line">│ │ │ └── planning_launch.py <span class="comment"># 路径规划启动文件</span></span><br><span class="line">│ │ └── config/</span><br><span class="line">│ │ └── planner_params.yaml <span class="comment"># 路径规划参数</span></span><br><span class="line">│</span><br><span class="line">│ ├── control/ <span class="comment"># 小车运动控制功能包</span></span><br><span class="line">│ │ ├── package.xml</span><br><span class="line">│ │ ├── CMakeLists.txt</span><br><span class="line">│ │ ├── src/</span><br><span class="line">│ │ │ ├── speed_controller_node.cpp <span class="comment"># 速度控制</span></span><br><span class="line">│ │ │ ├── steering_controller_node.cpp<span class="comment"># 转向控制</span></span><br><span class="line">│ │ └── launch/</span><br><span class="line">│ │ └── control_launch.py <span class="comment"># 控制节点启动文件</span></span><br><span class="line">│</span><br><span class="line">│ ├── simulation/ <span class="comment"># 仿真相关功能包（可选）</span></span><br><span class="line">│ │ ├── package.xml</span><br><span class="line">│ │ ├── CMakeLists.txt</span><br><span class="line">│ │ ├── worlds/</span><br><span class="line">│ │ │ └── test_world.world <span class="comment"># 仿真环境场景</span></span><br><span class="line">│ │ ├── launch/</span><br><span class="line">│ │ │ └── gazebo_launch.py <span class="comment"># Gazebo 仿真启动</span></span><br><span class="line">│ │ ├── models/</span><br><span class="line">│ │ │ ├── car_description.urdf.xacro <span class="comment"># 小车的 URDF 模型</span></span><br><span class="line">│ │ │ └── lidar_sensor.urdf.xacro <span class="comment"># 激光雷达模型</span></span><br><span class="line">│ │ └── src/</span><br><span class="line">│ │ └── sim_bridge_node.cpp <span class="comment"># ROS 与仿真环境交互节点</span></span><br><span class="line">│</span><br><span class="line">│ └── bringup/ <span class="comment"># 系统整合功能包</span></span><br><span class="line">│ ├── package.xml</span><br><span class="line">│ ├── CMakeLists.txt</span><br><span class="line">│ ├── launch/</span><br><span class="line">│ │ ├── all_system_launch.py <span class="comment"># 启动整个系统的文件</span></span><br><span class="line">│ │ ├── rviz_launch.py <span class="comment"># 启动 RViz 可视化界面</span></span><br><span class="line">│ └── config/</span><br><span class="line">│ └── rviz_config.rviz <span class="comment"># RViz 配置文件 </span></span><br><span class="line">├── build/ <span class="comment"># 构建目录（colcon 自动生成）</span></span><br><span class="line">├── install/ <span class="comment"># 安装目录（构建后生成）</span></span><br><span class="line">└── log/ <span class="comment"># 日志目录（colcon 自动生成）</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="2-如何从零构建一个ros2项目？"><a href="#2-如何从零构建一个ros2项目？" class="headerlink" title="2.如何从零构建一个ros2项目？"></a>2.如何从零构建一个ros2项目？</h3><ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><code class="hljs python">ros2_ws/ <span class="hljs-comment"># 工作空间</span><br>├── src/ <span class="hljs-comment"># 源代码目录</span><br>│ ├── sensor_interface/ <span class="hljs-comment"># 传感器相关功能包</span><br>│ │ ├── package.xml<br>│ │ ├── CMakeLists.txt<br>│ │ ├── src/<br>│ │ │ ├── lidar_node.cpp <span class="hljs-comment"># 激光雷达数据处理</span><br>│ │ │ ├── camera_node.cpp <span class="hljs-comment"># 摄像头数据处理</span><br>│ │ │ └── imu_node.cpp <span class="hljs-comment"># IMU 数据处理</span><br>│ │ ├── launch/<br>│ │ │ └── sensor_launch.py <span class="hljs-comment"># 传感器启动文件</span><br>│ │ ├── config/<br>│ │ │ └── params.yaml <span class="hljs-comment"># 传感器参数配置文件</span><br>│ │ └── urdf/ <span class="hljs-comment"># （如果需要）传感器模型描述文件</span><br>│<br>│ ├── perception/ <span class="hljs-comment"># 感知功能包</span><br>│ │ ├── package.xml<br>│ │ ├── CMakeLists.txt<br>│ │ ├── src/<br>│ │ │ ├── obstacle_detection_node.cpp <span class="hljs-comment"># 障碍物检测</span><br>│ │ │ └── obstacle_tracker_node.cpp <span class="hljs-comment"># 障碍物追踪</span><br>│ │ ├── launch/<br>│ │ │ └── perception_launch.py <span class="hljs-comment"># 整合感知功能节点启动</span><br>│ │ └── config/<br>│ │ └── detection_params.yaml <span class="hljs-comment"># 障碍物检测参数</span><br>│<br>│ ├── planning/ <span class="hljs-comment"># 路径规划功能包</span><br>│ │ ├── package.xml<br>│ │ ├── CMakeLists.txt<br>│ │ ├── src/<br>│ │ │ ├── local_planner_node.cpp <span class="hljs-comment"># 本地路径规划</span><br>│ │ │ └── global_planner_node.cpp <span class="hljs-comment"># 全局路径规划（可选）</span><br>│ │ ├── launch/<br>│ │ │ └── planning_launch.py <span class="hljs-comment"># 路径规划启动文件</span><br>│ │ └── config/<br>│ │ └── planner_params.yaml <span class="hljs-comment"># 路径规划参数</span><br>│<br>│ ├── control/ <span class="hljs-comment"># 小车运动控制功能包</span><br>│ │ ├── package.xml<br>│ │ ├── CMakeLists.txt<br>│ │ ├── src/<br>│ │ │ ├── speed_controller_node.cpp <span class="hljs-comment"># 速度控制</span><br>│ │ │ ├── steering_controller_node.cpp<span class="hljs-comment"># 转向控制</span><br>│ │ └── launch/<br>│ │ └── control_launch.py <span class="hljs-comment"># 控制节点启动文件</span><br>│<br>│ ├── simulation/ <span class="hljs-comment"># 仿真相关功能包（可选）</span><br>│ │ ├── package.xml<br>│ │ ├── CMakeLists.txt<br>│ │ ├── worlds/<br>│ │ │ └── test_world.world <span class="hljs-comment"># 仿真环境场景</span><br>│ │ ├── launch/<br>│ │ │ └── gazebo_launch.py <span class="hljs-comment"># Gazebo 仿真启动</span><br>│ │ ├── models/<br>│ │ │ ├── car_description.urdf.xacro <span class="hljs-comment"># 小车的 URDF 模型</span><br>│ │ │ └── lidar_sensor.urdf.xacro <span class="hljs-comment"># 激光雷达模型</span><br>│ │ └── src/<br>│ │ └── sim_bridge_node.cpp <span class="hljs-comment"># ROS 与仿真环境交互节点</span><br>│<br>│ └── bringup/ <span class="hljs-comment"># 系统整合功能包</span><br>│ ├── package.xml<br>│ ├── CMakeLists.txt<br>│ ├── launch/<br>│ │ ├── all_system_launch.py <span class="hljs-comment"># 启动整个系统的文件</span><br>│ │ ├── rviz_launch.py <span class="hljs-comment"># 启动 RViz 可视化界面</span><br>│ └── config/<br>│ └── rviz_config.rviz <span class="hljs-comment"># RViz 配置文件 </span><br>├── build/ <span class="hljs-comment"># 构建目录（colcon 自动生成）</span><br>├── install/ <span class="hljs-comment"># 安装目录（构建后生成）</span><br>└── log/ <span class="hljs-comment"># 日志目录（colcon 自动生成）</span><br></code></pre></td></tr></table></figure>
+<h3 id="2-如何从零构建一个ros2项目？">2.如何从零构建一个ros2项目？</h3>
+<ul>
 <li>1.创建工作空间：手动创建工作空间以及对应的代码目录<code>src</code>—<code>mkdir -p work_space/src</code></li>
 </ul>
 <p>进入<code>src</code>，创建功能包<code>ros2 pkg create --build-type ament_cmake base_interfaces_demo</code>，其中（<code>--build-type ament_cmake </code>这个是默认的，也可以不写。<code>base_interface_demo</code>是功能包的名字）</p>
 <ul>
-<li><p>2.创建功能包：进入<code>src</code>目录里面的<code>base_interfaces_demo</code>功能包里面创建节点：（节点可以使用python也可以使用cpp，但是里面的接口只能使用cpp来创建，什么是接口呢？下面会写）</p>
+<li>
+<p>2.创建功能包：进入<code>src</code>目录里面的<code>base_interfaces_demo</code>功能包里面创建节点：（节点可以使用python也可以使用cpp，但是里面的接口只能使用cpp来创建，什么是接口呢？下面会写）</p>
 <ul>
-<li><p>基于<code>cpp</code>：<code>ros2 pkg create cpp_01_topic --build-type ament_cmake --dependencies rclcpp std_msgs base_interfaces_demo</code> 这里写这个<code>base_interfaces_demo</code>就是将这个认为成依赖</p>
+<li>
+<p>基于<code>cpp</code>：<code>ros2 pkg create cpp_01_topic --build-type ament_cmake --dependencies rclcpp std_msgs base_interfaces_demo</code> 这里写这个<code>base_interfaces_demo</code>就是将这个认为成依赖</p>
 </li>
-<li><p>基于<code>python</code>：<code>ros2 pkg create py01_topic --build-type ament_python --dependencies rclpy std_msgs base_interfaces_demo</code></p>
+<li>
+<p>基于<code>python</code>：<code>ros2 pkg create py01_topic --build-type ament_python --dependencies rclpy std_msgs base_interfaces_demo</code></p>
 </li>
 </ul>
 </li>
-<li><ol start="3">
+<li>
+<ol start="3">
 <li>编辑配置文件</li>
 </ol>
 </li>
-<li><ol start="4">
+<li>
+<ol start="4">
 <li>编译：<code>colcon build --package-select py01_topic</code>(选择编译哪一个功能包)</li>
 </ol>
 </li>
-<li><ol start="5">
+<li>
+<ol start="5">
 <li>重新设置路径: <code>. install/setup.bash</code></li>
 </ol>
 </li>
-<li><ol start="6">
+<li>
+<ol start="6">
 <li>运行节点：<code>ros2 run py01_topic demo01_talker_str_py</code>这里<code>run</code>的参数分别是功能包名称和节点名称</li>
 </ol>
 </li>
 </ul>
 <p>（c++功能包的构建信息主要在<code>package.xml</code>以及<code>CMakeLists.txt</code>中，而python功能包的构建信息主要包含在<code>packages.xml</code>以及<code>setup.py</code>中）</p>
-<h3 id="3-项目里面涉及到了cpp的使用，那么里面的CmakeList-txt包含的内容是什么意思，xml文件是如何去配置的？"><a href="#3-项目里面涉及到了cpp的使用，那么里面的CmakeList-txt包含的内容是什么意思，xml文件是如何去配置的？" class="headerlink" title="3.项目里面涉及到了cpp的使用，那么里面的CmakeList.txt包含的内容是什么意思，xml文件是如何去配置的？"></a>3.项目里面涉及到了cpp的使用，那么里面的<code>CmakeList.txt</code>包含的内容是什么意思，<code>xml</code>文件是如何去配置的？</h3><ol>
-<li><p><code>CMakeList.txt</code>的一个例子：首先这个文件的作用是什么？</p>
+<h3 id="3-项目里面涉及到了cpp的使用，那么里面的CmakeList-txt包含的内容是什么意思，xml文件是如何去配置的？">3.项目里面涉及到了cpp的使用，那么里面的<code>CmakeList.txt</code>包含的内容是什么意思，<code>xml</code>文件是如何去配置的？</h3>
+<ol>
+<li>
+<p><code>CMakeList.txt</code>的一个例子：首先这个文件的作用是什么？</p>
 </li>
-<li><p><strong>定义构建规则</strong>：<code>CMakeLists.txt</code> 告诉 CMake 如何编译和链接代码，生成可执行文件或库。</p>
+<li>
+<p><strong>定义构建规则</strong>：<code>CMakeLists.txt</code> 告诉 CMake 如何编译和链接代码，生成可执行文件或库。</p>
 </li>
-<li><p><strong>管理依赖项</strong>：它会声明当前项目所依赖的其他库或包（如 ROS 的核心库）。</p>
+<li>
+<p><strong>管理依赖项</strong>：它会声明当前项目所依赖的其他库或包（如 ROS 的核心库）。</p>
 </li>
-<li><p><strong>配置测试</strong>：如果项目包含测试代码，<code>CMakeLists.txt</code> 也会定义如何运行测试。</p>
+<li>
+<p><strong>配置测试</strong>：如果项目包含测试代码，<code>CMakeLists.txt</code> 也会定义如何运行测试。</p>
 </li>
-<li><p><strong>设置编译选项</strong>：可以通过它设置编译器选项（如警告级别、优化选项等）。</p>
+<li>
+<p><strong>设置编译选项</strong>：可以通过它设置编译器选项（如警告级别、优化选项等）。</p>
 </li>
 </ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cmake_minimum_required</span>(VERSION <span class="number">3.8</span>) # 作用：指定 CMake 的最低版本要求。这里要求 CMake 的版本至少为 <span class="number">3.8</span>。</span><br><span class="line"><span class="built_in">project</span>(base_interfaces_demo) # 定义项目的名称，这里是 base_interfaces_demo（和packages.xml里面的保持一致）</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES <span class="string">&quot;Clang&quot;</span>)</span><br><span class="line">  <span class="built_in">add_compile_options</span>(-Wall -Wextra -Wpedantic)</span><br><span class="line"><span class="built_in">endif</span>()</span><br><span class="line"># 作用：为 GCC 或 Clang 编译器添加编译选项。</span><br><span class="line">-Wall：启用所有常见的警告。</span><br><span class="line">-Wextra：启用额外的警告。</span><br><span class="line">-Wpedantic：启用严格的标准兼容性警告。</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line"><span class="meta"># find dependencies</span></span><br><span class="line"><span class="built_in">find_package</span>(ament_cmake REQUIRED)  查找并加载 ament_cmake 包，这是 ROS <span class="number">2</span> 的核心构建工具之一。</span><br><span class="line"><span class="meta"># uncomment the following section in order to fill in</span></span><br><span class="line"><span class="meta"># further dependencies manually.</span></span><br><span class="line"># <span class="built_in">find_package</span>(&lt;dependency&gt; REQUIRED) 如果项目依赖于 rclcpp，可以添加 <span class="built_in">find_package</span>(&lt;rclcpp&gt; REQUIRED)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(BUILD_TESTING) # 如果启用了测试（BUILD_TESTING 为 ON），则查找并加载 ament_lint_auto 包</span><br><span class="line">  <span class="built_in">find_package</span>(ament_lint_auto REQUIRED)</span><br><span class="line">  <span class="meta"># the following <span class="keyword">line</span> skips the linter which checks for copyrights</span></span><br><span class="line">  <span class="meta"># comment the <span class="keyword">line</span> when a copyright and license is added to all source files</span></span><br><span class="line">  <span class="built_in">set</span>(ament_cmake_copyright_FOUND TRUE)</span><br><span class="line">  <span class="meta"># the following <span class="keyword">line</span> skips cpplint (only works in a git repo)</span></span><br><span class="line">  <span class="meta"># comment the <span class="keyword">line</span> when this package is in a git repo and when</span></span><br><span class="line">  <span class="meta"># a copyright and license is added to all source files</span></span><br><span class="line">  <span class="built_in">set</span>(ament_cmake_cpplint_FOUND TRUE)</span><br><span class="line">  <span class="built_in">ament_lint_auto_find_test_dependencies</span>()</span><br><span class="line"><span class="built_in">endif</span>()</span><br><span class="line"></span><br><span class="line"><span class="built_in">ament_package</span>() # 标记当前项目为一个 ROS <span class="number">2</span> 包</span><br><span class="line"></span><br><span class="line">    </span><br></pre></td></tr></table></figure>
-
-
-
-
-
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.8</span>) # 作用：指定 CMake 的最低版本要求。这里要求 CMake 的版本至少为 <span class="hljs-number">3.8</span>。<br><span class="hljs-built_in">project</span>(base_interfaces_demo) # 定义项目的名称，这里是 base_interfaces_demo（和packages.xml里面的保持一致）<br><br><span class="hljs-keyword">if</span>(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES <span class="hljs-string">&quot;Clang&quot;</span>)<br>  <span class="hljs-built_in">add_compile_options</span>(-Wall -Wextra -Wpedantic)<br><span class="hljs-built_in">endif</span>()<br># 作用：为 GCC 或 Clang 编译器添加编译选项。<br>-Wall：启用所有常见的警告。<br>-Wextra：启用额外的警告。<br>-Wpedantic：启用严格的标准兼容性警告。<br>    <br>    <br><span class="hljs-meta"># find dependencies</span><br><span class="hljs-built_in">find_package</span>(ament_cmake REQUIRED)  查找并加载 ament_cmake 包，这是 ROS <span class="hljs-number">2</span> 的核心构建工具之一。<br><span class="hljs-meta"># uncomment the following section in order to fill in</span><br><span class="hljs-meta"># further dependencies manually.</span><br># <span class="hljs-built_in">find_package</span>(&lt;dependency&gt; REQUIRED) 如果项目依赖于 rclcpp，可以添加 <span class="hljs-built_in">find_package</span>(&lt;rclcpp&gt; REQUIRED)<br><br><span class="hljs-keyword">if</span>(BUILD_TESTING) # 如果启用了测试（BUILD_TESTING 为 ON），则查找并加载 ament_lint_auto 包<br>  <span class="hljs-built_in">find_package</span>(ament_lint_auto REQUIRED)<br>  <span class="hljs-meta"># the following <span class="hljs-keyword">line</span> skips the linter which checks for copyrights</span><br>  <span class="hljs-meta"># comment the <span class="hljs-keyword">line</span> when a copyright and license is added to all source files</span><br>  <span class="hljs-built_in">set</span>(ament_cmake_copyright_FOUND TRUE)<br>  <span class="hljs-meta"># the following <span class="hljs-keyword">line</span> skips cpplint (only works in a git repo)</span><br>  <span class="hljs-meta"># comment the <span class="hljs-keyword">line</span> when this package is in a git repo and when</span><br>  <span class="hljs-meta"># a copyright and license is added to all source files</span><br>  <span class="hljs-built_in">set</span>(ament_cmake_cpplint_FOUND TRUE)<br>  <span class="hljs-built_in">ament_lint_auto_find_test_dependencies</span>()<br><span class="hljs-built_in">endif</span>()<br><br><span class="hljs-built_in">ament_package</span>() # 标记当前项目为一个 ROS <span class="hljs-number">2</span> 包<br><br>    <br></code></pre></td></tr></table></figure>
 <p>关于xml文件,下面展示一个基础的常用的文件：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">----------------这个是调用了自定义接口的功能包</span><br><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;?xml-model href=<span class="string">&quot;http://download.ros.org/schema/package_format3.xsd&quot;</span> schematypens=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">package</span> <span class="attr">format</span>=<span class="string">&quot;3&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>py01_topic<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">description</span>&gt;</span>TODO: Package description<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">maintainer</span> <span class="attr">email</span>=<span class="string">&quot;tyfelix@todo.todo&quot;</span>&gt;</span>tyfelix<span class="tag">&lt;/<span class="name">maintainer</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">license</span>&gt;</span>TODO: License declaration<span class="tag">&lt;/<span class="name">license</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 依赖 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">depend</span>&gt;</span>rclpy<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">depend</span>&gt;</span>std_msgs<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">depend</span>&gt;</span>base_interfaces_demo<span class="tag">&lt;/<span class="name">depend</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">test_depend</span>&gt;</span>ament_copyright<span class="tag">&lt;/<span class="name">test_depend</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">test_depend</span>&gt;</span>ament_flake8<span class="tag">&lt;/<span class="name">test_depend</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">test_depend</span>&gt;</span>ament_pep257<span class="tag">&lt;/<span class="name">test_depend</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">test_depend</span>&gt;</span>python3-pytest<span class="tag">&lt;/<span class="name">test_depend</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">export</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">build_type</span>&gt;</span>ament_python<span class="tag">&lt;/<span class="name">build_type</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">export</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">package</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">---------------------------这个是自定义接口的功能包</span><br><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;?xml-model href=<span class="string">&quot;http://download.ros.org/schema/package_format3.xsd&quot;</span> schematypens=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">package</span> <span class="attr">format</span>=<span class="string">&quot;3&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>base_interfaces_demo<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">description</span>&gt;</span>TODO: Package description<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">maintainer</span> <span class="attr">email</span>=<span class="string">&quot;tyfelix@todo.todo&quot;</span>&gt;</span>tyfelix<span class="tag">&lt;/<span class="name">maintainer</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">license</span>&gt;</span>TODO: License declaration<span class="tag">&lt;/<span class="name">license</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">buildtool_depend</span>&gt;</span>ament_cmake<span class="tag">&lt;/<span class="name">buildtool_depend</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 自定义接口 --&gt;</span> 因为这个地方需要去生成功能包，所以这样写的</span><br><span class="line">  <span class="comment">&lt;!-- 编译依赖 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">build_depend</span>&gt;</span>rosidl_default_generators<span class="tag">&lt;/<span class="name">build_depend</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 执行依赖 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">exec_depend</span>&gt;</span>rosidl_default_runtime<span class="tag">&lt;/<span class="name">exec_depend</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 声明当前包所属的功能包组 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">member_of_group</span>&gt;</span>rosidl_interface_packages<span class="tag">&lt;/<span class="name">member_of_group</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="tag">&lt;<span class="name">test_depend</span>&gt;</span>ament_lint_auto<span class="tag">&lt;/<span class="name">test_depend</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">test_depend</span>&gt;</span>ament_lint_common<span class="tag">&lt;/<span class="name">test_depend</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">export</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">build_type</span>&gt;</span>ament_cmake<span class="tag">&lt;/<span class="name">build_type</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">export</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">package</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">描述：</span><br><span class="line">1.根标签</span><br><span class="line"> <span class="tag">&lt;<span class="name">package</span>&gt;</span>：该标签为整个 xml 文件的根标签，format 属性用来声明文件的格式版本。</span><br><span class="line">2.元信息标签</span><br><span class="line"> <span class="tag">&lt;<span class="name">name</span>&gt;</span>：包名；</span><br><span class="line"> <span class="tag">&lt;<span class="name">version</span>&gt;</span>：包的版本号；</span><br><span class="line"> <span class="tag">&lt;<span class="name">description</span>&gt;</span>：包的描述信息；</span><br><span class="line"> <span class="tag">&lt;<span class="name">maintainer</span>&gt;</span>：维护者信息；</span><br><span class="line"> <span class="tag">&lt;<span class="name">license</span>&gt;</span>：软件协议；</span><br><span class="line"> <span class="tag">&lt;<span class="name">url</span>&gt;</span>：包的介绍网址；</span><br><span class="line"> <span class="tag">&lt;<span class="name">author</span>&gt;</span>：包的作者信息。</span><br><span class="line">3.依赖项</span><br><span class="line"> <span class="tag">&lt;<span class="name">buildtool_depend</span>&gt;</span>：声明编译工具依赖；</span><br><span class="line"> <span class="tag">&lt;<span class="name">build_depend</span>&gt;</span>：声明编译依赖；</span><br><span class="line"> <span class="tag">&lt;<span class="name">build_export_depend</span>&gt;</span>：声明根据此包构建库所需依赖；</span><br><span class="line"> <span class="tag">&lt;<span class="name">exec_depend</span>&gt;</span>：声明执行时依赖；</span><br><span class="line"> <span class="tag">&lt;<span class="name">depend</span>&gt;</span>：相当于<span class="tag">&lt;<span class="name">build_depend</span>&gt;</span>、<span class="tag">&lt;<span class="name">build_export_depend</span>&gt;</span>、<span class="tag">&lt;<span class="name">exec_depend</span>&gt;</span>三者的集成；（相当于直接调用就写一个，如果是自己创建的接口，那么需要指明使用三个）</span><br><span class="line"> <span class="tag">&lt;<span class="name">test_depend</span>&gt;</span>：声明测试依赖；</span><br><span class="line"> <span class="tag">&lt;<span class="name">doc_depend</span>&gt;</span>：声明构建文档依赖。</span><br></pre></td></tr></table></figure>
-
-
-
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs xml">----------------这个是调用了自定义接口的功能包<br><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;?xml-model href=<span class="hljs-string">&quot;http://download.ros.org/schema/package_format3.xsd&quot;</span> schematypens=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">package</span> <span class="hljs-attr">format</span>=<span class="hljs-string">&quot;3&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>py01_topic<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>0.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">description</span>&gt;</span>TODO: Package description<span class="hljs-tag">&lt;/<span class="hljs-name">description</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">maintainer</span> <span class="hljs-attr">email</span>=<span class="hljs-string">&quot;tyfelix@todo.todo&quot;</span>&gt;</span>tyfelix<span class="hljs-tag">&lt;/<span class="hljs-name">maintainer</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">license</span>&gt;</span>TODO: License declaration<span class="hljs-tag">&lt;/<span class="hljs-name">license</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- 依赖 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">depend</span>&gt;</span>rclpy<span class="hljs-tag">&lt;/<span class="hljs-name">depend</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">depend</span>&gt;</span>std_msgs<span class="hljs-tag">&lt;/<span class="hljs-name">depend</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">depend</span>&gt;</span>base_interfaces_demo<span class="hljs-tag">&lt;/<span class="hljs-name">depend</span>&gt;</span><br><br>  <span class="hljs-tag">&lt;<span class="hljs-name">test_depend</span>&gt;</span>ament_copyright<span class="hljs-tag">&lt;/<span class="hljs-name">test_depend</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">test_depend</span>&gt;</span>ament_flake8<span class="hljs-tag">&lt;/<span class="hljs-name">test_depend</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">test_depend</span>&gt;</span>ament_pep257<span class="hljs-tag">&lt;/<span class="hljs-name">test_depend</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">test_depend</span>&gt;</span>python3-pytest<span class="hljs-tag">&lt;/<span class="hljs-name">test_depend</span>&gt;</span><br><br>  <span class="hljs-tag">&lt;<span class="hljs-name">export</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">build_type</span>&gt;</span>ament_python<span class="hljs-tag">&lt;/<span class="hljs-name">build_type</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">export</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">package</span>&gt;</span><br><br><br>---------------------------这个是自定义接口的功能包<br><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span><br><span class="hljs-meta">&lt;?xml-model href=<span class="hljs-string">&quot;http://download.ros.org/schema/package_format3.xsd&quot;</span> schematypens=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">package</span> <span class="hljs-attr">format</span>=<span class="hljs-string">&quot;3&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>base_interfaces_demo<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>0.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">description</span>&gt;</span>TODO: Package description<span class="hljs-tag">&lt;/<span class="hljs-name">description</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">maintainer</span> <span class="hljs-attr">email</span>=<span class="hljs-string">&quot;tyfelix@todo.todo&quot;</span>&gt;</span>tyfelix<span class="hljs-tag">&lt;/<span class="hljs-name">maintainer</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">license</span>&gt;</span>TODO: License declaration<span class="hljs-tag">&lt;/<span class="hljs-name">license</span>&gt;</span><br><br>  <span class="hljs-tag">&lt;<span class="hljs-name">buildtool_depend</span>&gt;</span>ament_cmake<span class="hljs-tag">&lt;/<span class="hljs-name">buildtool_depend</span>&gt;</span><br><br><span class="hljs-comment">&lt;!-- 自定义接口 --&gt;</span> 因为这个地方需要去生成功能包，所以这样写的<br>  <span class="hljs-comment">&lt;!-- 编译依赖 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">build_depend</span>&gt;</span>rosidl_default_generators<span class="hljs-tag">&lt;/<span class="hljs-name">build_depend</span>&gt;</span><br>  <span class="hljs-comment">&lt;!-- 执行依赖 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">exec_depend</span>&gt;</span>rosidl_default_runtime<span class="hljs-tag">&lt;/<span class="hljs-name">exec_depend</span>&gt;</span><br>  <span class="hljs-comment">&lt;!-- 声明当前包所属的功能包组 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">member_of_group</span>&gt;</span>rosidl_interface_packages<span class="hljs-tag">&lt;/<span class="hljs-name">member_of_group</span>&gt;</span><br>  <br>  <span class="hljs-tag">&lt;<span class="hljs-name">test_depend</span>&gt;</span>ament_lint_auto<span class="hljs-tag">&lt;/<span class="hljs-name">test_depend</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">test_depend</span>&gt;</span>ament_lint_common<span class="hljs-tag">&lt;/<span class="hljs-name">test_depend</span>&gt;</span><br><br>  <span class="hljs-tag">&lt;<span class="hljs-name">export</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">build_type</span>&gt;</span>ament_cmake<span class="hljs-tag">&lt;/<span class="hljs-name">build_type</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">export</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">package</span>&gt;</span><br><br><br>描述：<br>1.根标签<br> <span class="hljs-tag">&lt;<span class="hljs-name">package</span>&gt;</span>：该标签为整个 xml 文件的根标签，format 属性用来声明文件的格式版本。<br>2.元信息标签<br> <span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>：包名；<br> <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>：包的版本号；<br> <span class="hljs-tag">&lt;<span class="hljs-name">description</span>&gt;</span>：包的描述信息；<br> <span class="hljs-tag">&lt;<span class="hljs-name">maintainer</span>&gt;</span>：维护者信息；<br> <span class="hljs-tag">&lt;<span class="hljs-name">license</span>&gt;</span>：软件协议；<br> <span class="hljs-tag">&lt;<span class="hljs-name">url</span>&gt;</span>：包的介绍网址；<br> <span class="hljs-tag">&lt;<span class="hljs-name">author</span>&gt;</span>：包的作者信息。<br>3.依赖项<br> <span class="hljs-tag">&lt;<span class="hljs-name">buildtool_depend</span>&gt;</span>：声明编译工具依赖；<br> <span class="hljs-tag">&lt;<span class="hljs-name">build_depend</span>&gt;</span>：声明编译依赖；<br> <span class="hljs-tag">&lt;<span class="hljs-name">build_export_depend</span>&gt;</span>：声明根据此包构建库所需依赖；<br> <span class="hljs-tag">&lt;<span class="hljs-name">exec_depend</span>&gt;</span>：声明执行时依赖；<br> <span class="hljs-tag">&lt;<span class="hljs-name">depend</span>&gt;</span>：相当于<span class="hljs-tag">&lt;<span class="hljs-name">build_depend</span>&gt;</span>、<span class="hljs-tag">&lt;<span class="hljs-name">build_export_depend</span>&gt;</span>、<span class="hljs-tag">&lt;<span class="hljs-name">exec_depend</span>&gt;</span>三者的集成；（相当于直接调用就写一个，如果是自己创建的接口，那么需要指明使用三个）<br> <span class="hljs-tag">&lt;<span class="hljs-name">test_depend</span>&gt;</span>：声明测试依赖；<br> <span class="hljs-tag">&lt;<span class="hljs-name">doc_depend</span>&gt;</span>：声明构建文档依赖。<br></code></pre></td></tr></table></figure>
 <p>对于python功能包，描述如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> setuptools <span class="keyword">import</span> setup</span><br><span class="line">package_name = <span class="string">&#x27;pkg02_helloworld_py&#x27;</span></span><br><span class="line">setup(</span><br><span class="line">name=package_name, <span class="comment"># 包名</span></span><br><span class="line">version=<span class="string">&#x27;0.0.0&#x27;</span>, <span class="comment"># 版本</span></span><br><span class="line">packages=[package_name], <span class="comment"># 功能包列表</span></span><br><span class="line">data_files=[ <span class="comment">#需要被安装的文件以及安装路径</span></span><br><span class="line">猛狮集训营</span><br><span class="line"><span class="number">42</span></span><br><span class="line">(<span class="string">&#x27;share/ament_index/resource_index/packages&#x27;</span>,</span><br><span class="line">[<span class="string">&#x27;resource/&#x27;</span> + package_name]),</span><br><span class="line">(<span class="string">&#x27;share/&#x27;</span> + package_name, [<span class="string">&#x27;package.xml&#x27;</span>]),</span><br><span class="line">],</span><br><span class="line">install_requires=[<span class="string">&#x27;setuptools&#x27;</span>], <span class="comment"># 安装依赖</span></span><br><span class="line">zip_safe=<span class="literal">True</span>,</span><br><span class="line">maintainer=<span class="string">&#x27;ros2&#x27;</span>, <span class="comment"># 维护者</span></span><br><span class="line">maintainer_email=<span class="string">&#x27;ros2@todo.todo&#x27;</span>, <span class="comment"># 维护者 email</span></span><br><span class="line">description=<span class="string">&#x27;TODO: Package description&#x27;</span>, <span class="comment"># 包描述</span></span><br><span class="line">license=<span class="string">&#x27;TODO: License declaration&#x27;</span>, <span class="comment"># 软件协议</span></span><br><span class="line">tests_require=[<span class="string">&#x27;pytest&#x27;</span>], <span class="comment"># 测试依赖</span></span><br><span class="line">entry_points=&#123;</span><br><span class="line"><span class="string">&#x27;console_scripts&#x27;</span>: [</span><br><span class="line"><span class="comment"># 映射源文件与可执行文件</span></span><br><span class="line"><span class="string">&#x27;helloworld = pkg02_helloworld_py.helloworld:main&#x27;</span></span><br><span class="line">],</span><br><span class="line">&#125;,</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> setuptools <span class="hljs-keyword">import</span> setup<br>package_name = <span class="hljs-string">&#x27;pkg02_helloworld_py&#x27;</span><br>setup(<br>name=package_name, <span class="hljs-comment"># 包名</span><br>version=<span class="hljs-string">&#x27;0.0.0&#x27;</span>, <span class="hljs-comment"># 版本</span><br>packages=[package_name], <span class="hljs-comment"># 功能包列表</span><br>data_files=[ <span class="hljs-comment">#需要被安装的文件以及安装路径</span><br>猛狮集训营<br><span class="hljs-number">42</span><br>(<span class="hljs-string">&#x27;share/ament_index/resource_index/packages&#x27;</span>,<br>[<span class="hljs-string">&#x27;resource/&#x27;</span> + package_name]),<br>(<span class="hljs-string">&#x27;share/&#x27;</span> + package_name, [<span class="hljs-string">&#x27;package.xml&#x27;</span>]),<br>],<br>install_requires=[<span class="hljs-string">&#x27;setuptools&#x27;</span>], <span class="hljs-comment"># 安装依赖</span><br>zip_safe=<span class="hljs-literal">True</span>,<br>maintainer=<span class="hljs-string">&#x27;ros2&#x27;</span>, <span class="hljs-comment"># 维护者</span><br>maintainer_email=<span class="hljs-string">&#x27;ros2@todo.todo&#x27;</span>, <span class="hljs-comment"># 维护者 email</span><br>description=<span class="hljs-string">&#x27;TODO: Package description&#x27;</span>, <span class="hljs-comment"># 包描述</span><br>license=<span class="hljs-string">&#x27;TODO: License declaration&#x27;</span>, <span class="hljs-comment"># 软件协议</span><br>tests_require=[<span class="hljs-string">&#x27;pytest&#x27;</span>], <span class="hljs-comment"># 测试依赖</span><br>entry_points=&#123;<br><span class="hljs-string">&#x27;console_scripts&#x27;</span>: [<br><span class="hljs-comment"># 映射源文件与可执行文件</span><br><span class="hljs-string">&#x27;helloworld = pkg02_helloworld_py.helloworld:main&#x27;</span><br>],<br>&#125;,<br>)<br><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/ROS2/" class="category-chain-item">ROS2</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/" class="print-no-link">#文件结构</a>
+      
+    </div>
+  
+</div>
 
 
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ROS2学习之文件结构</div>
+      <div>https://tyfelix.com/2025/02/16/ROS2学习之基础扫盲/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>tyfelix</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>February 16, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
   </div>
-</article>
 
 
 
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/" title="ROS2学习之通信概述">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ROS2学习之通信概述</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/02/07/Elsevier%E6%8A%95%E7%A8%BF%E8%AE%B0%E5%BD%95/" title="Elsevier投稿记录">
+                        <span class="hidden-mobile">Elsevier投稿记录</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
 
-    <div id="nav-footer" style="display: none">
-      <ul>
-        
-          <li><a href="/">Home</a></li>
-        
-          <li><a href="/about/">About</a></li>
-        
-          <li><a href="/archives/">Blogs</a></li>
-        
-          <li><a href="/categories/">catgories</a></li>
-        
-      </ul>
-    </div>
-
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-ros2%E9%A1%B9%E7%9B%AE%E9%87%8C%E9%9D%A2%E7%9A%84%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84%E4%BB%A5%E5%8F%8A%E5%AF%B9%E5%BA%94%E7%9A%84%E5%8A%9F%E8%83%BD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">1.ros2项目里面的文件结构以及对应的功能是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%A6%82%E4%BD%95%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AAros2%E9%A1%B9%E7%9B%AE%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">2.如何从零构建一个ros2项目？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%A1%B9%E7%9B%AE%E9%87%8C%E9%9D%A2%E6%B6%89%E5%8F%8A%E5%88%B0%E4%BA%86cpp%E7%9A%84%E4%BD%BF%E7%94%A8%EF%BC%8C%E9%82%A3%E4%B9%88%E9%87%8C%E9%9D%A2%E7%9A%84CmakeList-txt%E5%8C%85%E5%90%AB%E7%9A%84%E5%86%85%E5%AE%B9%E6%98%AF%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D%EF%BC%8Cxml%E6%96%87%E4%BB%B6%E6%98%AF%E5%A6%82%E4%BD%95%E5%8E%BB%E9%85%8D%E7%BD%AE%E7%9A%84%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">3.项目里面涉及到了cpp的使用，那么里面的CmakeList.txt包含的内容是什么意思，xml文件是如何去配置的？</span></a></li></ol>
+            
+          </article>
+        </div>
       </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&text=ROS2学习之文件结构"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&is_video=false&description=ROS2学习之文件结构"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ROS2学习之文件结构&body=Check out this article: http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&title=ROS2学习之文件结构"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&name=ROS2学习之文件结构&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/16/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E5%9F%BA%E7%A1%80%E6%89%AB%E7%9B%B2/&t=ROS2学习之文件结构"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
     </div>
 
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
 
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2025
-    tyfelix
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
     </div>
-    <!-- styles -->
+  </div>
+</div>
 
+    
 
+    
+  </main>
 
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
-
+  <footer>
+    <div class="footer-inner">
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
     })
-  })
   </script>
 
 
-<script src="/js/main.js"></script>
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
 </body>
 </html>

@@ -1,15 +1,28 @@
+
+
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="tyfelix">
+  <meta name="keywords" content="tyfelix">
+  
     <meta name="description" content="什么是A*算法？A-Star算法是一种用于图搜索和路径规划的启发式搜索算法。它可以在一个图结构中找到从起点到目标点的最低成本路径。A_算法被广泛应用于机器人导航、游戏开发以及解决最短路径等问题。  在学习 A* 算法之前，需要了解 贪婪最佳优先搜索算法 和 Dijkstra 方法的基本思想，以及它们各自的优缺点。同时，还需要理解为什么 A* 算法能够结合两种方法的优点，并做到既高效又能保证找到最">
 <meta property="og:type" content="article">
 <meta property="og:title" content="A*算法讲解">
-<meta property="og:url" content="http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/index.html">
+<meta property="og:url" content="https://tyfelix.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/index.html">
 <meta property="og:site_name" content="Tang Yi&#39;s Blog">
 <meta property="og:description" content="什么是A*算法？A-Star算法是一种用于图搜索和路径规划的启发式搜索算法。它可以在一个图结构中找到从起点到目标点的最低成本路径。A_算法被广泛应用于机器人导航、游戏开发以及解决最短路径等问题。  在学习 A* 算法之前，需要了解 贪婪最佳优先搜索算法 和 Dijkstra 方法的基本思想，以及它们各自的优缺点。同时，还需要理解为什么 A* 算法能够结合两种方法的优点，并做到既高效又能保证找到最">
 <meta property="og:locale" content="en_US">
@@ -18,311 +31,692 @@
 <meta property="article:author" content="tyfelix">
 <meta property="article:tag" content="全局路径规划">
 <meta property="article:tag" content="基于图搜索的路径规划">
-<meta name="twitter:card" content="summary">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/chicken.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>A*算法讲解</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>A*算法讲解 - Tang Yi&#39;s Blog</title>
 
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
-	
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&text=A*算法讲解"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&is_video=false&description=A*算法讲解"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=A*算法讲解&body=Check out this article: http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&name=A*算法讲解&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&t=A*算法讲解"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%B4%AA%E5%A9%AA%E6%9C%80%E4%BD%B3%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95-Greedy-Best-First-Search"><span class="toc-number">1.</span> <span class="toc-text">1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3"><span class="toc-number">1.1.</span> <span class="toc-text">基本思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">1.4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="toc-number">1.5.</span> <span class="toc-text">举例说明</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Dijkstra-%E7%AE%97%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">2. Dijkstra 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3-1"><span class="toc-number">2.1.</span> <span class="toc-text">基本思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0-1"><span class="toc-number">2.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">2.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="toc-number">2.4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B"><span class="toc-number">2.5.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-A-%E7%AE%97%E6%B3%95%EF%BC%9A%E7%BB%BC%E5%90%88%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%B3%95%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">3.</span> <span class="toc-text">3. A* 算法：综合两种方法的改进</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="toc-number">3.1.</span> <span class="toc-text">核心思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0-2"><span class="toc-number">3.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-2"><span class="toc-number">3.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-2"><span class="toc-number">3.4.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0"><span class="toc-number">4.</span> <span class="toc-text">4. 启发式函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0"><span class="toc-number">5.</span> <span class="toc-text">常见的启发式函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB%EF%BC%88Manhattan-Distance%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">1. 曼哈顿距离（Manhattan Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="toc-number">5.1.1.</span> <span class="toc-text">示例：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%BD%93%E5%89%8D%E4%BD%8D%E7%BD%AE%E6%98%AF-1-1-%EF%BC%8C%E7%9B%AE%E6%A0%87%E7%82%B9%E6%98%AF-4-3-%EF%BC%8C%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB%E4%B8%BA%EF%BC%9A-h-n-1-4-1-3-3-2-5"><span class="toc-number"></span> <span class="toc-text">如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：$${h(n) &#x3D; |1-4| + |1-3| &#x3D; 3 + 2 &#x3D; 5}$$</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB%EF%BC%88Euclidean-Distance%EF%BC%89"><span class="toc-number">0.1.</span> <span class="toc-text">2. 欧几里得距离（Euclidean Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-1"><span class="toc-number">0.1.1.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%AF%B9%E8%A7%92%E8%B7%9D%E7%A6%BB%EF%BC%88Diagonal-Distance%EF%BC%89"><span class="toc-number">0.2.</span> <span class="toc-text">3. 对角距离（Diagonal Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-2"><span class="toc-number">0.2.1.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%8A%A0%E6%9D%83%E5%90%AF%E5%8F%91%E5%BC%8F%EF%BC%88Weighted-Heuristic%EF%BC%89"><span class="toc-number">0.3.</span> <span class="toc-text">4. 加权启发式（Weighted Heuristic）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-3"><span class="toc-number">0.3.1.</span> <span class="toc-text">示例：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%87%E5%A6%82%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB%E4%B8%BA-10%EF%BC%8C%E9%80%89%E6%8B%A9-w-1-5-%EF%BC%8C%E5%88%99%EF%BC%9A-h-n-w-cdot-h-text-euclidean-1-5-cdot-10-15"><span class="toc-number"></span> <span class="toc-text">假如欧几里得距离为 10，选择 ( w&#x3D;1.5 )，则：$${h(n) &#x3D; w \cdot h_{\text{euclidean}} &#x3D; 1.5 \cdot 10 &#x3D; 15}$$</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E9%99%85%E4%BD%9C%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">二、启发式函数的实际作用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%8C%9C%E6%B5%8B%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%8E%A5%E8%BF%91%E7%9B%AE%E6%A0%87"><span class="toc-number">1.1.</span> <span class="toc-text">1. 猜测如何快速接近目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%97%A0%E9%9A%9C%E7%A2%8D%E5%81%87%E8%AE%BE%E4%B8%8B%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">2. 无障碍假设下的启发式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%A4%AA%E4%BD%8E%E4%BC%B0%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">3. 为什么不能太低估？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E7%9A%84%E8%A6%81%E6%B1%82"><span class="toc-number">1.4.</span> <span class="toc-text">启发式函数的要求</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%E6%97%B6%E7%9A%84%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE"><span class="toc-number">2.</span> <span class="toc-text">三、实际应用时的选择建议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%AF%94%E8%BE%83%E4%B8%89%E7%A7%8D%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">5. 比较三种算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E7%A4%BA%E4%BE%8B%EF%BC%9A%E7%BD%91%E6%A0%BC%E5%9C%B0%E5%9B%BE%E4%B8%8A%E7%9A%84%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92"><span class="toc-number">4.</span> <span class="toc-text">6. 示例：网格地图上的路径规划</span></a></li></ol>
-      </div>
-    
-  </span>
-</div>
-
-    
-    <div class="content index py4 ">
-        
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        A*算法讲解
-    </h1>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
 
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">tyfelix</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2025-02-25T17:24:22.000Z" class="dt-published" itemprop="datePublished">2025-02-25</time>
-        
-      
-    </div>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">路径规划</a>
-    </div>
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" rel="tag">全局路径规划</a>, <a class="p-category" href="/tags/%E5%9F%BA%E4%BA%8E%E5%9B%BE%E6%90%9C%E7%B4%A2%E7%9A%84%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" rel="tag">基于图搜索的路径规划</a>
-    </div>
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
 
 
-    </div>
-  </header>
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <ul>
+
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"tyfelix.com","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tang Yi&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/academic/" target="_self">
+                <i class="iconfont icon-book-fill"></i>
+                <span>Academic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/academic/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-book-fill"></i>
+                  <span>Academic</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>About</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="A*算法讲解"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-02-25 20:24" pubdate>
+          February 25, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.7k words
+        
+      </span>
+    
+
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">A*算法讲解</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ul>
 <li>什么是<code>A*</code>算法？A-Star算法是一种用于图搜索和路径规划的启发式搜索算法。它可以在一个图结构中找到从起点到目标点的最低成本路径。A_算法被广泛应用于机器人导航、游戏开发以及解决最短路径等问题。</li>
 </ul>
 <p>在学习 <code>A*</code> 算法之前，需要了解 <strong>贪婪最佳优先搜索算法</strong> 和 <strong>Dijkstra</strong> 方法的基本思想，以及它们各自的优缺点。同时，还需要理解为什么 <code>A*</code> 算法能够结合两种方法的优点，并做到既高效又能保证找到最优解。</p>
-<h3 id="1-贪婪最佳优先搜索算法-Greedy-Best-First-Search"><a href="#1-贪婪最佳优先搜索算法-Greedy-Best-First-Search" class="headerlink" title="1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)"></a><strong>1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)</strong></h3><h4 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a><strong>基本思想</strong></h4><ul>
+<h3 id="1-贪婪最佳优先搜索算法-Greedy-Best-First-Search"><strong>1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)</strong></h3>
+<h4 id="基本思想"><strong>基本思想</strong></h4>
+<ul>
 <li>贪婪算法是一种以局部最优解为原则的搜索方式。</li>
 <li>在每一步决策时，优先选择离目标最近的节点，期望快速逼近目标点。</li>
 <li>使用<strong>启发式函数 (h(n))</strong> 来估计当前节点 (n) 到目标节点的距离。</li>
 <li>贪婪算法的优先级完全由 (h(n)) 决定，而不考虑已走路径的代价 (g(n))。</li>
 </ul>
-<h4 id="评价函数"><a href="#评价函数" class="headerlink" title="评价函数"></a><strong>评价函数</strong></h4><p>贪婪算法的评价函数为：<br>$${f(n) &#x3D; h(n)}$$</p>
+<h4 id="评价函数"><strong>评价函数</strong></h4>
+<p>贪婪算法的评价函数为：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{f(n) = h(n)}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></span></p>
 <ul>
-<li>${h(n)}$：当前节点 ${n}$到目标节点的<strong>估计代价</strong>，通常是基于启发式计算的距离（如欧几里得距离、曼哈顿距离等）。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{h(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span>：当前节点 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">{n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span></span></span>到目标节点的<strong>估计代价</strong>，通常是基于启发式计算的距离（如欧几里得距离、曼哈顿距离等）。</li>
 </ul>
-<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a><strong>优点</strong></h4><ul>
+<h4 id="优点"><strong>优点</strong></h4>
+<ul>
 <li><strong>速度快</strong>：直接优先选择离目标最近的节点，能快速找到接近目标的路径，计算效率较高。</li>
-<li><strong>简单易实现</strong>：只需要维护每个节点的启发式函数 ${h(n)}$ 值。</li>
+<li><strong>简单易实现</strong>：只需要维护每个节点的启发式函数 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{h(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span> 值。</li>
 </ul>
-<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a><strong>缺点</strong></h4><ul>
-<li><strong>有可能无法找到最优解</strong>：因为只考虑了目标的方向，而忽略了当前路径的总代价 ${g(n)}$。路径可能会绕远路。</li>
-<li><strong>容易陷入局部最优</strong>：如果当前节点的 ${h(n)}$ 是最低的，但如果途中存在障碍，可能会使算法停滞。</li>
+<h4 id="缺点"><strong>缺点</strong></h4>
+<ul>
+<li><strong>有可能无法找到最优解</strong>：因为只考虑了目标的方向，而忽略了当前路径的总代价 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{g(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span>。路径可能会绕远路。</li>
+<li><strong>容易陷入局部最优</strong>：如果当前节点的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{h(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span> 是最低的，但如果途中存在障碍，可能会使算法停滞。</li>
 </ul>
-<h4 id="举例说明"><a href="#举例说明" class="headerlink" title="举例说明"></a><strong>举例说明</strong></h4><ul>
+<h4 id="举例说明"><strong>举例说明</strong></h4>
+<ul>
 <li>假设地图中有一个从起点 (A) 到目标点 (B) 的任务，中间存在一个障碍物墙。</li>
 <li>贪婪算法可能会沿着直线接近目标点 (B)，但由于障碍物的存在，算法可能会长时间绕不开墙障碍，甚至陷入死锁。</li>
 </ul>
 <hr>
-<h3 id="2-Dijkstra-算法"><a href="#2-Dijkstra-算法" class="headerlink" title="2. Dijkstra 算法"></a><strong>2. Dijkstra 算法</strong></h3><h4 id="基本思想-1"><a href="#基本思想-1" class="headerlink" title="基本思想"></a><strong>基本思想</strong></h4><ul>
+<h3 id="2-Dijkstra-算法"><strong>2. Dijkstra 算法</strong></h3>
+<h4 id="基本思想-2"><strong>基本思想</strong></h4>
+<ul>
 <li>Dijkstra 是一种逐层扩展探索的算法，在每一步都优先选择<strong>当前路径代价最小</strong>的节点。</li>
 <li>与贪婪算法不同，它完全不考虑目标点的位置，而是从起点出发，逐一扩展所有可能的路径，最终保证找到的是<strong>全局最优路径</strong>。</li>
 </ul>
-<h4 id="评价函数-1"><a href="#评价函数-1" class="headerlink" title="评价函数"></a><strong>评价函数</strong></h4><p>它的评价函数为：<br>$${f(n) &#x3D; g(n)}$$</p>
+<h4 id="评价函数-2"><strong>评价函数</strong></h4>
+<p>它的评价函数为：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{f(n) = g(n)}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></span></p>
 <ul>
-<li>${g(n)}$：从起点到当前节点  ${n}$ 的路径代价。通常表示路径长度（距离）或者实际行走的代价。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{g(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span>：从起点到当前节点  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">{n}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord"><span class="mord mathnormal">n</span></span></span></span></span> 的路径代价。通常表示路径长度（距离）或者实际行走的代价。</li>
 </ul>
-<h4 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a><strong>优点</strong></h4><ul>
-<li><strong>能够找到最优解</strong>：因为它以 ${g(n)}$为依据逐层扩展，最终能遍历所有可能的解空间，找到路径代价最小的解。</li>
+<h4 id="优点-2"><strong>优点</strong></h4>
+<ul>
+<li><strong>能够找到最优解</strong>：因为它以 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{g(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span>为依据逐层扩展，最终能遍历所有可能的解空间，找到路径代价最小的解。</li>
 <li><strong>具有稳定性</strong>：无论在什么设置下，总能保证路径是最优路径。</li>
 </ul>
-<h4 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a><strong>缺点</strong></h4><ul>
+<h4 id="缺点-2"><strong>缺点</strong></h4>
+<ul>
 <li><strong>计算开销较大</strong>：Dijkstra 必须访问所有可能的节点才能确定最终解，因此在较大的图中效率较低。</li>
 <li><strong>不直观</strong>：算法并不关注目标点的位置，可能会遍历较远或无关的地方，增加开销。</li>
 </ul>
-<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a><strong>举例</strong></h4><ul>
+<h4 id="举例"><strong>举例</strong></h4>
+<ul>
 <li>假设从 (A) 到 (B) 的任务，中途有多个障碍物。</li>
 <li>即使目标点 (B) 离当前节点很近，Dijkstra 同样可能先探索远离 (B) 的其他可能路径。因此它的效率不如贪婪算法。</li>
 </ul>
 <hr>
-<h3 id="3-A-算法：综合两种方法的改进"><a href="#3-A-算法：综合两种方法的改进" class="headerlink" title="3. A* 算法：综合两种方法的改进"></a><strong>3. <code>A*</code> 算法：综合两种方法的改进</strong></h3><h4 id="核心思路"><a href="#核心思路" class="headerlink" title="核心思路"></a><strong>核心思路</strong></h4><p>A* 算法结合了贪婪算法和 Dijkstra 的优点，在每一步选择节点时，同时考虑：</p>
+<h3 id="3-A-算法：综合两种方法的改进"><strong>3. <code>A*</code> 算法：综合两种方法的改进</strong></h3>
+<h4 id="核心思路"><strong>核心思路</strong></h4>
+<p>A* 算法结合了贪婪算法和 Dijkstra 的优点，在每一步选择节点时，同时考虑：</p>
 <ol>
-<li><strong>当前节点到起点的路径代价  ${g(n)}$</strong>（确保路径是最优的）。</li>
-<li><strong>当前节点到目标的估计代价  ${h(n)}$</strong>（确保朝目标方向前进）。</li>
+<li><strong>当前节点到起点的路径代价  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{g(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></strong>（确保路径是最优的）。</li>
+<li><strong>当前节点到目标的估计代价  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{h(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></strong>（确保朝目标方向前进）。</li>
 </ol>
 <p>通过这两项的加权和，<code>A*</code> 算法实现了兼顾效率和全局最优的平衡。</p>
-<h4 id="评价函数-2"><a href="#评价函数-2" class="headerlink" title="评价函数"></a><strong>评价函数</strong></h4><p>A* 算法的评价函数为：<br>$${f(n) &#x3D; g(n) + h(n)}$$</p>
+<h4 id="评价函数-3"><strong>评价函数</strong></h4>
+<p>A* 算法的评价函数为：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>+</mo><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{f(n) = g(n) + h(n)}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></span></p>
 <ul>
-<li><strong>${g(n)}$</strong>：从起点到当前节点的实际路径代价。这部分使得 <code>A* </code>能够像 <code>Dijkstra</code>一样权衡整体路径的代价。</li>
-<li><strong>${h(n)}$</strong>：从当前节点到目标节点的启发式估计代价。这部分使得 <code>A* </code>有方向性，更快速地逼近目标。</li>
+<li><strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{g(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></strong>：从起点到当前节点的实际路径代价。这部分使得 <code>A* </code>能够像 <code>Dijkstra</code>一样权衡整体路径的代价。</li>
+<li><strong><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{h(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span></strong>：从当前节点到目标节点的启发式估计代价。这部分使得 <code>A* </code>有方向性，更快速地逼近目标。</li>
 </ul>
-<h4 id="优点-2"><a href="#优点-2" class="headerlink" title="优点"></a><strong>优点</strong></h4><ul>
-<li><strong>保证最优解</strong>：如果${g(n)}$ 是<strong>可接受估计函数（admissible heuristic）</strong>，<code>A*</code> 能够保证找到最优路径。</li>
+<h4 id="优点-3"><strong>优点</strong></h4>
+<ul>
+<li><strong>保证最优解</strong>：如果<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{g(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span> 是<strong>可接受估计函数（admissible heuristic）</strong>，<code>A*</code> 能够保证找到最优路径。</li>
 <li><strong>效率高</strong>：相比 Dijkstra，<code>A* </code>加入了启发式函数 (h(n))，减少了不必要的节点遍历。</li>
 <li><strong>可以根据启发式函数调整</strong>：灵活地选择不同的启发式函数适配不同的问题。</li>
 </ul>
-<h4 id="缺点-2"><a href="#缺点-2" class="headerlink" title="缺点"></a><strong>缺点</strong></h4><ul>
+<h4 id="缺点-3"><strong>缺点</strong></h4>
+<ul>
 <li><strong>依赖启发式函数的选择</strong>：启发式函数设计不佳（如估计值过大或偏差）会导致准确性或效率下降。</li>
 <li><strong>开销不小</strong>：虽然比 Dijkstra 更高效，但在某些复杂情况下也需要遍历大量节点，依旧存在性能瓶颈。</li>
 </ul>
 <hr>
-<h3 id="4-启发式函数"><a href="#4-启发式函数" class="headerlink" title="4. 启发式函数"></a><strong>4. 启发式函数</strong></h3><p>在 A* 算法中，启发式函数 ${h(n)}$ 的选择至关重要。但是这存在一个问题：<strong>在不知道障碍物的情况下，如何设计启发式函数</strong>，或者说，如何去“猜测”到目标点的代价。</p>
-<p><strong>关键思路：尽量简单且高效</strong><br>启发式函数只是一个<strong>估计</strong>，它不需要绝对准确，但需要具有一定的指导性。它的目标是为搜索提供方向，使你尽可能接近目标（在路径规划中叫“引导搜索过程”）。</p>
-<h3 id="常见的启发式函数"><a href="#常见的启发式函数" class="headerlink" title="常见的启发式函数"></a>常见的启发式函数</h3><p>在没有障碍物或不知道障碍物分布的情况下，可以使用纯几何信息来设计启发式函数。以下是一些常见的几何估计方式：</p>
-<h4 id="1-曼哈顿距离（Manhattan-Distance）"><a href="#1-曼哈顿距离（Manhattan-Distance）" class="headerlink" title="1. 曼哈顿距离（Manhattan Distance）"></a>1. <strong>曼哈顿距离（Manhattan Distance）</strong></h4><ul>
-<li><p><strong>适用场景</strong>：当只能水平或垂直移动时，比如你在用栅格地图，且每一步只能沿网格的水平方向或垂直方向走。</p>
+<h3 id="4-启发式函数"><strong>4. 启发式函数</strong></h3>
+<p>在 A* 算法中，启发式函数 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{h(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span> 的选择至关重要。但是这存在一个问题：<strong>在不知道障碍物的情况下，如何设计启发式函数</strong>，或者说，如何去“猜测”到目标点的代价。</p>
+<p><strong>关键思路：尽量简单且高效</strong><br>
+启发式函数只是一个<strong>估计</strong>，它不需要绝对准确，但需要具有一定的指导性。它的目标是为搜索提供方向，使你尽可能接近目标（在路径规划中叫“引导搜索过程”）。</p>
+<h3 id="常见的启发式函数">常见的启发式函数</h3>
+<p>在没有障碍物或不知道障碍物分布的情况下，可以使用纯几何信息来设计启发式函数。以下是一些常见的几何估计方式：</p>
+<h4 id="1-曼哈顿距离（Manhattan-Distance）">1. <strong>曼哈顿距离（Manhattan Distance）</strong></h4>
+<ul>
+<li>
+<p><strong>适用场景</strong>：当只能水平或垂直移动时，比如你在用栅格地图，且每一步只能沿网格的水平方向或垂直方向走。</p>
 </li>
-<li><p><strong>计算公式</strong>：<br>$${ h(n) &#x3D; |x_{\text{current}} - x_{\text{goal}}| + |y_{\text{current}} - y_{\text{goal}}|}$$</p>
+<li>
+<p><strong>计算公式</strong>：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">∣</mi><msub><mi>x</mi><mtext>current</mtext></msub><mo>−</mo><msub><mi>x</mi><mtext>goal</mtext></msub><mi mathvariant="normal">∣</mi><mo>+</mo><mi mathvariant="normal">∣</mi><msub><mi>y</mi><mtext>current</mtext></msub><mo>−</mo><msub><mi>y</mi><mtext>goal</mtext></msub><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">{ h(n) = |x_{\text{current}} - x_{\text{goal}}| + |y_{\text{current}} - y_{\text{goal}}|}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">current</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">goal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">current</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">goal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mord">∣</span></span></span></span></span></span></p>
 </li>
-<li><p><strong>特点</strong>：它总是估计当前位置和目标点之间的路径步数，忽略了对角移动和障碍物。</p>
+<li>
+<p><strong>特点</strong>：它总是估计当前位置和目标点之间的路径步数，忽略了对角移动和障碍物。</p>
 </li>
 </ul>
-<h5 id="示例："><a href="#示例：" class="headerlink" title="示例："></a>示例：</h5><h2 id="如果当前位置是-1-1-，目标点是-4-3-，曼哈顿距离为：-h-n-1-4-1-3-3-2-5"><a href="#如果当前位置是-1-1-，目标点是-4-3-，曼哈顿距离为：-h-n-1-4-1-3-3-2-5" class="headerlink" title="如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：$${h(n) &#x3D; |1-4| + |1-3| &#x3D; 3 + 2 &#x3D; 5}$$"></a>如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：<br>$${h(n) &#x3D; |1-4| + |1-3| &#x3D; 3 + 2 &#x3D; 5}$$</h2><h4 id="2-欧几里得距离（Euclidean-Distance）"><a href="#2-欧几里得距离（Euclidean-Distance）" class="headerlink" title="2. 欧几里得距离（Euclidean Distance）"></a>2. <strong>欧几里得距离（Euclidean Distance）</strong></h4><ul>
+<h5 id="示例：">示例：</h5>
+<p>如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="normal">∣</mi><mn>1</mn><mo>−</mo><mn>4</mn><mi mathvariant="normal">∣</mi><mo>+</mo><mi mathvariant="normal">∣</mi><mn>1</mn><mo>−</mo><mn>3</mn><mi mathvariant="normal">∣</mi><mo>=</mo><mn>3</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">{h(n) = |1-4| + |1-3| = 3 + 2 = 5}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">∣1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">4∣</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">∣1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">3∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">5</span></span></span></span></span></span></p>
+<hr>
+<h4 id="2-欧几里得距离（Euclidean-Distance）">2. <strong>欧几里得距离（Euclidean Distance）</strong></h4>
+<ul>
 <li><strong>适用场景</strong>：当机器人或者实体可以移动到任何方向（包括对角线）时，比如让机器人沿直线移动。</li>
-<li><strong>计算公式</strong>：<br>$${<br> h(n) &#x3D; \sqrt{(x_{\text{current}} - x_{\text{goal}})^2 + (y_{\text{current}} - y_{\text{goal}})^2}<br>}$$</li>
-<li><strong>特点</strong>：<ul>
+<li><strong>计算公式</strong>：</li>
+</ul>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><msqrt><mrow><mo stretchy="false">(</mo><msub><mi>x</mi><mtext>current</mtext></msub><mo>−</mo><msub><mi>x</mi><mtext>goal</mtext></msub><msup><mo stretchy="false">)</mo><mn>2</mn></msup><mo>+</mo><mo stretchy="false">(</mo><msub><mi>y</mi><mtext>current</mtext></msub><mo>−</mo><msub><mi>y</mi><mtext>goal</mtext></msub><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow></msqrt></mrow><annotation encoding="application/x-tex">{
+ h(n) = \sqrt{(x_{\text{current}} - x_{\text{goal}})^2 + (y_{\text{current}} - y_{\text{goal}})^2}
+}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.84em;vertical-align:-0.5742em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.2658em;"><span class="svg-align" style="top:-3.8em;"><span class="pstrut" style="height:3.8em;"></span><span class="mord" style="padding-left:1em;"><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">current</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">goal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7401em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">current</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">goal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7401em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-3.2258em;"><span class="pstrut" style="height:3.8em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.88em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.88em" viewBox="0 0 400000 1944" preserveAspectRatio="xMinYMin slice"><path d="M983 90
+l0 -0
+c4,-6.7,10,-10,18,-10 H400000v40
+H1013.1s-83.4,268,-264.1,840c-180.7,572,-277,876.3,-289,913c-4.7,4.7,-12.7,7,-24,7
+s-12,0,-12,0c-1.3,-3.3,-3.7,-11.7,-7,-25c-35.3,-125.3,-106.7,-373.3,-214,-744
+c-10,12,-21,25,-33,39s-32,39,-32,39c-6,-5.3,-15,-14,-27,-26s25,-30,25,-30
+c26.7,-32.7,52,-63,76,-91s52,-60,52,-60s208,722,208,722
+c56,-175.3,126.3,-397.3,211,-666c84.7,-268.7,153.8,-488.2,207.5,-658.5
+c53.7,-170.3,84.5,-266.8,92.5,-289.5z
+M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.5742em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<ul>
+<li><strong>特点</strong>：
+<ul>
 <li>欧几里得距离给出当前位置到目标点的物理直线距离，因此在无障碍物场景中是最优估计。</li>
 <li>它不关心环境中的障碍物，但能提供“直线方向”的引导。</li>
 </ul>
 </li>
 </ul>
-<h5 id="示例：-1"><a href="#示例：-1" class="headerlink" title="示例："></a>示例：</h5><p>当前位置 ( 1, 1 )，目标点 ( 4, 3 )，欧几里得距离：<br>$${<br>h(n) &#x3D; \sqrt{(1-4)^2 + (1-3)^2} &#x3D; \sqrt{9 + 4} &#x3D; \sqrt{13} \approx 3.6<br>}$$</p>
+<h5 id="示例：-2">示例：</h5>
+<p>当前位置 ( 1, 1 )，目标点 ( 4, 3 )，欧几里得距离：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><msqrt><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mn>4</mn><msup><mo stretchy="false">)</mo><mn>2</mn></msup><mo>+</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mn>3</mn><msup><mo stretchy="false">)</mo><mn>2</mn></msup></mrow></msqrt><mo>=</mo><msqrt><mrow><mn>9</mn><mo>+</mo><mn>4</mn></mrow></msqrt><mo>=</mo><msqrt><mn>13</mn></msqrt><mo>≈</mo><mn>3.6</mn></mrow><annotation encoding="application/x-tex">{
+h(n) = \sqrt{(1-4)^2 + (1-3)^2} = \sqrt{9 + 4} = \sqrt{13} \approx 3.6
+}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.24em;vertical-align:-0.2561em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9839em;"><span class="svg-align" style="top:-3.2em;"><span class="pstrut" style="height:3.2em;"></span><span class="mord" style="padding-left:1em;"><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">4</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7401em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">3</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7401em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-2.9439em;"><span class="pstrut" style="height:3.2em;"></span><span class="hide-tail" style="min-width:1.02em;height:1.28em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.28em" viewBox="0 0 400000 1296" preserveAspectRatio="xMinYMin slice"><path d="M263,681c0.7,0,18,39.7,52,119
+c34,79.3,68.167,158.7,102.5,238c34.3,79.3,51.8,119.3,52.5,120
+c340,-704.7,510.7,-1060.3,512,-1067
+l0 -0
+c4.7,-7.3,11,-11,19,-11
+H40000v40H1012.3
+s-271.3,567,-271.3,567c-38.7,80.7,-84,175,-136,283c-52,108,-89.167,185.3,-111.5,232
+c-22.3,46.7,-33.8,70.3,-34.5,71c-4.7,4.7,-12.3,7,-23,7s-12,-1,-12,-1
+s-109,-253,-109,-253c-72.7,-168,-109.3,-252,-110,-252c-10.7,8,-22,16.7,-34,26
+c-22,17.3,-33.3,26,-34,26s-26,-26,-26,-26s76,-59,76,-59s76,-60,76,-60z
+M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2561em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9144em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">9</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">4</span></span></span><span style="top:-2.8744em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1256em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9561em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">13</span></span></span><span style="top:-2.9161em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.0839em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">3.6</span></span></span></span></span></span></p>
 <hr>
-<h4 id="3-对角距离（Diagonal-Distance）"><a href="#3-对角距离（Diagonal-Distance）" class="headerlink" title="3. 对角距离（Diagonal Distance）"></a>3. <strong>对角距离（Diagonal Distance）</strong></h4><ul>
-<li><strong>适用场景</strong>：适合栅格地图机器人能沿对角方向移动，同时垂直&#x2F;水平&#x2F;对角线步长不同的场景。</li>
-<li><strong>计算公式</strong>：<br>$${<br>h(n) &#x3D; D_{\text{straight}} \times (\Delta x + \Delta y) + (D_{\text{diagonal}} - 2 \times D_{\text{straight}}) \times \text{min}(\Delta x, \Delta y)<br>}$$<br>其中：<ul>
-<li>${\Delta x &#x3D; |x_{\text{current}} - x_{\text{goal}}|}$</li>
-<li>${\Delta y &#x3D; |y_{\text{current}} - y_{\text{goal}}|}$</li>
-<li>${D_{\text{straight}}}$：代表水平&#x2F;垂直移动代价（常常设为1）。</li>
-<li>${D_{\text{diagonal}}}$：代表对角移动代价（常常设为 ${\sqrt{2}}$）。</li>
+<h4 id="3-对角距离（Diagonal-Distance）">3. <strong>对角距离（Diagonal Distance）</strong></h4>
+<ul>
+<li><strong>适用场景</strong>：适合栅格地图机器人能沿对角方向移动，同时垂直/水平/对角线步长不同的场景。</li>
+<li><strong>计算公式</strong>：</li>
 </ul>
-</li>
-<li><strong>特点</strong>：<ul>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>D</mi><mtext>straight</mtext></msub><mo>×</mo><mo stretchy="false">(</mo><mi mathvariant="normal">Δ</mi><mi>x</mi><mo>+</mo><mi mathvariant="normal">Δ</mi><mi>y</mi><mo stretchy="false">)</mo><mo>+</mo><mo stretchy="false">(</mo><msub><mi>D</mi><mtext>diagonal</mtext></msub><mo>−</mo><mn>2</mn><mo>×</mo><msub><mi>D</mi><mtext>straight</mtext></msub><mo stretchy="false">)</mo><mo>×</mo><mtext>min</mtext><mo stretchy="false">(</mo><mi mathvariant="normal">Δ</mi><mi>x</mi><mo separator="true">,</mo><mi mathvariant="normal">Δ</mi><mi>y</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{
+h(n) = D_{\text{straight}} \times (\Delta x + \Delta y) + (D_{\text{diagonal}} - 2 \times D_{\text{straight}}) \times \text{min}(\Delta x, \Delta y)
+}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">straight</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord">Δ</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">Δ</span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">diagonal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">straight</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord">min</span></span><span class="mopen">(</span><span class="mord">Δ</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">Δ</span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mclose">)</span></span></span></span></span></span></p>
+<p>其中：</p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>x</mi><mo>=</mo><mi mathvariant="normal">∣</mi><msub><mi>x</mi><mtext>current</mtext></msub><mo>−</mo><msub><mi>x</mi><mtext>goal</mtext></msub><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">{\Delta x = |x_{\text{current}} - x_{\text{goal}}|}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord">Δ</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">current</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">goal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mord">∣</span></span></span></span></span></li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mi>y</mi><mo>=</mo><mi mathvariant="normal">∣</mi><msub><mi>y</mi><mtext>current</mtext></msub><mo>−</mo><msub><mi>y</mi><mtext>goal</mtext></msub><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">{\Delta y = |y_{\text{current}} - y_{\text{goal}}|}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord">Δ</span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">current</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">goal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mord">∣</span></span></span></span></span></li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mtext>straight</mtext></msub></mrow><annotation encoding="application/x-tex">{D_{\text{straight}}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">straight</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></span>：代表水平/垂直移动代价（常常设为1）。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mtext>diagonal</mtext></msub></mrow><annotation encoding="application/x-tex">{D_{\text{diagonal}}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">diagonal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span></span>：代表对角移动代价（常常设为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mn>2</mn></msqrt></mrow><annotation encoding="application/x-tex">{\sqrt{2}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1328em;"></span><span class="mord"><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9072em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span></span></span><span style="top:-2.8672em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1328em;"><span></span></span></span></span></span></span></span></span></span>）。</li>
+<li><strong>特点</strong>：
+<ul>
 <li>它类似欧几里得距离的简化版本，但是使用加法代替平方根计算，更快速。</li>
 <li>在环境允许对角线移动的情况下是一个优秀的估计方法。</li>
 </ul>
 </li>
 </ul>
-<h5 id="示例：-2"><a href="#示例：-2" class="headerlink" title="示例："></a>示例：</h5><p>当前位置 ( (1, 1) )，目标点 ( (4, 3) )，假设<br>${D_{\text{straight}} &#x3D; 1}$ ，${D_{\text{diagonal}} &#x3D; \sqrt{2} }$：<br>$${<br>h(n) &#x3D; 1 \times (3+2) + (\sqrt{2} - 2 \times 1) \times \min(3, 2) &#x3D; 5 + (\sqrt{2} - 2) \times 2<br>}$$</p>
+<h5 id="示例：-3">示例：</h5>
+<p>当前位置 ( (1, 1) )，目标点 ( (4, 3) )，假设<br>
+<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mtext>straight</mtext></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">{D_{\text{straight}} = 1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">straight</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">1</span></span></span></span></span> ，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mtext>diagonal</mtext></msub><mo>=</mo><msqrt><mn>2</mn></msqrt></mrow><annotation encoding="application/x-tex">{D_{\text{diagonal}} = \sqrt{2} }</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1933em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.0278em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">diagonal</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9072em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span></span></span><span style="top:-2.8672em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1328em;"><span></span></span></span></span></span></span></span></span></span>：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn><mo>×</mo><mo stretchy="false">(</mo><mn>3</mn><mo>+</mo><mn>2</mn><mo stretchy="false">)</mo><mo>+</mo><mo stretchy="false">(</mo><msqrt><mn>2</mn></msqrt><mo>−</mo><mn>2</mn><mo>×</mo><mn>1</mn><mo stretchy="false">)</mo><mo>×</mo><mi>min</mi><mo>⁡</mo><mo stretchy="false">(</mo><mn>3</mn><mo separator="true">,</mo><mn>2</mn><mo stretchy="false">)</mo><mo>=</mo><mn>5</mn><mo>+</mo><mo stretchy="false">(</mo><msqrt><mn>2</mn></msqrt><mo>−</mo><mn>2</mn><mo stretchy="false">)</mo><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">{
+h(n) = 1 \times (3+2) + (\sqrt{2} - 2 \times 1) \times \min(3, 2) = 5 + (\sqrt{2} - 2) \times 2
+}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2061em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9561em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span></span></span><span style="top:-2.9161em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.0839em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mop">min</span><span class="mopen">(</span><span class="mord">3</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mopen">(</span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9561em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span></span></span><span style="top:-2.9161em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.0839em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">2</span></span></span></span></span></span></p>
 <hr>
-<h4 id="4-加权启发式（Weighted-Heuristic）"><a href="#4-加权启发式（Weighted-Heuristic）" class="headerlink" title="4. 加权启发式（Weighted Heuristic）"></a>4. <strong>加权启发式（Weighted Heuristic）</strong></h4><ul>
-<li><strong>适用场景</strong>：当知道  ${h(n)}$  可能偏低而希望加快算法速度时，可以引入权重  w ：<br>$${<br>  h(n) &#x3D; w \cdot \text{启发式方法}<br>  }$$<ul>
+<h4 id="4-加权启发式（Weighted-Heuristic）">4. <strong>加权启发式（Weighted Heuristic）</strong></h4>
+<ul>
+<li><strong>适用场景</strong>：当知道  <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{h(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span>  可能偏低而希望加快算法速度时，可以引入权重  w ：<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>w</mi><mo>⋅</mo><mtext>启发式方法</mtext></mrow><annotation encoding="application/x-tex">{
+  h(n) = w \cdot \text{启发式方法}
+}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.0269em;">w</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord text"><span class="mord cjk_fallback">启发式方法</span></span></span></span></span></span></span></p>
+<ul>
 <li>如果 ( w&gt;1 )，启发式估计会更加“激进”，算法速度更快但可能牺牲最优解。</li>
 <li>如果 ( w&lt;1 )，启发式估计更保守，但解会更准确。</li>
 </ul>
 </li>
 </ul>
-<h5 id="示例：-3"><a href="#示例：-3" class="headerlink" title="示例："></a>示例：</h5><h2 id="假如欧几里得距离为-10，选择-w-1-5-，则：-h-n-w-cdot-h-text-euclidean-1-5-cdot-10-15"><a href="#假如欧几里得距离为-10，选择-w-1-5-，则：-h-n-w-cdot-h-text-euclidean-1-5-cdot-10-15" class="headerlink" title="假如欧几里得距离为 10，选择 ( w&#x3D;1.5 )，则：$${h(n) &#x3D; w \cdot h_{\text{euclidean}} &#x3D; 1.5 \cdot 10 &#x3D; 15}$$"></a>假如欧几里得距离为 10，选择 ( w&#x3D;1.5 )，则：<br>$${<br>h(n) &#x3D; w \cdot h_{\text{euclidean}} &#x3D; 1.5 \cdot 10 &#x3D; 15<br>}$$</h2><h3 id="二、启发式函数的实际作用"><a href="#二、启发式函数的实际作用" class="headerlink" title="二、启发式函数的实际作用"></a><strong>二、启发式函数的实际作用</strong></h3><h4 id="1-猜测如何快速接近目标"><a href="#1-猜测如何快速接近目标" class="headerlink" title="1. 猜测如何快速接近目标"></a><strong>1. 猜测如何快速接近目标</strong></h4><p>启发式函数不需要考虑障碍物，它只是用来让算法知道“往哪个方向走得更接近目标”。</p>
-<h4 id="2-无障碍假设下的启发式"><a href="#2-无障碍假设下的启发式" class="headerlink" title="2. 无障碍假设下的启发式"></a><strong>2. 无障碍假设下的启发式</strong></h4><p>在没有障碍物时，最优的路径是直线路径（例如欧几里得距离）。即使有障碍物，启发式函数依然提供了一个大致方向，但会根据代价函数 ( g(n) ) 一步步调整路径。</p>
-<h4 id="3-为什么不能太低估？"><a href="#3-为什么不能太低估？" class="headerlink" title="3. 为什么不能太低估？"></a><strong>3. 为什么不能太低估？</strong></h4><p>启发式函数如果估计过低，算法会更倾向于穷尽搜索，类似于 Dijkstra 算法，效率较低。因此，启发式函数应尽可能接近实际代价，但不得过高（否则可能找不到最优解）。</p>
-<h4 id="启发式函数的要求"><a href="#启发式函数的要求" class="headerlink" title="启发式函数的要求"></a><strong>启发式函数的要求</strong></h4><ol>
-<li><strong>可接受性（Admissible）</strong>：${h(n)}$ 永远不超过当前节点到目标节点的真实最优代价。</li>
-<li><strong>一致性（Consistent &#x2F; Monotone）</strong>：对于任意两个相邻节点 ${(n, n’)}$，满足：<br>$${<br>h(n) \leq c(n, n’) + h(n’)<br>}$$</li>
-</ol>
-<p>其中 ${c(n, n’)}$ 是从 (n) 到 (n’) 的代价）<br>满足这两个条件时，A* 能够保证找到全局最优解。</p>
+<h5 id="示例：-4">示例：</h5>
+<p>假如欧几里得距离为 10，选择 ( w=1.5 )，则：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>w</mi><mo>⋅</mo><msub><mi>h</mi><mtext>euclidean</mtext></msub><mo>=</mo><mn>1.5</mn><mo>⋅</mo><mn>10</mn><mo>=</mo><mn>15</mn></mrow><annotation encoding="application/x-tex">{
+h(n) = w \cdot h_{\text{euclidean}} = 1.5 \cdot 10 = 15
+}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal" style="margin-right:0.0269em;">w</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">euclidean</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">1.5</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord">10</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord">15</span></span></span></span></span></span></p>
 <hr>
-<h3 id="三、实际应用时的选择建议"><a href="#三、实际应用时的选择建议" class="headerlink" title="三、实际应用时的选择建议"></a><strong>三、实际应用时的选择建议</strong></h3><ol>
-<li><strong>水平方向和垂直方向移动</strong>：<ul>
+<h3 id="二、启发式函数的实际作用"><strong>二、启发式函数的实际作用</strong></h3>
+<h4 id="1-猜测如何快速接近目标"><strong>1. 猜测如何快速接近目标</strong></h4>
+<p>启发式函数不需要考虑障碍物，它只是用来让算法知道“往哪个方向走得更接近目标”。</p>
+<h4 id="2-无障碍假设下的启发式"><strong>2. 无障碍假设下的启发式</strong></h4>
+<p>在没有障碍物时，最优的路径是直线路径（例如欧几里得距离）。即使有障碍物，启发式函数依然提供了一个大致方向，但会根据代价函数 ( g(n) ) 一步步调整路径。</p>
+<h4 id="3-为什么不能太低估？"><strong>3. 为什么不能太低估？</strong></h4>
+<p>启发式函数如果估计过低，算法会更倾向于穷尽搜索，类似于 Dijkstra 算法，效率较低。因此，启发式函数应尽可能接近实际代价，但不得过高（否则可能找不到最优解）。</p>
+<h4 id="启发式函数的要求"><strong>启发式函数的要求</strong></h4>
+<ol>
+<li><strong>可接受性（Admissible）</strong>：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{h(n)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></span> 永远不超过当前节点到目标节点的真实最优代价。</li>
+<li><strong>一致性（Consistent / Monotone）</strong>：对于任意两个相邻节点 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>n</mi><mo separator="true">,</mo><msup><mi>n</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{(n, n&#x27;)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0019em;vertical-align:-0.25em;"></span><span class="mord"><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>，满足：</li>
+</ol>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>≤</mo><mi>c</mi><mo stretchy="false">(</mo><mi>n</mi><mo separator="true">,</mo><msup><mi>n</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo><mo>+</mo><mi>h</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{
+h(n) \leq c(n, n&#x27;) + h(n&#x27;)
+}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0519em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></span></p>
+<p>其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>n</mi><mo separator="true">,</mo><msup><mi>n</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">{c(n, n&#x27;)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0019em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span> 是从 (n) 到 (n’) 的代价）<br>
+满足这两个条件时，A* 能够保证找到全局最优解。</p>
+<hr>
+<h3 id="三、实际应用时的选择建议"><strong>三、实际应用时的选择建议</strong></h3>
+<ol>
+<li><strong>水平方向和垂直方向移动</strong>：
+<ul>
 <li><strong>曼哈顿距离</strong>是最常用的启发式。</li>
 <li>适用于简单的 2D 栅格地图。</li>
 </ul>
 </li>
-<li><strong>对角线和任意方向移动</strong>：<ul>
+<li><strong>对角线和任意方向移动</strong>：
+<ul>
 <li><strong>欧几里得距离</strong>是物理意义上最优的距离估计。</li>
 <li>更适用于机器人路径规划或飞行器导航。</li>
 </ul>
 </li>
-<li><strong>复杂地图权重调整</strong>：<ul>
+<li><strong>复杂地图权重调整</strong>：
+<ul>
 <li>使用启发式权重 ( w ) 来控制搜索效率和解的质量。</li>
 </ul>
 </li>
-<li><strong>动态启发式调整</strong>（高级场景）：<ul>
+<li><strong>动态启发式调整</strong>（高级场景）：
+<ul>
 <li>在搜索路径的过程中，动态更新 ( h(n) ) 以适应环境变化。例如，当检测到有障碍物时，切换策略。</li>
 </ul>
 </li>
 </ol>
-<h3 id="5-比较三种算法"><a href="#5-比较三种算法" class="headerlink" title="5. 比较三种算法"></a><strong>5. 比较三种算法</strong></h3><table>
+<h3 id="5-比较三种算法"><strong>5. 比较三种算法</strong></h3>
+<table>
 <thead>
 <tr>
 <th>算法</th>
@@ -331,7 +725,8 @@
 <th>假如图较大时效率</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>贪婪最佳优先搜索</td>
 <td>距离目标点最近的节点</td>
 <td>否</td>
@@ -349,7 +744,8 @@
 <td>是</td>
 <td>中等偏高</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p><strong>小结</strong>：</p>
 <ul>
 <li>贪婪搜索速度快但无法找到全局最优解（局部最优性）。</li>
@@ -357,147 +753,441 @@
 <li>A* 综合两者，能找到全局最优解，同时较高效，是目前最常用的路径规划算法之一。</li>
 </ul>
 <hr>
-<h3 id="6-示例：网格地图上的路径规划"><a href="#6-示例：网格地图上的路径规划" class="headerlink" title="6. 示例：网格地图上的路径规划"></a><strong>6. 示例：网格地图上的路径规划</strong></h3><p>伪代码实现：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">A_star</span>(<span class="params">grid, start, goal, heuristic</span>):</span><br><span class="line">    OPEN = PriorityQueue()  <span class="comment"># 优先队列存储待探索节点</span></span><br><span class="line">    CLOSED = <span class="built_in">set</span>()          <span class="comment"># 集合存储已探索节点</span></span><br><span class="line"></span><br><span class="line">    g = &#123;start: <span class="number">0</span>&#125;          <span class="comment"># 起点到当前点的总代价</span></span><br><span class="line">    f = &#123;start: heuristic(start, goal)&#125;  <span class="comment"># 估计总代价 f(n) = g(n) + h(n)</span></span><br><span class="line"></span><br><span class="line">    OPEN.put((f[start], start))  <span class="comment"># 插入起点到OPEN队列</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">not</span> OPEN.empty():</span><br><span class="line">        _, current = OPEN.get()  <span class="comment"># 当前代价函数最小的节点</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> current == goal:</span><br><span class="line">            <span class="keyword">return</span> reconstruct_path(CLOSED, start, goal)  <span class="comment"># 找到路径</span></span><br><span class="line"></span><br><span class="line">        CLOSED.add(current)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> neighbor <span class="keyword">in</span> get_neighbors(grid, current):</span><br><span class="line">            <span class="keyword">if</span> neighbor <span class="keyword">in</span> CLOSED:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            </span><br><span class="line">            tentative_g = g[current] + move_cost(current, neighbor)  <span class="comment"># 更新 g 值</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> neighbor <span class="keyword">not</span> <span class="keyword">in</span> g <span class="keyword">or</span> tentative_g &lt; g[neighbor]:</span><br><span class="line">                g[neighbor] = tentative_g</span><br><span class="line">                f[neighbor] = g[neighbor] + heuristic(neighbor, goal)</span><br><span class="line">                OPEN.put((f[neighbor], neighbor))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="literal">None</span>  <span class="comment"># 未找到路径</span></span><br></pre></td></tr></table></figure>
+<h3 id="6-示例：网格地图上的路径规划"><strong>6. 示例：网格地图上的路径规划</strong></h3>
+<p>伪代码实现：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">A_star</span>(<span class="hljs-params">grid, start, goal, heuristic</span>):<br>    OPEN = PriorityQueue()  <span class="hljs-comment"># 优先队列存储待探索节点</span><br>    CLOSED = <span class="hljs-built_in">set</span>()          <span class="hljs-comment"># 集合存储已探索节点</span><br><br>    g = &#123;start: <span class="hljs-number">0</span>&#125;          <span class="hljs-comment"># 起点到当前点的总代价</span><br>    f = &#123;start: heuristic(start, goal)&#125;  <span class="hljs-comment"># 估计总代价 f(n) = g(n) + h(n)</span><br><br>    OPEN.put((f[start], start))  <span class="hljs-comment"># 插入起点到OPEN队列</span><br><br>    <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> OPEN.empty():<br>        _, current = OPEN.get()  <span class="hljs-comment"># 当前代价函数最小的节点</span><br><br>        <span class="hljs-keyword">if</span> current == goal:<br>            <span class="hljs-keyword">return</span> reconstruct_path(CLOSED, start, goal)  <span class="hljs-comment"># 找到路径</span><br><br>        CLOSED.add(current)<br>        <br>        <span class="hljs-keyword">for</span> neighbor <span class="hljs-keyword">in</span> get_neighbors(grid, current):<br>            <span class="hljs-keyword">if</span> neighbor <span class="hljs-keyword">in</span> CLOSED:<br>                <span class="hljs-keyword">continue</span><br>            <br>            tentative_g = g[current] + move_cost(current, neighbor)  <span class="hljs-comment"># 更新 g 值</span><br><br>            <span class="hljs-keyword">if</span> neighbor <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> g <span class="hljs-keyword">or</span> tentative_g &lt; g[neighbor]:<br>                g[neighbor] = tentative_g<br>                f[neighbor] = g[neighbor] + heuristic(neighbor, goal)<br>                OPEN.put((f[neighbor], neighbor))<br>    <br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>  <span class="hljs-comment"># 未找到路径</span><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" class="category-chain-item">路径规划</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%85%A8%E5%B1%80%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" class="print-no-link">#全局路径规划</a>
+      
+        <a href="/tags/%E5%9F%BA%E4%BA%8E%E5%9B%BE%E6%90%9C%E7%B4%A2%E7%9A%84%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" class="print-no-link">#基于图搜索的路径规划</a>
+      
+    </div>
+  
+</div>
 
 
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>A*算法讲解</div>
+      <div>https://tyfelix.com/2025/02/25/A-算法讲解/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>tyfelix</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>February 25, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
   </div>
-</article>
 
 
 
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/" title="ROS1之第一个样例运行">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ROS1之第一个样例运行</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/" title="ROS2之接口概述">
+                        <span class="hidden-mobile">ROS2之接口概述</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
 
-    <div id="nav-footer" style="display: none">
-      <ul>
-        
-          <li><a href="/">Home</a></li>
-        
-          <li><a href="/about/">About</a></li>
-        
-          <li><a href="/archives/">Blogs</a></li>
-        
-          <li><a href="/categories/">catgories</a></li>
-        
-      </ul>
-    </div>
-
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%B4%AA%E5%A9%AA%E6%9C%80%E4%BD%B3%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95-Greedy-Best-First-Search"><span class="toc-number">1.</span> <span class="toc-text">1. 贪婪最佳优先搜索算法 (Greedy Best-First Search)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3"><span class="toc-number">1.1.</span> <span class="toc-text">基本思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">1.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9"><span class="toc-number">1.4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="toc-number">1.5.</span> <span class="toc-text">举例说明</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Dijkstra-%E7%AE%97%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">2. Dijkstra 算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3-1"><span class="toc-number">2.1.</span> <span class="toc-text">基本思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0-1"><span class="toc-number">2.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-1"><span class="toc-number">2.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-1"><span class="toc-number">2.4.</span> <span class="toc-text">缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B"><span class="toc-number">2.5.</span> <span class="toc-text">举例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-A-%E7%AE%97%E6%B3%95%EF%BC%9A%E7%BB%BC%E5%90%88%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%B3%95%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">3.</span> <span class="toc-text">3. A* 算法：综合两种方法的改进</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF"><span class="toc-number">3.1.</span> <span class="toc-text">核心思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AF%84%E4%BB%B7%E5%87%BD%E6%95%B0-2"><span class="toc-number">3.2.</span> <span class="toc-text">评价函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%82%B9-2"><span class="toc-number">3.3.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9-2"><span class="toc-number">3.4.</span> <span class="toc-text">缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0"><span class="toc-number">4.</span> <span class="toc-text">4. 启发式函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0"><span class="toc-number">5.</span> <span class="toc-text">常见的启发式函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB%EF%BC%88Manhattan-Distance%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">1. 曼哈顿距离（Manhattan Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A"><span class="toc-number">5.1.1.</span> <span class="toc-text">示例：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E6%9E%9C%E5%BD%93%E5%89%8D%E4%BD%8D%E7%BD%AE%E6%98%AF-1-1-%EF%BC%8C%E7%9B%AE%E6%A0%87%E7%82%B9%E6%98%AF-4-3-%EF%BC%8C%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB%E4%B8%BA%EF%BC%9A-h-n-1-4-1-3-3-2-5"><span class="toc-number"></span> <span class="toc-text">如果当前位置是 ( 1, 1 )，目标点是 ( 4, 3 )，曼哈顿距离为：$${h(n) &#x3D; |1-4| + |1-3| &#x3D; 3 + 2 &#x3D; 5}$$</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB%EF%BC%88Euclidean-Distance%EF%BC%89"><span class="toc-number">0.1.</span> <span class="toc-text">2. 欧几里得距离（Euclidean Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-1"><span class="toc-number">0.1.1.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%AF%B9%E8%A7%92%E8%B7%9D%E7%A6%BB%EF%BC%88Diagonal-Distance%EF%BC%89"><span class="toc-number">0.2.</span> <span class="toc-text">3. 对角距离（Diagonal Distance）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-2"><span class="toc-number">0.2.1.</span> <span class="toc-text">示例：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%8A%A0%E6%9D%83%E5%90%AF%E5%8F%91%E5%BC%8F%EF%BC%88Weighted-Heuristic%EF%BC%89"><span class="toc-number">0.3.</span> <span class="toc-text">4. 加权启发式（Weighted Heuristic）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%EF%BC%9A-3"><span class="toc-number">0.3.1.</span> <span class="toc-text">示例：</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%81%87%E5%A6%82%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97%E8%B7%9D%E7%A6%BB%E4%B8%BA-10%EF%BC%8C%E9%80%89%E6%8B%A9-w-1-5-%EF%BC%8C%E5%88%99%EF%BC%9A-h-n-w-cdot-h-text-euclidean-1-5-cdot-10-15"><span class="toc-number"></span> <span class="toc-text">假如欧几里得距离为 10，选择 ( w&#x3D;1.5 )，则：$${h(n) &#x3D; w \cdot h_{\text{euclidean}} &#x3D; 1.5 \cdot 10 &#x3D; 15}$$</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E7%9A%84%E5%AE%9E%E9%99%85%E4%BD%9C%E7%94%A8"><span class="toc-number">1.</span> <span class="toc-text">二、启发式函数的实际作用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E7%8C%9C%E6%B5%8B%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E6%8E%A5%E8%BF%91%E7%9B%AE%E6%A0%87"><span class="toc-number">1.1.</span> <span class="toc-text">1. 猜测如何快速接近目标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%97%A0%E9%9A%9C%E7%A2%8D%E5%81%87%E8%AE%BE%E4%B8%8B%E7%9A%84%E5%90%AF%E5%8F%91%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">2. 无障碍假设下的启发式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E5%A4%AA%E4%BD%8E%E4%BC%B0%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">3. 为什么不能太低估？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8F%91%E5%BC%8F%E5%87%BD%E6%95%B0%E7%9A%84%E8%A6%81%E6%B1%82"><span class="toc-number">1.4.</span> <span class="toc-text">启发式函数的要求</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8%E6%97%B6%E7%9A%84%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE"><span class="toc-number">2.</span> <span class="toc-text">三、实际应用时的选择建议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%AF%94%E8%BE%83%E4%B8%89%E7%A7%8D%E7%AE%97%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">5. 比较三种算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E7%A4%BA%E4%BE%8B%EF%BC%9A%E7%BD%91%E6%A0%BC%E5%9C%B0%E5%9B%BE%E4%B8%8A%E7%9A%84%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92"><span class="toc-number">4.</span> <span class="toc-text">6. 示例：网格地图上的路径规划</span></a></li></ol>
+            
+          </article>
+        </div>
       </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&text=A*算法讲解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&is_video=false&description=A*算法讲解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=A*算法讲解&body=Check out this article: http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&title=A*算法讲解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&name=A*算法讲解&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/&t=A*算法讲解"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
     </div>
 
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
 
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2025
-    tyfelix
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
     </div>
-    <!-- styles -->
+  </div>
+</div>
 
+    
 
+    
+  </main>
 
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
-
+  <footer>
+    <div class="footer-inner">
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
     })
-  })
   </script>
 
 
-<script src="/js/main.js"></script>
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
 </body>
 </html>

@@ -1,341 +1,861 @@
+
+
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="话题通信操作流程：  创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如base_interfaces_demo中创建一个msg文件夹，然后创建Student.msg文件，在里面写入接口的定义  编辑配置文件，具体来说，需要在packages.xml和CMakerList.txt中补充   在packages.xml中，依赖包需要补充 1234567&lt;!-- 自定义接口 --&amp;gt">
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="tyfelix">
+  <meta name="keywords" content="tyfelix">
+  
+    <meta name="description" content="话题通信操作 流程：   创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如base_interfaces_demo中创建一个msg文件夹，然后创建Student.msg文件，在里面写入接口的定义   编辑配置文件，具体来说，需要在packages.xml和CMakerList.txt中补充   在packages.xml中，依赖包需要补充 1234567&lt;!-- 自定义接口 --">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ROS2之话题通信">
-<meta property="og:url" content="http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:url" content="https://tyfelix.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/index.html">
 <meta property="og:site_name" content="Tang Yi&#39;s Blog">
-<meta property="og:description" content="话题通信操作流程：  创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如base_interfaces_demo中创建一个msg文件夹，然后创建Student.msg文件，在里面写入接口的定义  编辑配置文件，具体来说，需要在packages.xml和CMakerList.txt中补充   在packages.xml中，依赖包需要补充 1234567&lt;!-- 自定义接口 --&amp;gt">
+<meta property="og:description" content="话题通信操作 流程：   创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如base_interfaces_demo中创建一个msg文件夹，然后创建Student.msg文件，在里面写入接口的定义   编辑配置文件，具体来说，需要在packages.xml和CMakerList.txt中补充   在packages.xml中，依赖包需要补充 1234567&lt;!-- 自定义接口 --">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-02-17T14:12:00.000Z">
 <meta property="article:modified_time" content="2025-04-08T13:11:43.932Z">
 <meta property="article:author" content="tyfelix">
 <meta property="article:tag" content="通信">
 <meta property="article:tag" content="话题">
-<meta name="twitter:card" content="summary">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/chicken.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>ROS2之话题通信</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>ROS2之话题通信 - Tang Yi&#39;s Blog</title>
 
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
-	
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&text=ROS2之话题通信"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&is_video=false&description=ROS2之话题通信"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ROS2之话题通信&body=Check out this article: http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&name=ROS2之话题通信&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&t=ROS2之话题通信"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">话题通信操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text"></span></a></li></ol>
-      </div>
-    
-  </span>
-</div>
-
-    
-    <div class="content index py4 ">
-        
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        ROS2之话题通信
-    </h1>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
 
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">tyfelix</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2025-02-17T14:12:00.000Z" class="dt-published" itemprop="datePublished">2025-02-17</time>
-        
-      
-    </div>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/ROS2/">ROS2</a>
-    </div>
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/%E8%AF%9D%E9%A2%98/" rel="tag">话题</a>, <a class="p-category" href="/tags/%E9%80%9A%E4%BF%A1/" rel="tag">通信</a>
-    </div>
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
 
 
-    </div>
-  </header>
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h3 id="话题通信操作"><a href="#话题通信操作" class="headerlink" title="话题通信操作"></a>话题通信操作</h3><p>流程：</p>
+
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"tyfelix.com","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tang Yi&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/academic/" target="_self">
+                <i class="iconfont icon-book-fill"></i>
+                <span>Academic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/academic/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-book-fill"></i>
+                  <span>Academic</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>About</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ROS2之话题通信"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-02-17 17:12" pubdate>
+          February 17, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k words
+        
+      </span>
+    
+
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ROS2之话题通信</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="话题通信操作">话题通信操作</h3>
+<p>流程：</p>
 <ul>
-<li><p>创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如<code>base_interfaces_demo</code>中创建一个<code>msg</code>文件夹，然后创建<code>Student.msg</code>文件，在里面写入接口的定义</p>
+<li>
+<p>创建并编辑接口文件：首先在一个专门子自定义接口的功能包中比如<code>base_interfaces_demo</code>中创建一个<code>msg</code>文件夹，然后创建<code>Student.msg</code>文件，在里面写入接口的定义</p>
 </li>
-<li><p>编辑配置文件，具体来说，需要在<code>packages.xml</code>和<code>CMakerList.txt</code>中补充</p>
+<li>
+<p>编辑配置文件，具体来说，需要在<code>packages.xml</code>和<code>CMakerList.txt</code>中补充</p>
 </li>
 </ul>
 <p>在<code>packages.xml</code>中，依赖包需要补充</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 自定义接口 --&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 编译依赖 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">build_depend</span>&gt;</span>rosidl_default_generators<span class="tag">&lt;/<span class="name">build_depend</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 执行依赖 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">exec_depend</span>&gt;</span>rosidl_default_runtime<span class="tag">&lt;/<span class="name">exec_depend</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!-- 声明当前包所属的功能包组 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">member_of_group</span>&gt;</span>rosidl_interface_packages<span class="tag">&lt;/<span class="name">member_of_group</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 自定义接口 --&gt;</span><br>  <span class="hljs-comment">&lt;!-- 编译依赖 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">build_depend</span>&gt;</span>rosidl_default_generators<span class="hljs-tag">&lt;/<span class="hljs-name">build_depend</span>&gt;</span><br>  <span class="hljs-comment">&lt;!-- 执行依赖 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">exec_depend</span>&gt;</span>rosidl_default_runtime<span class="hljs-tag">&lt;/<span class="hljs-name">exec_depend</span>&gt;</span><br>  <span class="hljs-comment">&lt;!-- 声明当前包所属的功能包组 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">member_of_group</span>&gt;</span>rosidl_interface_packages<span class="hljs-tag">&lt;/<span class="hljs-name">member_of_group</span>&gt;</span><br></code></pre></td></tr></table></figure>
 <p>然后在<code>CMakeList.txt</code>中写入：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">find_package(rosidl_default_generators REQUIRED)</span><br><span class="line"></span><br><span class="line">rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;</span><br><span class="line">  &quot;msg/Student.msg&quot;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">find_package</span><span class="hljs-params">(rosidl_default_generators REQUIRED)</span></span><br><br><span class="hljs-built_in">rosidl_generate_interfaces</span>($&#123;PROJECT_NAME&#125;<br>  <span class="hljs-string">&quot;msg/Student.msg&quot;</span><br>)<br></code></pre></td></tr></table></figure>
 <ul>
 <li>编译： 进入<code>(dpl39) tyfelix@tyfelix-B760M:~/zxz_ROS/ws01_plumbing$ </code>工作空间，编译<code>colcon build --packages-select base interface_demo</code></li>
 <li>测试：编译完成之后，<code>. install/setup.bash</code> 然后<code>ros2 interface show base_interface_demo/msg/Student</code> 。输出内容为<code>Student.msg</code>的内容，那么说明编译成功。可以进行之后的操作。</li>
 </ul>
 <p>下面展示了一个服务通信的例子(主要注意 1.话题名称需要保持一致性；2.接口的引入； 3. 函数不一样)：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">----发布方----</span><br><span class="line"><span class="keyword">from</span> std_msgs.msg <span class="keyword">import</span> String</span><br><span class="line"><span class="keyword">import</span> rclpy</span><br><span class="line"><span class="keyword">from</span> rclpy.node <span class="keyword">import</span> Node</span><br><span class="line"><span class="keyword">from</span> base_interfaces_demo.msg <span class="keyword">import</span> Student</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Talker</span>(<span class="title class_ inherited__">Node</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, node_name</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(node_name=node_name)</span><br><span class="line">        <span class="comment"># 创建定时器</span></span><br><span class="line">        <span class="variable language_">self</span>.count = <span class="number">0</span></span><br><span class="line">        <span class="variable language_">self</span>.get_logger().info(<span class="string">&quot;发布方创建了（python）&quot;</span>)</span><br><span class="line">        <span class="comment"># 创建发布者</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        参数：消息类型；话题名称；QoS队列长度</span></span><br><span class="line"><span class="string">        返回这个发布者对象</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="variable language_">self</span>.publisher = <span class="variable language_">self</span>.create_publisher(Student,<span class="string">&#x27;chatter1&#x27;</span>,<span class="number">10</span>)</span><br><span class="line">        <span class="comment"># 创建定时器</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        参数： 时间间隔；回调函数（函数作为参数传入）</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="variable language_">self</span>.timer = <span class="variable language_">self</span>.create_timer(<span class="number">1.0</span>,<span class="variable language_">self</span>.on_timer) </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">on_timer</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 组织并发布消息</span></span><br><span class="line">        stu = Student()</span><br><span class="line">        stu.name = <span class="string">&quot;Felix Jackson&quot;</span></span><br><span class="line">        stu.age = <span class="number">20</span></span><br><span class="line">        stu.height = <span class="number">175.0</span></span><br><span class="line">        <span class="variable language_">self</span>.publisher.publish(stu)</span><br><span class="line">        <span class="variable language_">self</span>.count += <span class="number">1</span></span><br><span class="line">        <span class="comment"># self.get_logger().info(f&quot;发布的数据为:&#123;message.data&#125;&quot;)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="comment"># 初始化</span></span><br><span class="line">    rclpy.init()</span><br><span class="line">    <span class="comment"># 创建node</span></span><br><span class="line">    node = Talker(<span class="string">&quot;talker_node_py3&quot;</span>)  </span><br><span class="line">    <span class="comment"># 运行</span></span><br><span class="line">    rclpy.spin(node)</span><br><span class="line">    <span class="comment"># 释放资源</span></span><br><span class="line">    rclpy.shutdown()</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br><span class="line"></span><br><span class="line">----订阅方----</span><br><span class="line"><span class="keyword">from</span> std_msgs.msg <span class="keyword">import</span> String</span><br><span class="line"><span class="keyword">import</span> rclpy</span><br><span class="line"><span class="keyword">from</span> rclpy.node <span class="keyword">import</span> Node</span><br><span class="line"><span class="keyword">from</span> base_interfaces_demo.msg <span class="keyword">import</span> Student</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Listener</span>(<span class="title class_ inherited__">Node</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, node_name</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__(node_name=node_name)</span><br><span class="line">        <span class="comment"># 创建定时器</span></span><br><span class="line">        <span class="comment"># self.count = 0</span></span><br><span class="line">        <span class="variable language_">self</span>.get_logger().info(<span class="string">&quot;订阅方创建了（python）&quot;</span>)</span><br><span class="line">        <span class="comment"># 创建订阅者</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        参数：消息类型；话题名称（比如和发布者一致）；回调函数；QoS队列长度</span></span><br><span class="line"><span class="string">        返回这个发布者对象</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="variable language_">self</span>.subcriber = <span class="variable language_">self</span>.create_subscription(Student,<span class="string">&#x27;chatter1&#x27;</span>, <span class="variable language_">self</span>.do_cb, <span class="number">10</span>)</span><br><span class="line">        <span class="comment"># # 创建定时器</span></span><br><span class="line">        <span class="comment"># &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># 参数： 时间间隔；回调函数（函数作为参数传入）</span></span><br><span class="line">        <span class="comment"># &#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># self.timer = self.create_timer(1.0,self.on_timer)</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">do_cb</span>(<span class="params">self, stu</span>):</span><br><span class="line">        <span class="comment"># 解析并输出数据</span></span><br><span class="line">        <span class="variable language_">self</span>.get_logger().info(<span class="string">f&quot;订阅的数据是：name:<span class="subst">&#123;stu.name&#125;</span>; age:<span class="subst">&#123;stu.age&#125;</span>; height:<span class="subst">&#123;stu.height&#125;</span>&quot;</span>)</span><br><span class="line">        </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    <span class="comment"># 初始化</span></span><br><span class="line">    rclpy.init()</span><br><span class="line">    <span class="comment"># 创建node</span></span><br><span class="line">    node = Listener(<span class="string">&quot;listener_node_py4&quot;</span>)</span><br><span class="line">    <span class="comment"># 运行</span></span><br><span class="line">    rclpy.spin(node)</span><br><span class="line">    <span class="comment"># 释放资源</span></span><br><span class="line">    rclpy.shutdown()</span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><code class="hljs python">----发布方----<br><span class="hljs-keyword">from</span> std_msgs.msg <span class="hljs-keyword">import</span> String<br><span class="hljs-keyword">import</span> rclpy<br><span class="hljs-keyword">from</span> rclpy.node <span class="hljs-keyword">import</span> Node<br><span class="hljs-keyword">from</span> base_interfaces_demo.msg <span class="hljs-keyword">import</span> Student<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Talker</span>(<span class="hljs-title class_ inherited__">Node</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, node_name</span>):<br>        <span class="hljs-built_in">super</span>().__init__(node_name=node_name)<br>        <span class="hljs-comment"># 创建定时器</span><br>        <span class="hljs-variable language_">self</span>.count = <span class="hljs-number">0</span><br>        <span class="hljs-variable language_">self</span>.get_logger().info(<span class="hljs-string">&quot;发布方创建了（python）&quot;</span>)<br>        <span class="hljs-comment"># 创建发布者</span><br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        参数：消息类型；话题名称；QoS队列长度</span><br><span class="hljs-string">        返回这个发布者对象</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        <span class="hljs-variable language_">self</span>.publisher = <span class="hljs-variable language_">self</span>.create_publisher(Student,<span class="hljs-string">&#x27;chatter1&#x27;</span>,<span class="hljs-number">10</span>)<br>        <span class="hljs-comment"># 创建定时器</span><br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        参数： 时间间隔；回调函数（函数作为参数传入）</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        <span class="hljs-variable language_">self</span>.timer = <span class="hljs-variable language_">self</span>.create_timer(<span class="hljs-number">1.0</span>,<span class="hljs-variable language_">self</span>.on_timer) <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">on_timer</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># 组织并发布消息</span><br>        stu = Student()<br>        stu.name = <span class="hljs-string">&quot;Felix Jackson&quot;</span><br>        stu.age = <span class="hljs-number">20</span><br>        stu.height = <span class="hljs-number">175.0</span><br>        <span class="hljs-variable language_">self</span>.publisher.publish(stu)<br>        <span class="hljs-variable language_">self</span>.count += <span class="hljs-number">1</span><br>        <span class="hljs-comment"># self.get_logger().info(f&quot;发布的数据为:&#123;message.data&#125;&quot;)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    <span class="hljs-comment"># 初始化</span><br>    rclpy.init()<br>    <span class="hljs-comment"># 创建node</span><br>    node = Talker(<span class="hljs-string">&quot;talker_node_py3&quot;</span>)  <br>    <span class="hljs-comment"># 运行</span><br>    rclpy.spin(node)<br>    <span class="hljs-comment"># 释放资源</span><br>    rclpy.shutdown()<br>    <br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    main()<br><br>----订阅方----<br><span class="hljs-keyword">from</span> std_msgs.msg <span class="hljs-keyword">import</span> String<br><span class="hljs-keyword">import</span> rclpy<br><span class="hljs-keyword">from</span> rclpy.node <span class="hljs-keyword">import</span> Node<br><span class="hljs-keyword">from</span> base_interfaces_demo.msg <span class="hljs-keyword">import</span> Student<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Listener</span>(<span class="hljs-title class_ inherited__">Node</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, node_name</span>):<br>        <span class="hljs-built_in">super</span>().__init__(node_name=node_name)<br>        <span class="hljs-comment"># 创建定时器</span><br>        <span class="hljs-comment"># self.count = 0</span><br>        <span class="hljs-variable language_">self</span>.get_logger().info(<span class="hljs-string">&quot;订阅方创建了（python）&quot;</span>)<br>        <span class="hljs-comment"># 创建订阅者</span><br>        <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        参数：消息类型；话题名称（比如和发布者一致）；回调函数；QoS队列长度</span><br><span class="hljs-string">        返回这个发布者对象</span><br><span class="hljs-string">        &#x27;&#x27;&#x27;</span><br>        <span class="hljs-variable language_">self</span>.subcriber = <span class="hljs-variable language_">self</span>.create_subscription(Student,<span class="hljs-string">&#x27;chatter1&#x27;</span>, <span class="hljs-variable language_">self</span>.do_cb, <span class="hljs-number">10</span>)<br>        <span class="hljs-comment"># # 创建定时器</span><br>        <span class="hljs-comment"># &#x27;&#x27;&#x27;</span><br>        <span class="hljs-comment"># 参数： 时间间隔；回调函数（函数作为参数传入）</span><br>        <span class="hljs-comment"># &#x27;&#x27;&#x27;</span><br>        <span class="hljs-comment"># self.timer = self.create_timer(1.0,self.on_timer)</span><br>        <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">do_cb</span>(<span class="hljs-params">self, stu</span>):<br>        <span class="hljs-comment"># 解析并输出数据</span><br>        <span class="hljs-variable language_">self</span>.get_logger().info(<span class="hljs-string">f&quot;订阅的数据是：name:<span class="hljs-subst">&#123;stu.name&#125;</span>; age:<span class="hljs-subst">&#123;stu.age&#125;</span>; height:<span class="hljs-subst">&#123;stu.height&#125;</span>&quot;</span>)<br>        <br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    <span class="hljs-comment"># 初始化</span><br>    rclpy.init()<br>    <span class="hljs-comment"># 创建node</span><br>    node = Listener(<span class="hljs-string">&quot;listener_node_py4&quot;</span>)<br>    <span class="hljs-comment"># 运行</span><br>    rclpy.spin(node)<br>    <span class="hljs-comment"># 释放资源</span><br>    rclpy.shutdown()<br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
+<h3 id=""></h3>
 
-<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/ROS2/" class="category-chain-item">ROS2</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%80%9A%E4%BF%A1/" class="print-no-link">#通信</a>
+      
+        <a href="/tags/%E8%AF%9D%E9%A2%98/" class="print-no-link">#话题</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ROS2之话题通信</div>
+      <div>https://tyfelix.com/2025/02/17/ROS2之话题通信/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>tyfelix</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>February 17, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
   </div>
-</article>
 
 
 
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/02/17/ROS2%E4%B9%8B%E6%8E%A5%E5%8F%A3%E6%A6%82%E8%BF%B0/" title="ROS2之接口概述">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ROS2之接口概述</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/02/17/ROS2%E5%AD%A6%E4%B9%A0%E4%B9%8B%E9%80%9A%E4%BF%A1%E6%A6%82%E8%BF%B0/" title="ROS2学习之通信概述">
+                        <span class="hidden-mobile">ROS2学习之通信概述</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
 
-    <div id="nav-footer" style="display: none">
-      <ul>
-        
-          <li><a href="/">Home</a></li>
-        
-          <li><a href="/about/">About</a></li>
-        
-          <li><a href="/archives/">Blogs</a></li>
-        
-          <li><a href="/categories/">catgories</a></li>
-        
-      </ul>
-    </div>
-
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1%E6%93%8D%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">话题通信操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text"></span></a></li></ol>
+            
+          </article>
+        </div>
       </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&text=ROS2之话题通信"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&is_video=false&description=ROS2之话题通信"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ROS2之话题通信&body=Check out this article: http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&title=ROS2之话题通信"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&name=ROS2之话题通信&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/02/17/ROS2%E4%B9%8B%E8%AF%9D%E9%A2%98%E9%80%9A%E4%BF%A1/&t=ROS2之话题通信"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
     </div>
 
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
 
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2025
-    tyfelix
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
     </div>
-    <!-- styles -->
+  </div>
+</div>
 
+    
 
+    
+  </main>
 
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
-
+  <footer>
+    <div class="footer-inner">
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
     })
-  })
   </script>
 
 
-<script src="/js/main.js"></script>
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
 </body>
 </html>

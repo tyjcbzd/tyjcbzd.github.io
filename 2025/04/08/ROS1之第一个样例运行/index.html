@@ -1,365 +1,886 @@
+
+
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="前言学习了ROS2 humble之后，做项目的过程中发现很多想要使用的插件基本都是支持ROS1的，如果想要使用那么必须自己去移植。这对于一个仅仅学习ROS2的人来说实在很困难。因此有必要去学习ROS1。 老规矩，先查看一个完整的ROS1的文件系统是怎么样的，然后看看运行一个简单的Hello world样例是如何操作的。 ROS1文件系统1234567891011121314151617181920">
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="tyfelix">
+  <meta name="keywords" content="tyfelix">
+  
+    <meta name="description" content="前言 学习了ROS2 humble之后，做项目的过程中发现很多想要使用的插件基本都是支持ROS1的，如果想要使用那么必须自己去移植。这对于一个仅仅学习ROS2的人来说实在很困难。因此有必要去学习ROS1。 老规矩，先查看一个完整的ROS1的文件系统是怎么样的，然后看看运行一个简单的Hello world样例是如何操作的。 ROS1文件系统 12345678910111213141516171819">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ROS1之第一个样例运行">
-<meta property="og:url" content="http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/index.html">
+<meta property="og:url" content="https://tyfelix.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/index.html">
 <meta property="og:site_name" content="Tang Yi&#39;s Blog">
-<meta property="og:description" content="前言学习了ROS2 humble之后，做项目的过程中发现很多想要使用的插件基本都是支持ROS1的，如果想要使用那么必须自己去移植。这对于一个仅仅学习ROS2的人来说实在很困难。因此有必要去学习ROS1。 老规矩，先查看一个完整的ROS1的文件系统是怎么样的，然后看看运行一个简单的Hello world样例是如何操作的。 ROS1文件系统1234567891011121314151617181920">
+<meta property="og:description" content="前言 学习了ROS2 humble之后，做项目的过程中发现很多想要使用的插件基本都是支持ROS1的，如果想要使用那么必须自己去移植。这对于一个仅仅学习ROS2的人来说实在很困难。因此有必要去学习ROS1。 老规矩，先查看一个完整的ROS1的文件系统是怎么样的，然后看看运行一个简单的Hello world样例是如何操作的。 ROS1文件系统 12345678910111213141516171819">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2025-04-08T13:14:42.000Z">
 <meta property="article:modified_time" content="2025-04-08T13:41:53.296Z">
 <meta property="article:author" content="tyfelix">
 <meta property="article:tag" content="入门">
-<meta name="twitter:card" content="summary">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/chicken.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>ROS1之第一个样例运行</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>ROS1之第一个样例运行 - Tang Yi&#39;s Blog</title>
 
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
-	
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&text=ROS1之第一个样例运行"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&is_video=false&description=ROS1之第一个样例运行"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ROS1之第一个样例运行&body=Check out this article: http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&name=ROS1之第一个样例运行&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&t=ROS1之第一个样例运行"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ROS1%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.</span> <span class="toc-text">ROS1文件系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E4%B8%80%E4%B8%AAHello-World%E7%A8%8B%E5%BA%8F%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B%EF%BC%88C-%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">运行一个Hello World程序操作流程（C++为例）</span></a></li></ol></li></ol>
-      </div>
-    
-  </span>
-</div>
-
-    
-    <div class="content index py4 ">
-        
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        ROS1之第一个样例运行
-    </h1>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
 
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">tyfelix</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2025-04-08T13:14:42.000Z" class="dt-published" itemprop="datePublished">2025-04-08</time>
-        
-      
-    </div>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/ROS1/">ROS1</a>
-    </div>
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/%E5%85%A5%E9%97%A8/" rel="tag">入门</a>
-    </div>
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
 
 
-    </div>
-  </header>
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>学习了ROS2 humble之后，做项目的过程中发现很多想要使用的插件基本都是支持ROS1的，如果想要使用那么必须自己去移植。这对于一个仅仅学习ROS2的人来说实在很困难。因此有必要去学习ROS1。</p>
+
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"tyfelix.com","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tang Yi&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/academic/" target="_self">
+                <i class="iconfont icon-book-fill"></i>
+                <span>Academic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/academic/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-book-fill"></i>
+                  <span>Academic</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>About</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ROS1之第一个样例运行"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-08 16:14" pubdate>
+          April 8, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k words
+        
+      </span>
+    
+
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ROS1之第一个样例运行</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言">前言</h2>
+<p>学习了ROS2 humble之后，做项目的过程中发现很多想要使用的插件基本都是支持ROS1的，如果想要使用那么必须自己去移植。这对于一个仅仅学习ROS2的人来说实在很困难。因此有必要去学习ROS1。</p>
 <p>老规矩，先查看一个完整的ROS1的文件系统是怎么样的，然后看看运行一个简单的<code>Hello world</code>样例是如何操作的。</p>
-<h3 id="ROS1文件系统"><a href="#ROS1文件系统" class="headerlink" title="ROS1文件系统"></a>ROS1文件系统</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">WorkSpace --- 自定义的工作空间</span><br><span class="line"></span><br><span class="line">    |--- build:编译空间，用于存放CMake和catkin的缓存信息、配置信息和其他中间文件。</span><br><span class="line"></span><br><span class="line">    |--- devel:开发空间，用于存放编译后生成的目标文件，包括头文件、动态&amp;静态链接库、可执行文件等。</span><br><span class="line"></span><br><span class="line">    |--- src: 源码</span><br><span class="line"></span><br><span class="line">        |-- package：功能包(ROS基本单元)包含多个节点、库与配置文件，包名所有字母小写，只能由字母、数字与下划线组成</span><br><span class="line"></span><br><span class="line">            |-- CMakeLists.txt 配置编译规则，比如源文件、依赖项、目标文件</span><br><span class="line"></span><br><span class="line">            |-- package.xml 包信息，比如:包名、版本、作者、依赖项...(以前版本是 manifest.xml)</span><br><span class="line"></span><br><span class="line">            |-- scripts 存储python文件</span><br><span class="line"></span><br><span class="line">            |-- src 存储C++源文件</span><br><span class="line"></span><br><span class="line">            |-- include 头文件</span><br><span class="line"></span><br><span class="line">            |-- msg 消息通信格式文件</span><br><span class="line"></span><br><span class="line">            |-- srv 服务通信格式文件</span><br><span class="line"></span><br><span class="line">            |-- action 动作格式文件</span><br><span class="line"></span><br><span class="line">            |-- launch 可一次性运行多个节点 </span><br><span class="line"></span><br><span class="line">            |-- config 配置信息</span><br><span class="line"></span><br><span class="line">        |-- CMakeLists.txt: 编译的基本配置</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="ROS1文件系统">ROS1文件系统</h3>
+<figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs brainfuck"><span class="hljs-comment">WorkSpace</span> <span class="hljs-literal">---</span> <span class="hljs-comment">自定义的工作空间</span><br><br>    <span class="hljs-comment">|</span><span class="hljs-literal">---</span> <span class="hljs-comment">build:编译空间，用于存放CMake和catkin的缓存信息、配置信息和其他中间文件。</span><br><br>    <span class="hljs-comment">|</span><span class="hljs-literal">---</span> <span class="hljs-comment">devel:开发空间，用于存放编译后生成的目标文件，包括头文件、动态&amp;静态链接库、可执行文件等。</span><br><br>    <span class="hljs-comment">|</span><span class="hljs-literal">---</span> <span class="hljs-comment">src: 源码</span><br><br>        <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">package：功能包(ROS基本单元)包含多个节点、库与配置文件，包名所有字母小写，只能由字母、数字与下划线组成</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">CMakeLists</span><span class="hljs-string">.</span><span class="hljs-comment">txt 配置编译规则，比如源文件、依赖项、目标文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">package</span><span class="hljs-string">.</span><span class="hljs-comment">xml 包信息，比如:包名、版本、作者、依赖项</span><span class="hljs-string">.</span><span class="hljs-string">.</span><span class="hljs-string">.</span><span class="hljs-comment">(以前版本是 manifest</span><span class="hljs-string">.</span><span class="hljs-comment">xml)</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">scripts 存储python文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">src 存储C</span><span class="hljs-literal">++</span><span class="hljs-comment">源文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">include 头文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">msg 消息通信格式文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">srv 服务通信格式文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">action 动作格式文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">launch 可一次性运行多个节点</span> <br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">config 配置信息</span><br><br>        <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">CMakeLists</span><span class="hljs-string">.</span><span class="hljs-comment">txt: 编译的基本配置</span><br><br></code></pre></td></tr></table></figure>
 <blockquote>
 <p>其中，<code>devel</code>文件夹类似于ROS2里面的<code>install</code>文件夹</p>
 </blockquote>
-<h3 id="运行一个Hello-World程序操作流程（C-为例）"><a href="#运行一个Hello-World程序操作流程（C-为例）" class="headerlink" title="运行一个Hello World程序操作流程（C++为例）"></a>运行一个<code>Hello World</code>程序操作流程（C++为例）</h3><ul>
+<h3 id="运行一个Hello-World程序操作流程（C-为例）">运行一个<code>Hello World</code>程序操作流程（C++为例）</h3>
+<ul>
 <li>1.创建工作空间并初始化</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ty_ros_ws(自定义空间名称)/src</span><br><span class="line">cd ty_ros_ws(自定义空间名称)</span><br><span class="line">catkin_make</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">mkdir -<span class="hljs-selector-tag">p</span> <span class="hljs-built_in">ty_ros_ws</span>(自定义空间名称)/<span class="hljs-attribute">src</span><br>cd <span class="hljs-built_in">ty_ros_ws</span>(自定义空间名称)<br>catkin_make<br></code></pre></td></tr></table></figure>
 <ul>
 <li>2.进入 src 创建 ros 包并添加依赖</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd src</span><br><span class="line">catkin_create_pkg hello_vscode(自定义ROS包名) roscpp rospy std_msgs</span><br></pre></td></tr></table></figure>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scss">cd <span class="hljs-attribute">src</span><br>catkin_create_pkg <span class="hljs-built_in">hello_vscode</span>(自定义ROS包名) roscpp rospy std_msgs<br></code></pre></td></tr></table></figure>
 <p>其中 roscpp、rospy 与 std_msgs是依赖包。</p>
 <ul>
 <li>3.进入 hello_vscode(自定义ROS包名)包里面的src，创建<code>C++</code>文件,名为：<code>Hello_vscode_c.cpp</code>。然后写入下面的内容：</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;ros/ros.h&quot;</span><br><span class="line"></span><br><span class="line">int main(int argc, char *argv[])</span><br><span class="line">&#123;</span><br><span class="line">    //执行 ros 节点初始化 , ‘Hello’是节点名称</span><br><span class="line">    ros::init(argc,argv,&quot;hello&quot;);</span><br><span class="line">    //创建 ros 节点句柄 (非必须)</span><br><span class="line">    ros::NodeHandle n;</span><br><span class="line">    //控制台输出 hello world</span><br><span class="line">    ROS_INFO(&quot;hello from Felix!&quot;);</span><br><span class="line"></span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ros/ros.h&quot;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//执行 ros 节点初始化 , ‘Hello’是节点名称</span><br>    ros::<span class="hljs-built_in">init</span>(argc,argv,<span class="hljs-string">&quot;hello&quot;</span>);<br>    <span class="hljs-comment">//创建 ros 节点句柄 (非必须)</span><br>    ros::NodeHandle n;<br>    <span class="hljs-comment">//控制台输出 hello world</span><br>    <span class="hljs-built_in">ROS_INFO</span>(<span class="hljs-string">&quot;hello from Felix!&quot;</span>);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 <ul>
 <li>4.调整配置文件<code>CMakeList.txt</code></li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">add_executable(hello_vscode_c(一般使用步骤3的源文件名，当然也可以自己舍弃其他的但是不建议) src/hello_vscode_c.cpp(步骤3的源文件名.cpp)</span><br><span class="line">)</span><br><span class="line">target_link_libraries(hello_vscode_c（步骤3的源文件名）</span><br><span class="line">  $&#123;catkin_LIBRARIES&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs lisp">add_executable(<span class="hljs-name">hello_vscode_c</span>(一般使用步骤<span class="hljs-number">3</span>的源文件名，当然也可以自己舍弃其他的但是不建议) src/hello_vscode_c.cpp(步骤<span class="hljs-number">3</span>的源文件名.cpp)<br>)<br>target_link_libraries(<span class="hljs-name">hello_vscode_c</span>（步骤<span class="hljs-number">3</span>的源文件名）<br>  $&#123;catkin_LIBRARIES&#125;<br>)<br></code></pre></td></tr></table></figure>
 <ul>
-<li><p>5.编译:进入ty_ros_ws(自定义空间名称)，然后<code>catkin_make</code>编译</p>
+<li>
+<p>5.编译:进入ty_ros_ws(自定义空间名称)，然后<code>catkin_make</code>编译</p>
 </li>
-<li><p>6.在终端运行<code>roscore</code></p>
+<li>
+<p>6.在终端运行<code>roscore</code></p>
 </li>
-<li><p>7.再打开一个新的终端</p>
+<li>
+<p>7.再打开一个新的终端</p>
 <ul>
 <li><code>source ./devel/setup.bash</code></li>
 <li><code>rosrun hello_vscode(包名) hello_vscode_c(设置的可执行文件名，一般是源文件名)</code></li>
 </ul>
 </li>
-<li><p>8.控制台打印：</p>
+<li>
+<p>8.控制台打印：</p>
 </li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello from Felix!</span><br></pre></td></tr></table></figure>
-
-
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">Hello <span class="hljs-keyword">from</span> Felix!<br></code></pre></td></tr></table></figure>
 <p>参考内容：</p>
 <ul>
 <li>赵虚左BiliBili里面的ROS1教程</li>
 </ul>
 
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/ROS1/" class="category-chain-item">ROS1</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%85%A5%E9%97%A8/" class="print-no-link">#入门</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>ROS1之第一个样例运行</div>
+      <div>https://tyfelix.com/2025/04/08/ROS1之第一个样例运行/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>tyfelix</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>April 8, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
   </div>
-</article>
 
 
 
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/08/MAC%E7%94%B5%E8%84%91%E5%AE%89%E8%A3%85Ubuntu20-04%E5%B9%B6%E5%AE%89%E8%A3%85ROS1-noetic/" title="MAC电脑安装Ubuntu20.04并安装ROS1-noetic">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MAC电脑安装Ubuntu20.04并安装ROS1-noetic</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/02/25/A-%E7%AE%97%E6%B3%95%E8%AE%B2%E8%A7%A3/" title="A*算法讲解">
+                        <span class="hidden-mobile">A*算法讲解</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
 
-    <div id="nav-footer" style="display: none">
-      <ul>
-        
-          <li><a href="/">Home</a></li>
-        
-          <li><a href="/about/">About</a></li>
-        
-          <li><a href="/archives/">Blogs</a></li>
-        
-          <li><a href="/categories/">catgories</a></li>
-        
-      </ul>
-    </div>
-
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ROS1%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.</span> <span class="toc-text">ROS1文件系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E4%B8%80%E4%B8%AAHello-World%E7%A8%8B%E5%BA%8F%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B%EF%BC%88C-%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">运行一个Hello World程序操作流程（C++为例）</span></a></li></ol></li></ol>
+            
+          </article>
+        </div>
       </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&text=ROS1之第一个样例运行"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&is_video=false&description=ROS1之第一个样例运行"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=ROS1之第一个样例运行&body=Check out this article: http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&title=ROS1之第一个样例运行"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&name=ROS1之第一个样例运行&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/&t=ROS1之第一个样例运行"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
     </div>
 
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
 
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2025
-    tyfelix
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
     </div>
-    <!-- styles -->
+  </div>
+</div>
 
+    
 
+    
+  </main>
 
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
-
+  <footer>
+    <div class="footer-inner">
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
     })
-  })
   </script>
 
 
-<script src="/js/main.js"></script>
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
 </body>
 </html>

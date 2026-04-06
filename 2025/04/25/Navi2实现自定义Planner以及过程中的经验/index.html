@@ -1,187 +1,414 @@
+
+
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
 <head>
-    <!-- so meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="什么是Navigation2 ？Navigation2（Nav2）是ROS 2机器人平台生态下官方开发与维护的自主导航（移动机器人定位与路径规划）系统。它让移动机器人可以实现类似“给定目标点，自动避障、去往指定位置”的能力。简而言之，这是适配ROS2的一个导航框架，可以参考框架进行自定义开发，部署自己的导航算法。 环境要求：  Ubuntu 22.04 ROS2 Humble Navigation">
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="tyfelix">
+  <meta name="keywords" content="tyfelix">
+  
+    <meta name="description" content="什么是Navigation2 ？ Navigation2（Nav2）是ROS 2机器人平台生态下官方开发与维护的自主导航（移动机器人定位与路径规划）系统。它让移动机器人可以实现类似“给定目标点，自动避障、去往指定位置”的能力。 简而言之，这是适配ROS2的一个导航框架，可以参考框架进行自定义开发，部署自己的导航算法。 环境要求：  Ubuntu 22.04 ROS2 Humble Navigati">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Navi2实现自定义Planner以及过程中的经验">
-<meta property="og:url" content="http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/index.html">
+<meta property="og:url" content="https://tyfelix.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/index.html">
 <meta property="og:site_name" content="Tang Yi&#39;s Blog">
-<meta property="og:description" content="什么是Navigation2 ？Navigation2（Nav2）是ROS 2机器人平台生态下官方开发与维护的自主导航（移动机器人定位与路径规划）系统。它让移动机器人可以实现类似“给定目标点，自动避障、去往指定位置”的能力。简而言之，这是适配ROS2的一个导航框架，可以参考框架进行自定义开发，部署自己的导航算法。 环境要求：  Ubuntu 22.04 ROS2 Humble Navigation">
+<meta property="og:description" content="什么是Navigation2 ？ Navigation2（Nav2）是ROS 2机器人平台生态下官方开发与维护的自主导航（移动机器人定位与路径规划）系统。它让移动机器人可以实现类似“给定目标点，自动避障、去往指定位置”的能力。 简而言之，这是适配ROS2的一个导航框架，可以参考框架进行自定义开发，部署自己的导航算法。 环境要求：  Ubuntu 22.04 ROS2 Humble Navigati">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/post_images/nav2_1.jpg">
+<meta property="og:image" content="https://tyfelix.com/post_images/nav2_1.jpg">
 <meta property="article:published_time" content="2025-04-25T10:39:36.000Z">
 <meta property="article:modified_time" content="2025-04-25T13:10:51.777Z">
 <meta property="article:author" content="tyfelix">
 <meta property="article:tag" content="Navigation2">
 <meta property="article:tag" content="自定义算法">
 <meta property="article:tag" content="经验分享">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/post_images/nav2_1.jpg">
-    
-    
-      
-        
-          <link rel="shortcut icon" href="/images/chicken.ico">
-        
-      
-      
-        
-          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
-        
-      
-      
-        
-          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-        
-      
-    
-    <!-- title -->
-    <title>Navi2实现自定义Planner以及过程中的经验</title>
-    <!-- async scripts -->
-    <!-- Google Analytics -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tyfelix.com/post_images/nav2_1.jpg">
+  
+  
+  
+  <title>Navi2实现自定义Planner以及过程中的经验 - Tang Yi&#39;s Blog</title>
 
-
-    <!-- Umami Analytics -->
-
-
-    <!-- styles -->
-    
-<link rel="stylesheet" href="/css/style.css">
-
-    <!-- persian styles -->
-    
-    <!-- rss -->
-    
-    
-      <link rel="alternate" href="/true" title="Tang Yi&#39;s Blog" type="application/atom+xml" />
-    
-	<!-- mathjax -->
-	
-		<script type="text/x-mathjax-config">
-		  MathJax.Hub.Config({
-			tex2jax: {
-			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-			  inlineMath: [['$','$']]
-			}
-		  });
-		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
-	
-<meta name="generator" content="Hexo 7.3.0"></head>
-
-<body class="max-width mx-auto px3 ltr">
-    
-      <div id="header-post">
-  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
-  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
-  <span id="menu">
-    <span id="nav">
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </span>
-    <br/>
-    <span id="actions">
-      <ul>
-        
-        <li><a class="icon" aria-label="Previous post" href="/2025/05/23/%E4%B8%80%E4%BA%9B%E5%A5%BD%E7%94%A8%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
-        
-        
-        <li><a class="icon" aria-label="Next post" href="/2025/04/24/%E5%BF%AB%E9%80%9F%E6%8E%A2%E7%B4%A2%E9%9A%8F%E6%9C%BA%E6%A0%91RRT/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
-        
-        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
-        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
-      </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
-    </span>
-    <br/>
-    <div id="share" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&text=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&is_video=false&description=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Navi2实现自定义Planner以及过程中的经验&body=Check out this article: http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&name=Navi2实现自定义Planner以及过程中的经验&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&t=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
-</ul>
-
-    </div>
-    
-    
-      <div id="toc">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFNavigation2-%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是Navigation2 ？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%B5%81%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">实现流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%84%9F%E6%82%9F%E5%92%8C%E5%BF%83%E5%BE%97"><span class="toc-number">3.</span> <span class="toc-text">项目感悟和心得</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7"><span class="toc-number">4.</span> <span class="toc-text">开发技巧</span></a></li></ol>
-      </div>
-    
-  </span>
-</div>
-
-    
-    <div class="content index py4 ">
-        
-        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
-  <header>
-    
-    <h1 class="posttitle p-name" itemprop="name headline">
-        Navi2实现自定义Planner以及过程中的经验
-    </h1>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
 
-    <div class="meta">
-      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
-        <span class="p-name" itemprop="name">tyfelix</span>
-      </span>
-      
-    <div class="postdate">
-      
-        <time datetime="2025-04-25T10:39:36.000Z" class="dt-published" itemprop="datePublished">2025-04-25</time>
-        
-      
-    </div>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
-      
-    <div class="article-category">
-        <i class="fa-solid fa-archive"></i>
-        <a class="category-link" href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">路径规划</a>
-    </div>
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
 
 
-      
-    <div class="article-tag">
-        <i class="fa-solid fa-tag"></i>
-        <a class="p-category" href="/tags/Navigation2/" rel="tag">Navigation2</a>, <a class="p-category" href="/tags/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/" rel="tag">经验分享</a>, <a class="p-category" href="/tags/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E6%B3%95/" rel="tag">自定义算法</a>
-    </div>
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
 
 
-    </div>
-  </header>
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
   
 
-  <div class="content e-content" itemprop="articleBody">
-    <h2 id="什么是Navigation2-？"><a href="#什么是Navigation2-？" class="headerlink" title="什么是Navigation2 ？"></a>什么是Navigation2 ？</h2><p>Navigation2（Nav2）是ROS 2机器人平台生态下官方开发与维护的自主导航（移动机器人定位与路径规划）系统。它让移动机器人可以实现类似“给定目标点，自动避障、去往指定位置”的能力。<br>简而言之，这是适配ROS2的一个导航框架，可以参考框架进行自定义开发，部署自己的导航算法。</p>
+
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"tyfelix.com","root":"/","version":"1.9.9","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"expand_all":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"openkounter":{"server_url":"https://open-kounter.mintimate.cn","path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tang Yi&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content (desktop) -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/academic/" target="_self">
+                <i class="iconfont icon-book-fill"></i>
+                <span>Academic</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile grid menu overlay -->
+<div id="mobile-grid-menu" class="d-lg-none">
+  <div class="mobile-grid-menu-inner">
+    <div class="container">
+      <div class="row">
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-home-fill"></i>
+                  <span>Home</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/archives/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-archive-fill"></i>
+                  <span>Archives</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/categories/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-category-fill"></i>
+                  <span>Categories</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/tags/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-tags-fill"></i>
+                  <span>Tags</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/academic/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-book-fill"></i>
+                  <span>Academic</span>
+                </div>
+              </a>
+            </div>
+          
+        
+          
+          
+          
+          
+            <div class="col-4 mobile-grid-cell">
+              <a href="/about/" target="_self">
+                <div class="mobile-grid-item">
+                  <i class="iconfont icon-user-fill"></i>
+                  <span>About</span>
+                </div>
+              </a>
+            </div>
+          
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-search-btn">
+            <a href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-search"></i>
+                <span>Search</span>
+              </div>
+            </a>
+          </div>
+        
+        
+          <div class="col-4 mobile-grid-cell" id="mobile-color-toggle-btn"
+               data-label-light="Light"
+               data-label-dark="Dark">
+            <a href="javascript:;" aria-label="Color Toggle">
+              <div class="mobile-grid-item">
+                <i class="iconfont icon-dark" id="mobile-color-toggle-icon"></i>
+                <span id="mobile-color-toggle-label">Dark</span>
+              </div>
+            </a>
+          </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Navi2实现自定义Planner以及过程中的经验"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-25 13:39" pubdate>
+          April 25, 2025 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.4k words
+        
+      </span>
+    
+
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Navi2实现自定义Planner以及过程中的经验</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="什么是Navigation2-？">什么是Navigation2 ？</h2>
+<p>Navigation2（Nav2）是ROS 2机器人平台生态下官方开发与维护的自主导航（移动机器人定位与路径规划）系统。它让移动机器人可以实现类似“给定目标点，自动避障、去往指定位置”的能力。<br>
+简而言之，这是适配ROS2的一个导航框架，可以参考框架进行自定义开发，部署自己的导航算法。</p>
 <p>环境要求：</p>
 <ul>
 <li>Ubuntu 22.04</li>
@@ -189,218 +416,522 @@
 <li>Navigation 2</li>
 <li>Gazebo</li>
 </ul>
-<h2 id="实现流程"><a href="#实现流程" class="headerlink" title="实现流程"></a>实现流程</h2><p>我在尝试自定义Planner的过程中，尝试将自己的全局路径规划算法部署到Navigation2 中并在Gazebo中配合机器人仿真展示出来。</p>
-<p>根据官方文档（地址：）<br>一共需要继承五个纯虚函数。如下图所示[1]<br><img src="/post_images/nav2_1.jpg" alt="Nav2 functions"></p>
+<h2 id="实现流程">实现流程</h2>
+<p>我在尝试自定义Planner的过程中，尝试将自己的全局路径规划算法部署到Navigation2 中并在Gazebo中配合机器人仿真展示出来。</p>
+<p>根据官方文档（地址：）<br>
+一共需要继承五个纯虚函数。如下图所示[1]<br>
+<img src="/post_images/nav2_1.jpg" srcset="/img/loading.gif" lazyload alt="Nav2 functions"></p>
 <p>但是在实现的开发过程中，主要关注在configure()函数和createPlan()函数的实现上。官方存在一个demo（地址：<a target="_blank" rel="noopener" href="https://github.com/ros-navigation/navigation2_tutorials/blob/rolling/nav2_straightline_planner/src/straight_line_planner.cpp%EF%BC%89">https://github.com/ros-navigation/navigation2_tutorials/blob/rolling/nav2_straightline_planner/src/straight_line_planner.cpp）</a></p>
 <p>此外，给出以我自己实现的代码设置为例：</p>
 <ul>
 <li>nav2_self_planner.hpp</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> NAV2_SELF_PLANNER__NAV2_SELF_PLANNER_HPP_</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NAV2_SELF_PLANNER__NAV2_SELF_PLANNER_HPP_</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="comment">// 消息接口</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;geometry_msgs/msg/point.hpp&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;geometry_msgs/msg/pose_stamped.hpp&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav2_costmap_2d/costmap_2d_ros.hpp&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav_msgs/msg/path.hpp&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;rclcpp/rclcpp.hpp&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav2_core/global_planner.hpp&quot;</span> <span class="comment">//基类 base_type</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav2_util/lifecycle_node.hpp&quot;</span> <span class="comment">// rclcpp的一个子类</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav2_util/robot_utils.hpp&quot;</span> <span class="comment">//常用工具类</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> nav2_self_planner &#123;</span><br><span class="line"><span class="comment">// 自定义导航规划器类 继承基类（抽象类），纯虚函数</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CustomAstarPlanner</span> : <span class="keyword">public</span> nav2_core::GlobalPlanner &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  <span class="built_in">CustomPlanner</span>() = <span class="keyword">default</span>;</span><br><span class="line">  ~<span class="built_in">CustomPlanner</span>() = <span class="keyword">default</span>;</span><br><span class="line">  <span class="comment">// 插件配置方法</span></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">configure</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">      <span class="type">const</span> rclcpp_lifecycle::LifecycleNode::WeakPtr &amp;parent, std::string name,</span></span></span><br><span class="line"><span class="params"><span class="function">      std::shared_ptr&lt;tf2_ros::Buffer&gt; tf,</span></span></span><br><span class="line"><span class="params"><span class="function">      std::shared_ptr&lt;nav2_costmap_2d::Costmap2DROS&gt; costmap_ros)</span> <span class="keyword">override</span></span>;</span><br><span class="line">  <span class="comment">// 插件清理方法</span></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">cleanup</span><span class="params">()</span> <span class="keyword">override</span></span>;</span><br><span class="line">  <span class="comment">// 插件激活方法</span></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">activate</span><span class="params">()</span> <span class="keyword">override</span></span>;</span><br><span class="line">  <span class="comment">// 插件停用方法</span></span><br><span class="line">  <span class="function"><span class="type">void</span> <span class="title">deactivate</span><span class="params">()</span> <span class="keyword">override</span></span>;</span><br><span class="line">  <span class="comment">// 为给定的起始和目标位姿创建路径的方法</span></span><br><span class="line">  nav_msgs::msg::Path</span><br><span class="line">  <span class="comment">// 根据官方文档，这里就两个参数</span></span><br><span class="line">  <span class="built_in">createPlan</span>(</span><br><span class="line">    <span class="type">const</span> geometry_msgs::msg::PoseStamped &amp;start,</span><br><span class="line">    <span class="type">const</span> geometry_msgs::msg::PoseStamped &amp;goal) <span class="keyword">override</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">  <span class="comment">// 坐标变换缓存指针，可用于查询坐标关系</span></span><br><span class="line">  std::shared_ptr&lt;tf2_ros::Buffer&gt; tf_;</span><br><span class="line">  <span class="comment">// 节点指针</span></span><br><span class="line">  nav2_util::LifecycleNode::SharedPtr node_;</span><br><span class="line">  <span class="comment">// 全局代价地图</span></span><br><span class="line">  nav2_costmap_2d::Costmap2D *costmap_;</span><br><span class="line">  <span class="comment">// 全局代价地图的坐标系</span></span><br><span class="line">  std::string global_frame_, name_;</span><br><span class="line">  <span class="comment">// 其他传入参数</span></span><br><span class="line">  <span class="type">double</span> parameter1;</span><br><span class="line">  <span class="type">double</span> parameter2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// namespace nav2_self_planner</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// </span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> NAV2_SELF_PLANNER__NAV2_SELF_PLANNER_HPP_</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> NAV2_SELF_PLANNER__NAV2_SELF_PLANNER_HPP_</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string&gt;</span></span><br><span class="hljs-comment">// 消息接口</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;geometry_msgs/msg/point.hpp&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;geometry_msgs/msg/pose_stamped.hpp&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav2_costmap_2d/costmap_2d_ros.hpp&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav_msgs/msg/path.hpp&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;rclcpp/rclcpp.hpp&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav2_core/global_planner.hpp&quot;</span> <span class="hljs-comment">//基类 base_type</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav2_util/lifecycle_node.hpp&quot;</span> <span class="hljs-comment">// rclcpp的一个子类</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav2_util/robot_utils.hpp&quot;</span> <span class="hljs-comment">//常用工具类</span></span><br><br><br><span class="hljs-keyword">namespace</span> nav2_self_planner &#123;<br><span class="hljs-comment">// 自定义导航规划器类 继承基类（抽象类），纯虚函数</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">CustomAstarPlanner</span> : <span class="hljs-keyword">public</span> nav2_core::GlobalPlanner &#123;<br><span class="hljs-keyword">public</span>:<br>  <span class="hljs-built_in">CustomPlanner</span>() = <span class="hljs-keyword">default</span>;<br>  ~<span class="hljs-built_in">CustomPlanner</span>() = <span class="hljs-keyword">default</span>;<br>  <span class="hljs-comment">// 插件配置方法</span><br>  <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">configure</span><span class="hljs-params">(</span></span><br><span class="hljs-params"><span class="hljs-function">      <span class="hljs-type">const</span> rclcpp_lifecycle::LifecycleNode::WeakPtr &amp;parent, std::string name,</span></span><br><span class="hljs-params"><span class="hljs-function">      std::shared_ptr&lt;tf2_ros::Buffer&gt; tf,</span></span><br><span class="hljs-params"><span class="hljs-function">      std::shared_ptr&lt;nav2_costmap_2d::Costmap2DROS&gt; costmap_ros)</span> <span class="hljs-keyword">override</span></span>;<br>  <span class="hljs-comment">// 插件清理方法</span><br>  <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">cleanup</span><span class="hljs-params">()</span> <span class="hljs-keyword">override</span></span>;<br>  <span class="hljs-comment">// 插件激活方法</span><br>  <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">activate</span><span class="hljs-params">()</span> <span class="hljs-keyword">override</span></span>;<br>  <span class="hljs-comment">// 插件停用方法</span><br>  <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">deactivate</span><span class="hljs-params">()</span> <span class="hljs-keyword">override</span></span>;<br>  <span class="hljs-comment">// 为给定的起始和目标位姿创建路径的方法</span><br>  nav_msgs::msg::Path<br>  <span class="hljs-comment">// 根据官方文档，这里就两个参数</span><br>  <span class="hljs-built_in">createPlan</span>(<br>    <span class="hljs-type">const</span> geometry_msgs::msg::PoseStamped &amp;start,<br>    <span class="hljs-type">const</span> geometry_msgs::msg::PoseStamped &amp;goal) <span class="hljs-keyword">override</span>;<br><br><span class="hljs-keyword">private</span>:<br>  <span class="hljs-comment">// 坐标变换缓存指针，可用于查询坐标关系</span><br>  std::shared_ptr&lt;tf2_ros::Buffer&gt; tf_;<br>  <span class="hljs-comment">// 节点指针</span><br>  nav2_util::LifecycleNode::SharedPtr node_;<br>  <span class="hljs-comment">// 全局代价地图</span><br>  nav2_costmap_2d::Costmap2D *costmap_;<br>  <span class="hljs-comment">// 全局代价地图的坐标系</span><br>  std::string global_frame_, name_;<br>  <span class="hljs-comment">// 其他传入参数</span><br>  <span class="hljs-type">double</span> parameter1;<br>  <span class="hljs-type">double</span> parameter2;<br>&#125;;<br><br>&#125; <span class="hljs-comment">// namespace nav2_self_planner</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">// </span></span><br></code></pre></td></tr></table></figure>
 <ul>
 <li>nav2_self_planner.cpp</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav2_self_planner/nav2_self_planner.hpp&quot;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unordered_map&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unordered_set&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cmath&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span> </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// nav2工具  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav2_util/node_utils.hpp&quot;</span>  </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">CustomAstarPlanner::configure</span><span class="params">(  </span></span></span><br><span class="line"><span class="params"><span class="function">      <span class="type">const</span> rclcpp_lifecycle::LifecycleNode::WeakPtr &amp;amp;parent, std::string name,  </span></span></span><br><span class="line"><span class="params"><span class="function">      std::shared_ptr&amp;lt;tf2_ros::Buffer&amp;gt; tf,  </span></span></span><br><span class="line"><span class="params"><span class="function">      std::shared_ptr&amp;lt;nav2_costmap_2d::Costmap2DROS&amp;gt; costmap_ros)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">  node_ = parent.<span class="built_in">lock</span>();  </span><br><span class="line">  name_ = name;  </span><br><span class="line">  tf_ = tf;  </span><br><span class="line">  costmap_ = costmap_ros-&amp;gt;<span class="built_in">getCostmap</span>();  </span><br><span class="line">  global_frame_ = costmap_ros-&amp;gt;<span class="built_in">getGlobalFrameID</span>();  </span><br><span class="line">  <span class="comment">// 定义参数并设置参数值</span></span><br><span class="line">  nav2_util::<span class="built_in">declare_parameter_if_not_declared</span>(  </span><br><span class="line">      node_, name_ + <span class="string">&quot;.parameter1&quot;</span>, rclcpp::<span class="built_in">ParameterValue</span>(<span class="number">0.1</span>));  </span><br><span class="line">  nav2_util::<span class="built_in">declare_parameter_if_not_declared</span>(  </span><br><span class="line">      node_, name_ + <span class="string">&quot;.parameter2&quot;</span>, rclcpp::<span class="built_in">ParameterValue</span>(<span class="number">0.5</span>));  </span><br><span class="line">  node_-&gt;;<span class="built_in">get_parameter</span>(name_ + <span class="string">&quot;.parameter1&quot;</span>, interpolation_resolution_);  </span><br><span class="line">  node_-&gt;;<span class="built_in">get_parameter</span>(name_ + <span class="string">&quot;.parameter2&quot;</span>, safety_distance);  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">// 这三个一般保持不写</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">CustomAstarPlanner::cleanup</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">RCLCPP_INFO</span>(node_-&gt;;<span class="built_in">get_logger</span>(), <span class="string">&quot;正在清理类型为 CustomPlanner 的插件 %s&quot;</span>,name_.<span class="built_in">c_str</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">CustomAstarPlanner::activate</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">RCLCPP_INFO</span>(node_-&gt;;<span class="built_in">get_logger</span>(), <span class="string">&quot;正在激活类型为 CustomPlanner 的插件 %s&quot;</span>,name_.<span class="built_in">c_str</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">CustomAstarPlanner::deactivate</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">RCLCPP_INFO</span>(node_-&gt;;<span class="built_in">get_logger</span>(), <span class="string">&quot;正在停用类型为 CustomPlanner 的插件 %s&quot;</span>,name_.<span class="built_in">c_str</span>());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">nav_msgs::<span class="function">msg::Path  </span></span><br><span class="line"><span class="function"><span class="title">CustomAstarPlanner::createPlan</span><span class="params">(  </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> geometry_msgs::msg::PoseStamped &amp;amp;start,  </span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> geometry_msgs::msg::PoseStamped &amp;amp;goal)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">  自定义全局规划算法的实现代码...</span><br><span class="line">&#125;</span><br><span class="line"> <span class="comment">// namespace nav2_self_planner  </span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册并导出插件</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;pluginlib/class_list_macros.hpp&quot;</span>  </span></span><br><span class="line"><span class="built_in">PLUGINLIB_EXPORT_CLASS</span>(nav2_self_planner::CustomPlanner, nav2_core::GlobalPlanner)  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav2_self_planner/nav2_self_planner.hpp&quot;</span>  </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;queue&gt;</span>  </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unordered_map&gt;</span> </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unordered_set&gt;</span>  </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;cmath&gt;</span> </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;algorithm&gt;</span> </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span><br><br><span class="hljs-comment">// nav2工具  </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav2_util/node_utils.hpp&quot;</span>  </span><br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CustomAstarPlanner::configure</span><span class="hljs-params">(  </span></span><br><span class="hljs-params"><span class="hljs-function">      <span class="hljs-type">const</span> rclcpp_lifecycle::LifecycleNode::WeakPtr &amp;amp;parent, std::string name,  </span></span><br><span class="hljs-params"><span class="hljs-function">      std::shared_ptr&amp;lt;tf2_ros::Buffer&amp;gt; tf,  </span></span><br><span class="hljs-params"><span class="hljs-function">      std::shared_ptr&amp;lt;nav2_costmap_2d::Costmap2DROS&amp;gt; costmap_ros)</span>  </span><br><span class="hljs-function"></span>&#123;  <br>  node_ = parent.<span class="hljs-built_in">lock</span>();  <br>  name_ = name;  <br>  tf_ = tf;  <br>  costmap_ = costmap_ros-&amp;gt;<span class="hljs-built_in">getCostmap</span>();  <br>  global_frame_ = costmap_ros-&amp;gt;<span class="hljs-built_in">getGlobalFrameID</span>();  <br>  <span class="hljs-comment">// 定义参数并设置参数值</span><br>  nav2_util::<span class="hljs-built_in">declare_parameter_if_not_declared</span>(  <br>      node_, name_ + <span class="hljs-string">&quot;.parameter1&quot;</span>, rclcpp::<span class="hljs-built_in">ParameterValue</span>(<span class="hljs-number">0.1</span>));  <br>  nav2_util::<span class="hljs-built_in">declare_parameter_if_not_declared</span>(  <br>      node_, name_ + <span class="hljs-string">&quot;.parameter2&quot;</span>, rclcpp::<span class="hljs-built_in">ParameterValue</span>(<span class="hljs-number">0.5</span>));  <br>  node_-&gt;;<span class="hljs-built_in">get_parameter</span>(name_ + <span class="hljs-string">&quot;.parameter1&quot;</span>, interpolation_resolution_);  <br>  node_-&gt;;<span class="hljs-built_in">get_parameter</span>(name_ + <span class="hljs-string">&quot;.parameter2&quot;</span>, safety_distance);  <br>&#125;  <br><br><span class="hljs-comment">// 这三个一般保持不写</span><br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CustomAstarPlanner::cleanup</span><span class="hljs-params">()</span></span><br><span class="hljs-function">    </span>&#123;<br>        <span class="hljs-built_in">RCLCPP_INFO</span>(node_-&gt;;<span class="hljs-built_in">get_logger</span>(), <span class="hljs-string">&quot;正在清理类型为 CustomPlanner 的插件 %s&quot;</span>,name_.<span class="hljs-built_in">c_str</span>());<br>    &#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CustomAstarPlanner::activate</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">RCLCPP_INFO</span>(node_-&gt;;<span class="hljs-built_in">get_logger</span>(), <span class="hljs-string">&quot;正在激活类型为 CustomPlanner 的插件 %s&quot;</span>,name_.<span class="hljs-built_in">c_str</span>());<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">CustomAstarPlanner::deactivate</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-built_in">RCLCPP_INFO</span>(node_-&gt;;<span class="hljs-built_in">get_logger</span>(), <span class="hljs-string">&quot;正在停用类型为 CustomPlanner 的插件 %s&quot;</span>,name_.<span class="hljs-built_in">c_str</span>());<br>&#125;<br><br>nav_msgs::<span class="hljs-function">msg::Path  </span><br><span class="hljs-function"><span class="hljs-title">CustomAstarPlanner::createPlan</span><span class="hljs-params">(  </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> geometry_msgs::msg::PoseStamped &amp;amp;start,  </span></span><br><span class="hljs-params"><span class="hljs-function">    <span class="hljs-type">const</span> geometry_msgs::msg::PoseStamped &amp;amp;goal)</span>  </span><br><span class="hljs-function"></span>&#123;  <br>  自定义全局规划算法的实现代码...<br>&#125;<br> <span class="hljs-comment">// namespace nav2_self_planner  </span><br><br><span class="hljs-comment">// 注册并导出插件</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;pluginlib/class_list_macros.hpp&quot;</span>  </span><br><span class="hljs-built_in">PLUGINLIB_EXPORT_CLASS</span>(nav2_self_planner::CustomPlanner, nav2_core::GlobalPlanner)  <br><br></code></pre></td></tr></table></figure>
 <p>其中：</p>
 <ul>
 <li>导出插件：</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;pluginlib/class_list_macros.hpp&quot;</span>  </span></span><br><span class="line"><span class="built_in">PLUGINLIB_EXPORT_CLASS</span>(nav2_self_planner::CustomPlanner, nav2_core::GlobalPlanner)  </span><br></pre></td></tr></table></figure>
-
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;pluginlib/class_list_macros.hpp&quot;</span>  </span><br><span class="hljs-built_in">PLUGINLIB_EXPORT_CLASS</span>(nav2_self_planner::CustomPlanner, nav2_core::GlobalPlanner)  <br></code></pre></td></tr></table></figure>
 <p>完成算法对应的<code>.hpp</code>和<code>.cpp</code>文件之后，下一步需要在xml文件里面注册。主要包含三个文件，如下所示：</p>
 <p>补充文件：</p>
 <ul>
-<li><ol>
+<li>
+<ol>
 <li><code>self_planner_plugin.xml</code>:</li>
 </ol>
 </li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">library</span> <span class="attr">path</span>=<span class="string">&quot;nav2_self_planner_plugin&quot;</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">class</span> <span class="attr">name</span>=<span class="string">&quot;nav2_self_planner/CustomAstarPlanner&quot;</span> <span class="attr">type</span>=<span class="string">&quot;nav2_self_planner::CustomAstarPlanner&quot;</span> <span class="attr">base_class_type</span>=<span class="string">&quot;nav2_core::GlobalPlanner&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">description</span>&gt;</span>自定义示例插件，用于生成自定义路径。<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">library</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">library</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;nav2_self_planner_plugin&quot;</span>&gt;</span><br> <span class="hljs-tag">&lt;<span class="hljs-name">class</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;nav2_self_planner/CustomAstarPlanner&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;nav2_self_planner::CustomAstarPlanner&quot;</span> <span class="hljs-attr">base_class_type</span>=<span class="hljs-string">&quot;nav2_core::GlobalPlanner&quot;</span>&gt;</span><br>   <span class="hljs-tag">&lt;<span class="hljs-name">description</span>&gt;</span>自定义示例插件，用于生成自定义路径。<span class="hljs-tag">&lt;/<span class="hljs-name">description</span>&gt;</span><br> <span class="hljs-tag">&lt;/<span class="hljs-name">class</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">library</span>&gt;</span><br></code></pre></td></tr></table></figure>
 <ul>
-<li><ol start="2">
+<li>
+<ol start="2">
 <li><code>package.xml</code>:</li>
 </ol>
 </li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">export</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">nav2_core</span> <span class="attr">plugin</span>=<span class="string">&quot;$&#123;prefix&#125;/self_planner_plugin.xml&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">export</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">export</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">nav2_core</span> <span class="hljs-attr">plugin</span>=<span class="hljs-string">&quot;$&#123;prefix&#125;/self_planner_plugin.xml&quot;</span>/&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">export</span>&gt;</span><br></code></pre></td></tr></table></figure>
 <ul>
-<li><ol start="3">
+<li>
+<ol start="3">
 <li><code>CMakeList.txt</code>:</li>
 </ol>
 </li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cmake_minimum_required</span>(VERSION <span class="number">3.8</span>)</span><br><span class="line"><span class="built_in">project</span>(nav2_self_planner)</span><br><span class="line"></span><br><span class="line"><span class="meta"># find dependencies</span></span><br><span class="line"><span class="built_in">find_package</span>(ament_cmake REQUIRED)</span><br><span class="line"><span class="built_in">find_package</span>(pluginlib REQUIRED)</span><br><span class="line"><span class="built_in">find_package</span>(nav2_core REQUIRED)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 包含头文件目录</span><br><span class="line"><span class="built_in">include_directories</span>(include)</span><br><span class="line"># 定义库名称</span><br><span class="line"><span class="built_in">set</span>(library_name $&#123;PROJECT_NAME&#125;_plugin)</span><br><span class="line"># 创建共享库 加了SHARED 就是动态的库</span><br><span class="line"><span class="built_in">add_library</span>($&#123;library_name&#125; SHARED  src/nav2_self_planner.cpp)</span><br><span class="line"># 指定库的依赖关系</span><br><span class="line"><span class="built_in">ament_target_dependencies</span>($&#123;library_name&#125; nav2_core pluginlib)</span><br><span class="line"># 安装库文件到指定目录</span><br><span class="line"><span class="built_in">install</span>(TARGETS $&#123;library_name&#125;</span><br><span class="line">  ARCHIVE DESTINATION lib</span><br><span class="line">  LIBRARY DESTINATION lib</span><br><span class="line">  RUNTIME DESTINATION lib/$&#123;PROJECT_NAME&#125;</span><br><span class="line">)</span><br><span class="line"># 安装头文件到指定目录</span><br><span class="line"><span class="built_in">install</span>(DIRECTORY include/</span><br><span class="line">  DESTINATION include/ )</span><br><span class="line"># 导出插件描述文件（这里使用的是动态功能包+描述文件）而不是（当前功能包+描述文件）</span><br><span class="line"><span class="built_in">pluginlib_export_plugin_description_file</span>(nav2_core self_planner_plugin.xml)</span><br><span class="line"></span><br><span class="line"><span class="built_in">ament_package</span>()</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">cmake_minimum_required</span>(VERSION <span class="hljs-number">3.8</span>)<br><span class="hljs-built_in">project</span>(nav2_self_planner)<br><br><span class="hljs-meta"># find dependencies</span><br><span class="hljs-built_in">find_package</span>(ament_cmake REQUIRED)<br><span class="hljs-built_in">find_package</span>(pluginlib REQUIRED)<br><span class="hljs-built_in">find_package</span>(nav2_core REQUIRED)<br><br><br># 包含头文件目录<br><span class="hljs-built_in">include_directories</span>(include)<br># 定义库名称<br><span class="hljs-built_in">set</span>(library_name $&#123;PROJECT_NAME&#125;_plugin)<br># 创建共享库 加了SHARED 就是动态的库<br><span class="hljs-built_in">add_library</span>($&#123;library_name&#125; SHARED  src/nav2_self_planner.cpp)<br># 指定库的依赖关系<br><span class="hljs-built_in">ament_target_dependencies</span>($&#123;library_name&#125; nav2_core pluginlib)<br># 安装库文件到指定目录<br><span class="hljs-built_in">install</span>(TARGETS $&#123;library_name&#125;<br>  ARCHIVE DESTINATION lib<br>  LIBRARY DESTINATION lib<br>  RUNTIME DESTINATION lib/$&#123;PROJECT_NAME&#125;<br>)<br># 安装头文件到指定目录<br><span class="hljs-built_in">install</span>(DIRECTORY include/<br>  DESTINATION include/ )<br># 导出插件描述文件（这里使用的是动态功能包+描述文件）而不是（当前功能包+描述文件）<br><span class="hljs-built_in">pluginlib_export_plugin_description_file</span>(nav2_core self_planner_plugin.xml)<br><br><span class="hljs-built_in">ament_package</span>()<br></code></pre></td></tr></table></figure>
 <p>剩下的就是按照官方文档，在navigation2里面的参数设置里替换规划器为自己的即可。</p>
-<h2 id="项目感悟和心得"><a href="#项目感悟和心得" class="headerlink" title="项目感悟和心得"></a>项目感悟和心得</h2><p>在完成整个项目的过程中，对于小白来说，我认为难的点在于：1.不知道需要哪些第三方库&#x2F;包。2.此外用到的第三方库&#x2F;包怎么去查看？</p>
-<p>对于前者，建议参考别人实现算法用了什么工具库。你自己大概率也都是使用这些工具库。<br>比如常使用的库为：</p>
+<h2 id="项目感悟和心得">项目感悟和心得</h2>
+<p>在完成整个项目的过程中，对于小白来说，我认为难的点在于：1.不知道需要哪些第三方库/包。2.此外用到的第三方库/包怎么去查看？</p>
+<p>对于前者，建议参考别人实现算法用了什么工具库。你自己大概率也都是使用这些工具库。<br>
+比如常使用的库为：</p>
 <ul>
-<li><p>&lt;queue&gt;：std::priority_queue (优先队列)</p>
+<li>
+<p>&lt;queue&gt;：std::priority_queue (优先队列)</p>
 </li>
-<li><p>&lt;unordered_map&gt;、&lt;unordered_set&gt;：哈希表</p>
+<li>
+<p>&lt;unordered_map&gt;、&lt;unordered_set&gt;：哈希表</p>
 </li>
-<li><p>&lt;vector&gt;：动态数组</p>
+<li>
+<p>&lt;vector&gt;：动态数组</p>
 </li>
-<li><p>&lt;cmath&gt;、&lt;algorithm&gt;：数学运算和常用算法</p>
+<li>
+<p>&lt;cmath&gt;、&lt;algorithm&gt;：数学运算和常用算法</p>
 </li>
-<li><p>ROS&#x2F;Navigation2 API：在规划器里要用参数声明、Costmap、TF 变换等，就需要包含它们提供的头文件，如</p>
+<li>
+<p>ROS/Navigation2 API：在规划器里要用参数声明、Costmap、TF 变换等，就需要包含它们提供的头文件，如</p>
 </li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav2_util/node_utils.hpp&quot;</span> （参数声明工具）</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;nav2_costmap_2d/costmap_2d_ros.hpp&quot;</span></span></span><br></pre></td></tr></table></figure>
-
-
-
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav2_util/node_utils.hpp&quot;</span> （参数声明工具）</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;nav2_costmap_2d/costmap_2d_ros.hpp&quot;</span></span><br></code></pre></td></tr></table></figure>
 <p>对于第二个问题，比如<code>nav2_utils.hpp</code>，查看里面的函数。有三种方式：</p>
 <ul>
 <li>直接<code>ctrl</code>点进去查看函数（最方便）。一般 VSCode、CLion 等 IDE，把光标放在类型或函数上，按 “Go to Definition”或者点击（转到定义）立刻能看到声明、参数和注释。</li>
-<li>官网查看<ul>
+<li>官网查看
+<ul>
 <li>C++ 标准库：<code>cppreference.com</code> 上搜索容器、算法、数学库的用法示例。</li>
 <li>ROS2 Navigation2: 地址：<a target="_blank" rel="noopener" href="https://github.com/ros-navigation/navigation2%EF%BC%89">https://github.com/ros-navigation/navigation2）</a></li>
 </ul>
 </li>
 </ul>
-<h2 id="开发技巧"><a href="#开发技巧" class="headerlink" title="开发技巧"></a>开发技巧</h2><p>从零去写一个工程很复杂，可以在一些示例工程的基础上进行二次开发。(示例工程地址：<a target="_blank" rel="noopener" href="https://docs.nav2.org/plugins/index.html">https://docs.nav2.org/plugins/index.html</a>)</p>
+<h2 id="开发技巧">开发技巧</h2>
+<p>从零去写一个工程很复杂，可以在一些示例工程的基础上进行二次开发。(示例工程地址：<a target="_blank" rel="noopener" href="https://docs.nav2.org/plugins/index.html">https://docs.nav2.org/plugins/index.html</a>)</p>
 <p>Navigation2 源码下有其他已有的 planner（如 SmacPlanner、GridBasedPlanner），直接参考它们的实现，复制和改造它们声明的参数和调用方式。</p>
 
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/" class="category-chain-item">路径规划</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Navigation2/" class="print-no-link">#Navigation2</a>
+      
+        <a href="/tags/%E8%87%AA%E5%AE%9A%E4%B9%89%E7%AE%97%E6%B3%95/" class="print-no-link">#自定义算法</a>
+      
+        <a href="/tags/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/" class="print-no-link">#经验分享</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Navi2实现自定义Planner以及过程中的经验</div>
+      <div>https://tyfelix.com/2025/04/25/Navi2实现自定义Planner以及过程中的经验/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>tyfelix</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>April 25, 2025</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
   </div>
-</article>
 
 
 
-        
-          <div id="footer-post-container">
-  <div id="footer-post">
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/05/23/%E4%B8%80%E4%BA%9B%E5%A5%BD%E7%94%A8%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90/" title="一些好用的学习资源">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">一些好用的学习资源</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/04/24/%E5%BF%AB%E9%80%9F%E6%8E%A2%E7%B4%A2%E9%9A%8F%E6%9C%BA%E6%A0%91RRT/" title="快速探索随机树RRT">
+                        <span class="hidden-mobile">快速探索随机树RRT</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
 
-    <div id="nav-footer" style="display: none">
-      <ul>
-        
-          <li><a href="/">Home</a></li>
-        
-          <li><a href="/about/">About</a></li>
-        
-          <li><a href="/archives/">Blogs</a></li>
-        
-          <li><a href="/categories/">catgories</a></li>
-        
-      </ul>
-    </div>
-
-    
-    
-      <div id="toc-footer" style="display: none">
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFNavigation2-%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是Navigation2 ？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E6%B5%81%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">实现流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E6%84%9F%E6%82%9F%E5%92%8C%E5%BF%83%E5%BE%97"><span class="toc-number">3.</span> <span class="toc-text">项目感悟和心得</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%8A%80%E5%B7%A7"><span class="toc-number">4.</span> <span class="toc-text">开发技巧</span></a></li></ol>
+            
+          </article>
+        </div>
       </div>
-    
-
-    <div id="share-footer" style="display: none">
-      <ul>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&text=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&is_video=false&description=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Navi2实现自定义Planner以及过程中的经验&body=Check out this article: http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&title=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&name=Navi2实现自定义Planner以及过程中的经验&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2025/04/25/Navi2%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89Planner%E4%BB%A5%E5%8F%8A%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E7%BB%8F%E9%AA%8C/&t=Navi2实现自定义Planner以及过程中的经验"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
-</ul>
-
     </div>
 
-    <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        
-          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
-    </div>
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
 
+
+
+  </aside>
+
+
+    </div>
   </div>
 </div>
 
-        
-        <footer id="footer">
-  <div class="footer-left">
-    Copyright &copy;
-    
-    
-    2025
-    tyfelix
-  </div>
-  <div class="footer-right">
-    <nav>
-      <ul>
-        <!--
-       --><li><a href="/">Home</a></li><!--
-     --><!--
-       --><li><a href="/about/">About</a></li><!--
-     --><!--
-       --><li><a href="/archives/">Blogs</a></li><!--
-     --><!--
-       --><li><a href="/categories/">catgories</a></li><!--
-     -->
-      </ul>
-    </nav>
-  </div>
-</footer>
 
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
     </div>
-    <!-- styles -->
+  </div>
+</div>
 
+    
 
+    
+  </main>
 
-  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
-
-
-    <!-- jquery -->
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
-
-
-
-
-<!-- clipboard -->
-
+  <footer>
+    <div class="footer-inner">
   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
   
-  <script type="text/javascript">
-  $(function() {
-    // copy-btn HTML
-    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
-    btn += '<i class="fa-regular fa-clone"></i>';
-    btn += '</span>';
-    // mount it!
-    $(".highlight table").before(btn);
-    var clip = new ClipboardJS('.btn-copy', {
-      text: function(trigger) {
-        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
-      }
-    });
-    clip.on('success', function(e) {
-      e.trigger.setAttribute('aria-label', "Copied!");
-      e.clearSelection();
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
     })
-  })
   </script>
 
 
-<script src="/js/main.js"></script>
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
-<!-- search -->
 
-<!-- Baidu Analytics -->
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
 
-<!-- Cloudflare Analytics -->
 
-<!-- Disqus Comments -->
 
-<!-- utterances Comments -->
 
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    function isExpandAllEnabled() {
+      return CONFIG.toc && CONFIG.toc.expand_all === true;
+    }
+    function expandAllToc() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .tocbot-is-collapsed').removeClass('tocbot-is-collapsed');
+    }
+    function updateTocToggle($li, $childList) {
+      var $toggle = $li.children('.toc-toggle');
+      if ($toggle.length === 0) { return; }
+      var collapsed = $childList.hasClass('tocbot-is-collapsed');
+      $toggle
+        .toggleClass('toc-toggle-collapsed', collapsed)
+        .toggleClass('toc-toggle-expanded', !collapsed);
+    }
+    function bindTocToggle() {
+      if (!isExpandAllEnabled()) { return; }
+      jQuery('#toc-body .toc-list-item').each(function() {
+        var $li = jQuery(this);
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) {
+          if ($li.children('.toc-toggle').length === 0) {
+            $li.prepend('<span class="toc-toggle toc-toggle-placeholder" aria-hidden="true">›</span>');
+          }
+          return;
+        }
+
+        if ($li.children('.toc-toggle').length === 0) {
+          $li.prepend('<span class="toc-toggle toc-toggle-expanded" aria-hidden="true">›</span>');
+        }
+        updateTocToggle($li, $childList);
+      });
+      jQuery('#toc-body').off('click.tocToggle').on('click.tocToggle', '.toc-toggle', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $li = jQuery(this).parent('.toc-list-item');
+        var $childList = $li.children('ol');
+        if ($childList.length === 0) { return; }
+        $childList.toggleClass('tocbot-is-collapsed');
+        updateTocToggle($li, $childList);
+      });
+      if (!window.__tocToggleObserver) {
+        window.__tocToggleObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') { return; }
+            var $list = jQuery(mutation.target);
+            var $li = $list.parent('.toc-list-item');
+            if ($li.length === 0) { return; }
+            updateTocToggle($li, $list);
+          });
+        });
+        jQuery('#toc-body ol').each(function() {
+          window.__tocToggleObserver.observe(this, { attributes: true });
+        });
+      }
+    }
+    var tocConfig = Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc);
+    if (isExpandAllEnabled()) {
+      tocConfig.collapseDepth = 6;
+    }
+    window.tocbot.init(tocConfig);
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+    expandAllToc();
+    bindTocToggle();
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+        expandAllToc();
+        bindTocToggle();
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
 </body>
 </html>

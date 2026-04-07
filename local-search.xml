@@ -65,12 +65,14 @@
     
     <categories>
       
-      <category>路径规划</category>
+      <category>路径规划算法</category>
       
     </categories>
     
     
     <tags>
+      
+      <tag>全局路径规划算法</tag>
       
       <tag>强化学习</tag>
       
@@ -142,7 +144,7 @@
     
     <categories>
       
-      <category>路径规划</category>
+      <category>ROS2</category>
       
     </categories>
     
@@ -150,8 +152,6 @@
     <tags>
       
       <tag>Navigation2</tag>
-      
-      <tag>自定义算法</tag>
       
       <tag>经验分享</tag>
       
@@ -171,14 +171,14 @@
     
     <categories>
       
-      <category>路径规划</category>
+      <category>路径规划算法</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>全局路径规划</tag>
+      <tag>全局路径规划算法</tag>
       
       <tag>基于采样的路径规划</tag>
       
@@ -198,14 +198,14 @@
     
     <categories>
       
-      <category>路径规划</category>
+      <category>路径规划算法</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>局部路径规划</tag>
+      <tag>局部路径规划算法</tag>
       
     </tags>
     
@@ -223,41 +223,10 @@
     
     <categories>
       
-      <category>配置环境相关</category>
+      <category>经验分享</category>
       
     </categories>
     
-    
-    <tags>
-      
-      <tag>ROS1</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>ROS1之第一个样例运行</title>
-    <link href="/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/"/>
-    <url>/2025/04/08/ROS1%E4%B9%8B%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%A0%B7%E4%BE%8B%E8%BF%90%E8%A1%8C/</url>
-    
-    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>学习了ROS2 humble之后，做项目的过程中发现很多想要使用的插件基本都是支持ROS1的，如果想要使用那么必须自己去移植。这对于一个仅仅学习ROS2的人来说实在很困难。因此有必要去学习ROS1。</p><p>老规矩，先查看一个完整的ROS1的文件系统是怎么样的，然后看看运行一个简单的<code>Hello world</code>样例是如何操作的。</p><h3 id="ROS1文件系统">ROS1文件系统</h3><figure class="highlight brainfuck"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs brainfuck"><span class="hljs-comment">WorkSpace</span> <span class="hljs-literal">---</span> <span class="hljs-comment">自定义的工作空间</span><br><br>    <span class="hljs-comment">|</span><span class="hljs-literal">---</span> <span class="hljs-comment">build:编译空间，用于存放CMake和catkin的缓存信息、配置信息和其他中间文件。</span><br><br>    <span class="hljs-comment">|</span><span class="hljs-literal">---</span> <span class="hljs-comment">devel:开发空间，用于存放编译后生成的目标文件，包括头文件、动态&amp;静态链接库、可执行文件等。</span><br><br>    <span class="hljs-comment">|</span><span class="hljs-literal">---</span> <span class="hljs-comment">src: 源码</span><br><br>        <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">package：功能包(ROS基本单元)包含多个节点、库与配置文件，包名所有字母小写，只能由字母、数字与下划线组成</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">CMakeLists</span><span class="hljs-string">.</span><span class="hljs-comment">txt 配置编译规则，比如源文件、依赖项、目标文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">package</span><span class="hljs-string">.</span><span class="hljs-comment">xml 包信息，比如:包名、版本、作者、依赖项</span><span class="hljs-string">.</span><span class="hljs-string">.</span><span class="hljs-string">.</span><span class="hljs-comment">(以前版本是 manifest</span><span class="hljs-string">.</span><span class="hljs-comment">xml)</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">scripts 存储python文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">src 存储C</span><span class="hljs-literal">++</span><span class="hljs-comment">源文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">include 头文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">msg 消息通信格式文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">srv 服务通信格式文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">action 动作格式文件</span><br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">launch 可一次性运行多个节点</span> <br><br>            <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">config 配置信息</span><br><br>        <span class="hljs-comment">|</span><span class="hljs-literal">--</span> <span class="hljs-comment">CMakeLists</span><span class="hljs-string">.</span><span class="hljs-comment">txt: 编译的基本配置</span><br><br></code></pre></td></tr></table></figure><blockquote><p>其中，<code>devel</code>文件夹类似于ROS2里面的<code>install</code>文件夹</p></blockquote><h3 id="运行一个Hello-World程序操作流程（C-为例）">运行一个<code>Hello World</code>程序操作流程（C++为例）</h3><ul><li>1.创建工作空间并初始化</li></ul><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">mkdir -<span class="hljs-selector-tag">p</span> <span class="hljs-built_in">ty_ros_ws</span>(自定义空间名称)/<span class="hljs-attribute">src</span><br>cd <span class="hljs-built_in">ty_ros_ws</span>(自定义空间名称)<br>catkin_make<br></code></pre></td></tr></table></figure><ul><li>2.进入 src 创建 ros 包并添加依赖</li></ul><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scss">cd <span class="hljs-attribute">src</span><br>catkin_create_pkg <span class="hljs-built_in">hello_vscode</span>(自定义ROS包名) roscpp rospy std_msgs<br></code></pre></td></tr></table></figure><p>其中 roscpp、rospy 与 std_msgs是依赖包。</p><ul><li>3.进入 hello_vscode(自定义ROS包名)包里面的src，创建<code>C++</code>文件,名为：<code>Hello_vscode_c.cpp</code>。然后写入下面的内容：</li></ul><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;ros/ros.h&quot;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-comment">//执行 ros 节点初始化 , ‘Hello’是节点名称</span><br>    ros::<span class="hljs-built_in">init</span>(argc,argv,<span class="hljs-string">&quot;hello&quot;</span>);<br>    <span class="hljs-comment">//创建 ros 节点句柄 (非必须)</span><br>    ros::NodeHandle n;<br>    <span class="hljs-comment">//控制台输出 hello world</span><br>    <span class="hljs-built_in">ROS_INFO</span>(<span class="hljs-string">&quot;hello from Felix!&quot;</span>);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure><ul><li>4.调整配置文件<code>CMakeList.txt</code></li></ul><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs lisp">add_executable(<span class="hljs-name">hello_vscode_c</span>(一般使用步骤<span class="hljs-number">3</span>的源文件名，当然也可以自己舍弃其他的但是不建议) src/hello_vscode_c.cpp(步骤<span class="hljs-number">3</span>的源文件名.cpp)<br>)<br>target_link_libraries(<span class="hljs-name">hello_vscode_c</span>（步骤<span class="hljs-number">3</span>的源文件名）<br>  $&#123;catkin_LIBRARIES&#125;<br>)<br></code></pre></td></tr></table></figure><ul><li><p>5.编译:进入ty_ros_ws(自定义空间名称)，然后<code>catkin_make</code>编译</p></li><li><p>6.在终端运行<code>roscore</code></p></li><li><p>7.再打开一个新的终端</p><ul><li><code>source ./devel/setup.bash</code></li><li><code>rosrun hello_vscode(包名) hello_vscode_c(设置的可执行文件名，一般是源文件名)</code></li></ul></li><li><p>8.控制台打印：</p></li></ul><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript">Hello <span class="hljs-keyword">from</span> Felix!<br></code></pre></td></tr></table></figure><p>参考内容：</p><ul><li>赵虚左BiliBili里面的ROS1教程</li></ul>]]></content>
-    
-    
-    <categories>
-      
-      <category>ROS1</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>入门</tag>
-      
-    </tags>
     
   </entry>
   
@@ -273,14 +242,14 @@
     
     <categories>
       
-      <category>路径规划</category>
+      <category>路径规划算法</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>全局路径规划</tag>
+      <tag>全局路径规划算法</tag>
       
       <tag>基于图搜索的路径规划</tag>
       
@@ -411,9 +380,9 @@
     
     <tags>
       
-      <tag>经验</tag>
-      
       <tag>投稿相关</tag>
+      
+      <tag>经验</tag>
       
     </tags>
     
@@ -447,9 +416,9 @@
   
   
   <entry>
-    <title>Hexo常用命令</title>
-    <link href="/2025/02/02/hello-world/"/>
-    <url>/2025/02/02/hello-world/</url>
+    <title>Hexo常用命令备忘</title>
+    <link href="/2025/02/02/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%87%E5%BF%98/"/>
+    <url>/2025/02/02/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%A4%87%E5%BF%98/</url>
     
     <content type="html"><![CDATA[<h2 id="Quick-Start">Quick Start</h2><h3 id="Create-a-new-post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Before-Run">Before Run</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo clean<br></code></pre></td></tr></table></figure><h3 id="Run-server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server/ hexo s<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate/ hexo g<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy/ hexo d<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
     

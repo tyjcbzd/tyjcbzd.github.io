@@ -1,0 +1,235 @@
+.academic-intro,
+.about-profile {
+  margin: 0 0 2rem;
+  padding: 0 0 1.25rem;
+  border-bottom: 1px solid var(--line-color);
+  color: var(--post-text-color);
+}
+
+.academic-intro p,
+.about-profile p {
+  margin: 0;
+}
+
+.academic-intro p + p,
+.about-profile p + p {
+  margin-top: 0.85rem;
+}
+
+.academic-kicker {
+  color: var(--sec-text-color);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.academic-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.academic-actions a,
+.publication-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.72rem;
+  border: 1px solid var(--line-color);
+  border-radius: 6px;
+  color: var(--post-link-color);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.academic-actions a:hover,
+.publication-links a:hover {
+  border-color: var(--post-link-color);
+  color: var(--link-hover-color);
+}
+
+.publication-list {
+  display: grid;
+  gap: 1.35rem;
+  margin-top: 1.25rem;
+}
+
+.publication-card {
+  display: grid;
+  grid-template-columns: minmax(180px, 32%) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+  padding: 1rem;
+  border: 1px solid var(--line-color);
+  border-radius: 8px;
+  background: var(--board-bg-color);
+}
+
+.publication-media {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--line-color);
+  border-radius: 6px;
+  background: var(--body-bg-color);
+}
+
+.publication-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  box-shadow: none;
+}
+
+.publication-body h3 {
+  margin: 0.35rem 0 0.6rem;
+  color: var(--post-heading-color);
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.publication-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--sec-text-color);
+  font-size: 0.85rem;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.55rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.role-badge.first-author {
+  background: rgba(34, 126, 92, 0.13);
+  color: #227e5c;
+}
+
+.role-badge.coauthor {
+  background: rgba(76, 110, 245, 0.12);
+  color: #4c6ef5;
+}
+
+.publication-authors,
+.publication-venue,
+.publication-topic {
+  margin: 0.3rem 0;
+  color: var(--post-text-color);
+  line-height: 1.55;
+}
+
+.publication-venue {
+  font-style: italic;
+}
+
+.publication-topic {
+  color: var(--sec-text-color);
+  font-size: 0.92rem;
+}
+
+.publication-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+}
+
+.publication-empty {
+  margin-top: 1rem;
+  padding: 1rem 1.2rem;
+  border: 1px dashed var(--line-color);
+  border-radius: 8px;
+  color: var(--sec-text-color);
+}
+
+.publication-empty p {
+  margin: 0;
+}
+
+.about-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.1rem 0 1.75rem;
+}
+
+.about-focus-item {
+  padding: 1rem;
+  border: 1px solid var(--line-color);
+  border-radius: 8px;
+  background: var(--board-bg-color);
+}
+
+.about-focus-item h3 {
+  margin: 0 0 0.55rem;
+  color: var(--post-heading-color);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.about-focus-item p {
+  margin: 0;
+  color: var(--post-text-color);
+  line-height: 1.55;
+}
+
+.about-skill-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 1.75rem;
+}
+
+.about-skill-list > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.24fr) 1fr;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--line-color);
+}
+
+.about-skill-list strong {
+  color: var(--post-heading-color);
+}
+
+.about-skill-list span {
+  color: var(--post-text-color);
+}
+
+@media (max-width: 767px) {
+  .publication-card {
+    grid-template-columns: 1fr;
+  }
+
+  .about-focus-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-skill-list > div {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 424px) {
+  .publication-card,
+  .about-focus-item {
+    padding: 0.9rem;
+  }
+
+  .publication-body h3 {
+    font-size: 1rem;
+  }
+}

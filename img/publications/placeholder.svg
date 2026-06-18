@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Publication teaser placeholder</title>
+  <desc id="desc">Abstract research visualization placeholder with nodes, chart lines, and panels.</desc>
+  <rect width="960" height="600" fill="#f6f8fb"/>
+  <rect x="70" y="70" width="820" height="460" rx="18" fill="#ffffff" stroke="#d8dee8" stroke-width="3"/>
+  <rect x="115" y="120" width="305" height="165" rx="12" fill="#e8f1ff" stroke="#b8cdf3" stroke-width="3"/>
+  <rect x="115" y="320" width="305" height="120" rx="12" fill="#eef8f3" stroke="#b9dac8" stroke-width="3"/>
+  <path d="M490 405 C560 318 612 350 663 270 S775 155 840 195" fill="none" stroke="#3f7fba" stroke-width="12" stroke-linecap="round"/>
+  <path d="M490 455 C560 402 615 415 665 360 S775 300 840 330" fill="none" stroke="#44a17a" stroke-width="10" stroke-linecap="round"/>
+  <g fill="#ffffff" stroke="#3f7fba" stroke-width="8">
+    <circle cx="505" cy="405" r="18"/>
+    <circle cx="610" cy="340" r="18"/>
+    <circle cx="705" cy="235" r="18"/>
+    <circle cx="840" cy="195" r="18"/>
+  </g>
+  <g fill="#ffffff" stroke="#44a17a" stroke-width="7">
+    <circle cx="505" cy="455" r="16"/>
+    <circle cx="625" cy="410" r="16"/>
+    <circle cx="730" cy="320" r="16"/>
+    <circle cx="840" cy="330" r="16"/>
+  </g>
+  <g stroke="#8ca2c0" stroke-width="4" stroke-linecap="round">
+    <path d="M160 160h210"/>
+    <path d="M160 205h155"/>
+    <path d="M160 250h225"/>
+    <path d="M160 360h205"/>
+    <path d="M160 402h145"/>
+  </g>
+  <g fill="#3f7fba">
+    <circle cx="520" cy="155" r="20"/>
+    <circle cx="610" cy="185" r="14"/>
+    <circle cx="690" cy="145" r="17"/>
+    <circle cx="770" cy="175" r="13"/>
+  </g>
+  <g stroke="#88a0c0" stroke-width="4">
+    <path d="M520 155l90 30l80 -40l80 30" fill="none"/>
+  </g>
+</svg>
